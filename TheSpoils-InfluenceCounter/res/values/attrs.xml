@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="RotatableCounterTextView">
+		<attr name="rotation" format="integer"/>
+	</declare-styleable>
+	
+	<declare-styleable name="RotatableImageButton">
+		<attr name="rotation" />
+	</declare-styleable>
+</resources>

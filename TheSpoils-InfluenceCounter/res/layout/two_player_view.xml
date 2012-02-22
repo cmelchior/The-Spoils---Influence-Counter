@@ -1,0 +1,136 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ilios="http://schemas.android.com/apk/res/dk.ilios.influencecounter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical" >
+
+    <!-- Top player container -->
+    <RelativeLayout
+        android:id="@+id/top_player_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <!-- Background layouts for catching clicks -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="vertical"
+            android:weightSum="1" >
+
+            <FrameLayout
+                android:id="@+id/top_player_decrease_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:background="@android:color/darker_gray" />
+
+            <FrameLayout
+                android:id="@+id/top_player_increase_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:background="@android:color/white" />
+        </LinearLayout>
+
+        <dk.ilios.influencecounter.views.RotatableCounterTextView
+            android:id="@+id/top_player_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            ilios:rotation="180"
+            android:text="25"
+            android:textSize="200dp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/top_player_control_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" >
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/top_player_refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Refresh"
+                ilios:rotation="180" />
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/top_player_style_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Style"
+                ilios:rotation="180" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <!-- Bottom player container -->
+    <RelativeLayout
+        android:id="@+id/bottom_player_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <!-- Background layouts for catching clicks -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="vertical"
+            android:weightSum="1" >
+
+            <FrameLayout
+                android:id="@+id/bottom_player_increase_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:background="@android:color/white" />
+
+            <FrameLayout
+                android:id="@+id/bottom_player_decrease_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:background="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <dk.ilios.influencecounter.views.RotatableCounterTextView
+            android:id="@+id/bottom_player_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="25"
+            android:textSize="200dp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/bottom_player_control_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" >
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/bottom_player_refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Refresh" />
+            
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/bottom_player_style_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Style" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
