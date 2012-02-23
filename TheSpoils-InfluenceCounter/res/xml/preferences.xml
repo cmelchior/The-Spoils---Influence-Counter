@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="wakelock"
+        android:summary="@string/config_wakelock_summary"
+        android:title="@string/config_wakelock_label"
+        android:defaultValue="false" />
+
+    <EditTextPreference
+        android:dialogTitle="@string/config_set_influence"
+        android:key="default_starting_influence"
+        android:title="@string/config_influence"
+        android:defaultValue="25"
+        android:numeric="integer" />
+
+</PreferenceScreen>

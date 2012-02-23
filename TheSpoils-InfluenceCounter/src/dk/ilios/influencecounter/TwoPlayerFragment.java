@@ -14,10 +14,10 @@ import android.widget.TextView;
 
 public class TwoPlayerFragment extends Fragment {
 
-	private int valueTop = 25;
-	private int valueBottom = 25;
-	private TextView counterTop;
-	private TextView counterBottom;
+	private int mValueTop = 25;
+	private int mValueBottom = 25;
+	private TextView mCounterTop;
+	private TextView mCounterBottom;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,18 +29,17 @@ public class TwoPlayerFragment extends Fragment {
 		View v = inflater.inflate(R.layout.two_player_view, container, false);
 
 		// Set reference to views
-		counterTop = (TextView) v.findViewById(R.id.top_player_counter);
-		counterTop.setText(new Integer(valueTop).toString());
+		mCounterTop = (TextView) v.findViewById(R.id.top_player_counter);
+		mCounterTop.setText(new Integer(mValueTop).toString());
 
-		counterBottom = (TextView) v.findViewById(R.id.bottom_player_counter);
-		counterBottom.setText(new Integer(valueBottom).toString());
-
+		mCounterBottom = (TextView) v.findViewById(R.id.bottom_player_counter);
+		mCounterBottom.setText(new Integer(mValueBottom).toString());
 		
 		// Set event handlers
 		v.findViewById(R.id.top_player_increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				valueTop++;
+				mValueTop++;
 				updateTopCounter();
 			}
 		});
@@ -48,7 +47,7 @@ public class TwoPlayerFragment extends Fragment {
 		v.findViewById(R.id.bottom_player_increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				valueBottom++;
+				mValueBottom++;
 				updateBottomCounter();
 			}
 		});
@@ -56,7 +55,7 @@ public class TwoPlayerFragment extends Fragment {
 		v.findViewById(R.id.top_player_decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				valueTop--;
+				mValueTop--;
 				updateTopCounter();
 			}
 		});
@@ -64,7 +63,7 @@ public class TwoPlayerFragment extends Fragment {
 		v.findViewById(R.id.bottom_player_decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				valueBottom--;
+				mValueBottom--;
 				updateBottomCounter();
 			}
 		});
@@ -74,7 +73,7 @@ public class TwoPlayerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				valueTop = 25;
+				mValueTop = ((MainActivity) getActivity()).getDefaultStartingInfluence();
 				updateTopCounter();
 			}
 		});
@@ -83,7 +82,7 @@ public class TwoPlayerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				valueBottom = 25;
+				mValueBottom = ((MainActivity) getActivity()).getDefaultStartingInfluence();
 				updateBottomCounter();
 			}
 		});
@@ -111,11 +110,11 @@ public class TwoPlayerFragment extends Fragment {
 
 	
 	private void updateTopCounter() {
-		counterTop.setText(new Integer(valueTop).toString());
+		mCounterTop.setText(new Integer(mValueTop).toString());
 	}
 	
 	private void updateBottomCounter() {
-		counterBottom.setText(new Integer(valueBottom).toString());
+		mCounterBottom.setText(new Integer(mValueBottom).toString());
 	}
 	
 	private void toggleTopStyle() {

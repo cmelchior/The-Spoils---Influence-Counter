@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, MainActivity!</string>
     <string name="app_name">Influence Counter</string>
 
+    <!--  Permissions -->
+    <string name="wakelock_label">Prevent screen from turning off</string>
+    <string name="wakelock_description">Used to keep the screen alive, but dimmed during play. Still follow the configured time in display settings before dimming the screen. It is disabled as default, but can be enabled in the apps configuration page.</string>
+    <string name="configuration">Configuration</string>
+    
+    <string name="config_wakelock_label">Keep screen alive</string>
+    <string name="config_wakelock_summary">If enabled, screen is prevented from turning of, and is dimmed instead.</string>
+    <string name="config_influence">Starting influence</string>
+    <string name="config_set_influence">Set default starting influence</string>
 </resources>

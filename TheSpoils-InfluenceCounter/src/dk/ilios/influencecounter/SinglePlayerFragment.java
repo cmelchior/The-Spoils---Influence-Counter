@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 public class SinglePlayerFragment extends Fragment {
 
-	private int value = 25;
-	private TextView counter;
+	private int mInfluence = 25;
+	private TextView mCounterView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -26,15 +26,17 @@ public class SinglePlayerFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.single_player_view, container, false);
 
+		mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+		
 		// Set reference to views
-		counter = (TextView) v.findViewById(R.id.counter);
-		counter.setText(new Integer(value).toString());
+		mCounterView = (TextView) v.findViewById(R.id.counter);
+		mCounterView.setText(new Integer(mInfluence).toString());
 		
 		// Set event handlers
 		v.findViewById(R.id.increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				value++;
+				mInfluence++;
 				updateCounter();
 			}
 		});
@@ -42,7 +44,7 @@ public class SinglePlayerFragment extends Fragment {
 		v.findViewById(R.id.decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				value--;
+				mInfluence--;
 				updateCounter();
 			}
 		});
@@ -51,7 +53,7 @@ public class SinglePlayerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				value = 25;
+				mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluence();
 				updateCounter();
 			}
 		});
@@ -69,7 +71,7 @@ public class SinglePlayerFragment extends Fragment {
 
 
 	private void updateCounter() {
-		counter.setText(new Integer(value).toString());
+		mCounterView.setText(new Integer(mInfluence).toString());
 	}
 	
 	/**
