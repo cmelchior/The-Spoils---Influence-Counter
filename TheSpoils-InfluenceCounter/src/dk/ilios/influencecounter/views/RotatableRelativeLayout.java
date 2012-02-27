@@ -4,10 +4,8 @@ package dk.ilios.influencecounter.views;
  */
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.ViewParent;
 import android.widget.RelativeLayout;
 
 public class RotatableRelativeLayout extends RelativeLayout {

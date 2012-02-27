@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<declare-styleable name="RotatableCounterTextView">
+	<declare-styleable name="OutlineTextView">
 		<attr name="rotation" format="integer"/>
+		<attr name="borderSize" format="dimension" />
+		<attr name="borderColor" format="color" />
 	</declare-styleable>
 	
 	<declare-styleable name="RotatableImageButton">

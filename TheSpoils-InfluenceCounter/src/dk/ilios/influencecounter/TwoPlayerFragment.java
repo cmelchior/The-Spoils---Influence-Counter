@@ -4,24 +4,52 @@ package dk.ilios.influencecounter;
  * 
  * @author Christian Melchior
  */
+import java.util.ArrayList;
+
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class TwoPlayerFragment extends Fragment {
 
 	private int mValueTop = 25;
 	private int mValueBottom = 25;
-	private TextView mCounterTop;
-	private TextView mCounterBottom;
+	private OutlinedTextView mCounterTop;
+	private OutlinedTextView mCounterBottom;
+	
+	private View mTopbarTop;
+	private View mBottombarTop;
+
+	private View mTopbarBottom;
+	private View mBottombarBottom;
+	
+	private int currentStyleTop = 1;	// Starting style minus 1;
+	private int currentStyleBottom = -1;	// Starting style minus 1;
+	
+	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
+	private ArrayList<StyleTemplate> stylesReversed = new ArrayList<StyleTemplate>();
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		styles.add(new StyleTemplate(R.drawable.warlords_top, R.drawable.warlords_bottom));
+		styles.add(new StyleTemplate(R.drawable.banker_top, R.drawable.banker_bottom));
+		styles.add(new StyleTemplate(R.drawable.rogue_top, R.drawable.rogue_bottom));
+		styles.add(new StyleTemplate(R.drawable.arcanist_top, R.drawable.arcanist_bottom));
+		styles.add(new StyleTemplate(R.drawable.gearsmith_top, R.drawable.gearsmith_bottom));
+
+		stylesReversed.add(new StyleTemplate(R.drawable.warlords_top_reversed, R.drawable.warlords_bottom_reversed));
+		stylesReversed.add(new StyleTemplate(R.drawable.banker_top_reversed, R.drawable.banker_bottom_reversed));
+		stylesReversed.add(new StyleTemplate(R.drawable.rogue_top_reversed, R.drawable.rogue_bottom_reversed));
+		stylesReversed.add(new StyleTemplate(R.drawable.arcanist_top_reversed, R.drawable.arcanist_bottom_reversed));
+		stylesReversed.add(new StyleTemplate(R.drawable.gearsmith_top_reversed, R.drawable.gearsmith_bottom_reversed));
 	}
 
 	@Override
@@ -29,10 +57,17 @@ public class TwoPlayerFragment extends Fragment {
 		View v = inflater.inflate(R.layout.two_player_view, container, false);
 
 		// Set reference to views
-		mCounterTop = (TextView) v.findViewById(R.id.top_player_counter);
+		mTopbarTop = v.findViewById(R.id.top_player_top_bar);
+		mBottombarTop = v.findViewById(R.id.top_player_control_bar);
+		mTopbarBottom = v.findViewById(R.id.bottom_player_top_bar);
+		mBottombarBottom = v.findViewById(R.id.bottom_player_control_bar);
+		
+		
+		
+		mCounterTop = (OutlinedTextView) v.findViewById(R.id.top_player_counter);
 		mCounterTop.setText(new Integer(mValueTop).toString());
 
-		mCounterBottom = (TextView) v.findViewById(R.id.bottom_player_counter);
+		mCounterBottom = (OutlinedTextView) v.findViewById(R.id.bottom_player_counter);
 		mCounterBottom.setText(new Integer(mValueBottom).toString());
 		
 		// Set event handlers
@@ -103,8 +138,10 @@ public class TwoPlayerFragment extends Fragment {
 				toggleBottomStyle();
 			}
 		});
-
 		
+		toggleBottomStyle();
+		toggleTopStyle();
+
 		return v;
 	}
 
@@ -118,11 +155,21 @@ public class TwoPlayerFragment extends Fragment {
 	}
 	
 	private void toggleTopStyle() {
-		// TODO
+		currentStyleTop = (currentStyleTop + 1) % stylesReversed.size();
+		
+		Drawable d = getResources().getDrawable(stylesReversed.get(currentStyleTop).top);
+		d.setLevel(10000);
+		mTopbarTop.setBackgroundDrawable(d);
+		
+		d = getResources().getDrawable(stylesReversed.get(currentStyleTop).bottom);
+		d.setLevel(10000);
+		mBottombarTop.setBackgroundDrawable(d);
 	}
 	
 	private void toggleBottomStyle() {
-		// TODO
+		currentStyleBottom = (currentStyleBottom + 1) % styles.size();
+		mTopbarBottom.setBackgroundDrawable(getResources().getDrawable(stylesReversed.get(currentStyleBottom).top));
+		mBottombarBottom.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyleBottom).bottom));
 	}
 	
 	@Override

@@ -4,22 +4,36 @@ package dk.ilios.influencecounter;
  * 
  * @author Christian Melchior
  */
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class SinglePlayerFragment extends Fragment {
 
 	private int mInfluence = 25;
-	private TextView mCounterView;
+	private OutlinedTextView mCounterView;
+	private View mTopbar;
+	private View mBottombar;
+	
+	private int currentStyle = -1;
+	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		styles.add(new StyleTemplate(R.drawable.warlords_top, R.drawable.warlords_bottom));
+		styles.add(new StyleTemplate(R.drawable.banker_top, R.drawable.banker_bottom));
+		styles.add(new StyleTemplate(R.drawable.rogue_top, R.drawable.rogue_bottom));
+		styles.add(new StyleTemplate(R.drawable.arcanist_top, R.drawable.arcanist_bottom));
+		styles.add(new StyleTemplate(R.drawable.gearsmith_top, R.drawable.gearsmith_bottom));
 	}
 
 	@Override
@@ -29,8 +43,11 @@ public class SinglePlayerFragment extends Fragment {
 		mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluence();
 		
 		// Set reference to views
-		mCounterView = (TextView) v.findViewById(R.id.counter);
+		mCounterView = (OutlinedTextView) v.findViewById(R.id.counter);
 		mCounterView.setText(new Integer(mInfluence).toString());
+
+		mTopbar = v.findViewById(R.id.top_bar);
+		mBottombar = v.findViewById(R.id.control_bar);
 		
 		// Set event handlers
 		v.findViewById(R.id.increase_influence_button).setOnClickListener(new OnClickListener() {
@@ -66,6 +83,7 @@ public class SinglePlayerFragment extends Fragment {
 			}
 		});
 		
+		toggleStyle();
 		return v;
 	}
 
@@ -78,7 +96,9 @@ public class SinglePlayerFragment extends Fragment {
 	 * Switch to the next style
 	 */
 	private void toggleStyle() {
-		// TODO
+		currentStyle = (currentStyle + 1) % styles.size();
+		mTopbar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).top));
+		mBottombar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).bottom));
 	}
 	
 	@Override
