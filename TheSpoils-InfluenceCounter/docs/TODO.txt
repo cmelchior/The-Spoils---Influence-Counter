@@ -1,0 +1,11 @@
+Unsorted list of future enhancements:
+
+- Find a better suited font
+- new launcher icons (also for medium/low dpi)
+- remove plate from trade bottom graphics
+- hint arrows for 2 player view
+- Fix bugs in OutlinedTextView
+- Bluetooth connection to another app 
+
+
+
