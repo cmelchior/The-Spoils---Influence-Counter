@@ -3,7 +3,6 @@
 
     <string name="app_name">Influence Counter</string>
 
-    <!--  Permissions -->
     <string name="wakelock_label">Prevent screen from turning off</string>
     <string name="wakelock_description">Used to keep the screen alive, but dimmed during play. Still follow the configured time in display settings before dimming the screen. It is disabled as default, but can be enabled in the apps configuration page.</string>
     <string name="configuration">Configuration</string>
