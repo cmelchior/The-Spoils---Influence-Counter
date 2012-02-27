@@ -2,16 +2,32 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <CheckBoxPreference
+        android:defaultValue="false"
         android:key="wakelock"
+        android:persistent="true"
         android:summary="@string/config_wakelock_summary"
-        android:title="@string/config_wakelock_label"
-        android:defaultValue="false" />
+        android:title="@string/config_wakelock_label" />
 
     <EditTextPreference
+        android:defaultValue="25"
         android:dialogTitle="@string/config_set_influence"
         android:key="default_starting_influence"
-        android:title="@string/config_influence"
-        android:defaultValue="25"
-        android:numeric="integer" />
+        android:persistent="true"
+        android:numeric="integer"
+        android:title="@string/config_influence" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="single_player_hint_arrows"
+        android:persistent="true"
+        android:summary="@string/config_single_player_hint_arrows_summary"
+        android:title="@string/config_single_player_hint_arrows_label" />
+    
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="two_player_hint_arrows"
+        android:persistent="true"
+        android:summary="@string/config_two_player_hint_arrows_summary"
+        android:title="@string/config_two_player_hint_arrows_label" />
 
 </PreferenceScreen>

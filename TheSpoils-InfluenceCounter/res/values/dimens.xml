@@ -4,6 +4,6 @@
     <dimen name="bottom_bar_width">300dp</dimen>
     <dimen name="bottom_bar_height">74dp</dimen>
     <dimen name="distance_to_middle">2.5dp</dimen>
-    <dimen name="two_player_font_size">100sp</dimen>
+    <dimen name="two_player_font_size">115sp</dimen>
     <dimen name="two_player_font_border">2.5dp</dimen>
 </resources>

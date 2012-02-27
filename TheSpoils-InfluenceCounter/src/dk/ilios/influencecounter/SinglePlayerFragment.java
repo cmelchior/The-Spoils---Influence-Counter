@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import dk.ilios.influencecounter.views.OutlinedTextView;
 
@@ -20,6 +22,9 @@ public class SinglePlayerFragment extends Fragment {
 	private OutlinedTextView mCounterView;
 	private View mTopbar;
 	private View mBottombar;
+	
+	private View mUpArrow;
+	private View mDownArrow;
 	
 	private int currentStyle = -1;
 	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
@@ -39,8 +44,8 @@ public class SinglePlayerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.single_player_view, container, false);
-
-		mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+		final MainActivity parent  = (MainActivity) getActivity();
+		mInfluence = parent.getDefaultStartingInfluence();
 		
 		// Set reference to views
 		mCounterView = (OutlinedTextView) v.findViewById(R.id.counter);
@@ -48,6 +53,9 @@ public class SinglePlayerFragment extends Fragment {
 
 		mTopbar = v.findViewById(R.id.top_bar);
 		mBottombar = v.findViewById(R.id.control_bar);
+		mUpArrow = v.findViewById(R.id.up_arrow);
+		mDownArrow = v.findViewById(R.id.down_arrow);
+		
 		
 		// Set event handlers
 		v.findViewById(R.id.increase_influence_button).setOnClickListener(new OnClickListener() {
@@ -57,6 +65,29 @@ public class SinglePlayerFragment extends Fragment {
 				updateCounter();
 			}
 		});
+
+		v.findViewById(R.id.increase_influence_button).setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (!parent.showHintArrowsForSinglePlayer()) return false;
+				
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					mUpArrow.setVisibility(View.VISIBLE);
+					break;
+				case MotionEvent.ACTION_UP:
+				case MotionEvent.ACTION_CANCEL:
+					mUpArrow.setVisibility(View.GONE);
+					break;
+				default: /* Ignore */
+				}
+
+				return false;
+			}
+		});
+
+		
 		
 		v.findViewById(R.id.decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
@@ -66,6 +97,29 @@ public class SinglePlayerFragment extends Fragment {
 			}
 		});
 
+		v.findViewById(R.id.decrease_influence_button).setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (!parent.showHintArrowsForSinglePlayer()) return false;
+
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					mDownArrow.setVisibility(View.VISIBLE);
+					break;
+				case MotionEvent.ACTION_UP:
+				case MotionEvent.ACTION_CANCEL:
+					mDownArrow.setVisibility(View.GONE);
+					break;
+				default: /* Ignore */
+				}
+
+				return false;
+			}
+		});
+
+		
+		
 		v.findViewById(R.id.refresh_button).setOnClickListener(new OnClickListener() {
 			
 			@Override

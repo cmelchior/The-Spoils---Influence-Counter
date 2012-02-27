@@ -50,13 +50,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:gravity="center"
-            ilios:rotation="180"
-            ilios:borderSize="@dimen/two_player_font_border"
+            android:layout_marginBottom="12dp"
             ilios:borderColor="#000000"
+            ilios:borderSize="@dimen/two_player_font_border"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            ilios:rotation="180"
             android:shadowColor="#ffffbe"
             android:shadowDx="0"
             android:shadowDy="0"
@@ -83,15 +83,15 @@
                 android:background="@null"
                 ilios:rotation="180"
                 android:src="@drawable/refresh_button" />
-            
+
             <dk.ilios.influencecounter.views.RotatableImageButton
                 android:id="@+id/top_player_style_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                ilios:rotation="180"
                 android:background="@null"
-                android:src="@drawable/style_button" />
+                ilios:rotation="180"
+                android:src="@drawable/style_button" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -138,12 +138,12 @@
             android:id="@+id/bottom_player_counter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:gravity="center"
-            ilios:borderSize="@dimen/two_player_font_border"
+            android:layout_marginTop="12dp"
             ilios:borderColor="#000000"
+            ilios:borderSize="@dimen/two_player_font_border"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
             android:shadowColor="#ffffbe"
             android:shadowDx="0"
             android:shadowDy="0"
@@ -169,7 +169,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:background="@null"
-                android:src="@drawable/refresh_button_default"
+                android:src="@drawable/refresh_button"
                 android:text="Refresh" />
 
             <dk.ilios.influencecounter.views.RotatableImageButton

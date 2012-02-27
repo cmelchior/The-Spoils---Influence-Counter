@@ -12,4 +12,8 @@
     <string name="config_wakelock_summary">If enabled, screen is prevented from turning of, and is dimmed instead.</string>
     <string name="config_influence">Starting influence</string>
     <string name="config_set_influence">Set default starting influence</string>
+    <string name="config_single_player_hint_arrows_summary">Enable changing influence hint arrows for single player view.</string>
+    <string name="config_two_player_hint_arrows_summary">Enable changing influence hint arrows for two player view (not implemented yet).</string>
+	<string name="config_single_player_hint_arrows_label">Single player hint arrows</string>    
+	<string name="config_two_player_hint_arrows_label">Two player hint arrows</string>    
 </resources>

@@ -29,7 +29,9 @@ public class MainActivity extends FragmentActivity {
     private int mDefaultStartingInfluence;
     private boolean mKeepScreenAlive;
     private PowerManager.WakeLock mWakeLock;
-     
+    private boolean mSinglePlayerHintArrows;
+    private boolean mTwoPlayerHintArrows; 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +51,15 @@ public class MainActivity extends FragmentActivity {
     private void initializePreferences() {
     	mDefaultStartingInfluence = Integer.parseInt(prefs.getString("default_starting_influence", "0"));
     	mKeepScreenAlive = prefs.getBoolean("wakelock", false);
+    	mSinglePlayerHintArrows = prefs.getBoolean("single_player_hint_arrows", false);
+    	mTwoPlayerHintArrows = prefs.getBoolean("two_player_hint_arrows", false);
     }
 
     private void initializeWakelock() {
         if (mKeepScreenAlive) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "InfluenceCounterWakeLock");
+            
         }
     }
     
@@ -109,6 +114,14 @@ public class MainActivity extends FragmentActivity {
 		return mDefaultStartingInfluence;
 	}
 	
+	public boolean showHintArrowsForSinglePlayer() {
+		return mSinglePlayerHintArrows;
+	}
+
+	public boolean showHintArrowsForTwoPlayers() {
+		return mTwoPlayerHintArrows;
+	}
+
 	
 /*******************************************************************************
  * PAGE ADAPTER                                                                *
