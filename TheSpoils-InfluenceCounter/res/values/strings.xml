@@ -15,4 +15,5 @@
     <string name="config_two_player_hint_arrows_summary">Enable changing influence hint arrows for two player view (not implemented yet).</string>
 	<string name="config_single_player_hint_arrows_label">Single player hint arrows</string>    
 	<string name="config_two_player_hint_arrows_label">Two player hint arrows</string>    
+	<string name="two_player_view_disabled">Your screen is unfortunately to small to show the current two player view. </string>
 </resources>

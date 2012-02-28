@@ -24,7 +24,6 @@ TODO:
 - Test on tablet
 - disable 2 player view in ldpi mode
 - Credits for using graphics
-- 2 player view -> reduce font size on mdpi screens
 
 	
 DONE:
@@ -33,5 +32,6 @@ DONE:
 + Outline seems a little off on the simulator (check on real phones with pre-4.0)
 + fix bug in OutlinedTextView for pre 4.0 fonts (look at how stroke is configured) (not really fixed, but works for now)
 + Test on mdpi phone
++ 2 player view -> reduce font size on mdpi screens
 	
 --------------------------------------------------------------------------------

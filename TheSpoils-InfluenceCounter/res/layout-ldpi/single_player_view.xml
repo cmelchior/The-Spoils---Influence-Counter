@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ilios="http://schemas.android.com/apk/res/dk.ilios.influencecounter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_single" >
+
+    <!-- Background layouts for catching clicks -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:weightSum="1" >
+
+        <FrameLayout
+            android:id="@+id/increase_influence_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+        <FrameLayout
+            android:id="@+id/decrease_influence_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/top_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/bottom_bar_margin"
+        android:background="@drawable/warlords_top" />
+
+    <RelativeLayout
+        android:id="@+id/control_bar"
+        android:layout_width="@dimen/bottom_bar_width"
+        android:layout_height="@dimen/bottom_bar_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/warlords_bottom" >
+
+        <dk.ilios.influencecounter.views.RotatableImageButton
+            android:id="@+id/refresh_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:src="@drawable/refresh_button"
+            android:text="Refresh" />
+
+        <dk.ilios.influencecounter.views.RotatableImageButton
+            android:id="@+id/style_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:src="@drawable/style_button"
+            android:text="Style" />
+    </RelativeLayout>
+
+    <!-- Use layout to position because of measure bug in OutlineTextView -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/control_bar"
+        android:layout_below="@id/top_bar">
+	
+        <ImageView
+            android:id="@+id/up_arrow"
+            android:contentDescription="Increase influence" 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="10dp"
+            android:src="@drawable/single_player_up_arrow"
+            android:visibility="gone"
+            />
+        
+        <dk.ilios.influencecounter.views.OutlinedTextView
+            android:id="@+id/counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:shadowColor="#ffffbe"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="30"
+            ilios:borderSize="2.5dp"
+            ilios:borderColor="#000000"
+            android:text="25"
+            android:textColor="#ffffff"
+            android:textSize="180dp"
+            android:textStyle="bold" />
+		
+		<ImageView
+		    android:id="@+id/down_arrow"
+            android:contentDescription="Decrease influence" 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/single_player_down_arrow"
+            android:visibility="gone"
+            />
+        
+        
+    </RelativeLayout>
+
+</RelativeLayout>
