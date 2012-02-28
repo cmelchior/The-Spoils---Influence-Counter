@@ -3,6 +3,9 @@
 Layout differences
 --------------------------------------------------------------------------------
 
+X-LARGE:
+	- Centered text better in two player mode
+
 MDPI: 
 	Reduced font-size on the two player view
 

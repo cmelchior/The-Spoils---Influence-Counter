@@ -20,8 +20,8 @@ TODO:
 - Promo graphic (180x120)
 - Feature graphic (1024x500)
 - new launcher icons (also for medium/low dpi) (perhaps use rogue checkered background)
-- Test on tablet
 - Credits for using graphics
+- Test on Galaxy Tab 10.1
 
 	
 DONE:
@@ -33,5 +33,6 @@ DONE:
 + 2 player view -> reduce font size on mdpi screens
 + disable 2 player view in ldpi mode
 + Test on ldpi phone
++ Test on tablet
 	
 --------------------------------------------------------------------------------
