@@ -1,11 +1,37 @@
 Unsorted list of future enhancements:
 
 - Find a better suited font
-- new launcher icons (also for medium/low dpi)
 - remove plate from trade bottom graphics
 - hint arrows for 2 player view
 - Fix bugs in OutlinedTextView
 - Bluetooth connection to another app 
+- Configurable background / text color
+- Enable / Disable / Choose glow color
+- Prevent numbers from going above 99 and below 0
+- Replace 0 with a skull (find graphic).
 
+===============================================================================
+RELEASE 1.0
+-------------------------------------------------------------------------------
 
+TODO:
+- Buttons seems as they are not on a line - check gfx
+- High res icon (512x512)
+- Promo graphic (180x120)
+- Feature graphic (1024x500)
+- new launcher icons (also for medium/low dpi) (perhaps use rogue checkered background)
+- Test on ldpi phone
+- Test on tablet
+- disable 2 player view in ldpi mode
+- Credits for using graphics
+- 2 player view -> reduce font size on mdpi screens
 
+	
+DONE:
++ test hdpi on pre-4.0 phones
++ Removed white pixels on Warlord bottom background.
++ Outline seems a little off on the simulator (check on real phones with pre-4.0)
++ fix bug in OutlinedTextView for pre 4.0 fonts (look at how stroke is configured) (not really fixed, but works for now)
++ Test on mdpi phone
+	
+--------------------------------------------------------------------------------

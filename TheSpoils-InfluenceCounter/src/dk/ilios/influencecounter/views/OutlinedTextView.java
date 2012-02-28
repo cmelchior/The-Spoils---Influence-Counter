@@ -30,10 +30,12 @@ public class OutlinedTextView extends TextView {
 	private boolean mIsDrawingCoordsInitialized = false;
 	private float x;			// X-value for placing outline
 	private float y;			// Y-value for placing outline
-	
+
+	private TextPaint mTextPaint;
 	private TextPaint mTextPaintOutline;
 
-	private float mOutlineSize; 
+	private int mTextColor;
+	private float mOutlineSize; 	// Beware that small values might cause rendering artifacts
 	private int mOutlineColor;
 	
     public OutlinedTextView(Context context) {
@@ -68,6 +70,8 @@ public class OutlinedTextView extends TextView {
 			a.recycle();
 		}
 		
+		mTextColor = getTextColors().getDefaultColor();
+		
     	// Force this text label to be centered
         super.setGravity(Gravity.CENTER_HORIZONTAL);
 	}
@@ -80,10 +84,18 @@ public class OutlinedTextView extends TextView {
 		mTextPaintOutline.setAntiAlias(true);
 		mTextPaintOutline.setTextSize(getTextSize());
 		mTextPaintOutline.setColor(mOutlineColor);
-		mTextPaintOutline.setStyle(Paint.Style.STROKE);
+		mTextPaintOutline.setStyle(Paint.Style.FILL_AND_STROKE);
 		mTextPaintOutline.setTypeface(getTypeface());
-		mTextPaintOutline.setStrokeWidth(mOutlineSize);
+		mTextPaintOutline.setStrokeWidth(mOutlineSize*2); // double up as border is both outside and inside
 		mTextPaintOutline.setTextAlign(Paint.Align.CENTER);
+
+		mTextPaint = new TextPaint();
+		mTextPaint.setAntiAlias(true);
+		mTextPaint.setTextSize(getTextSize());
+		mTextPaint.setColor(mTextColor);
+		mTextPaint.setStyle(Paint.Style.FILL);
+		mTextPaint.setTypeface(getTypeface());
+		mTextPaint.setTextAlign(Paint.Align.CENTER);
 	}
 	
 	/**
@@ -129,9 +141,10 @@ public class OutlinedTextView extends TextView {
 		canvas.rotate(mRotation, getWidth()/2, getHeight()/2);
         super.onDraw(canvas);
         
-        float x = this.x; //super.getWidth() * 0.5f;
-        float y = this.y; //1 + (float) (Math.ceil((super.getHeight() + mTextBounds.height()) * 0.5f) + Math.ceil(mOutlineSize));
+        float x = this.x; 
+        float y = this.y; 
         canvas.drawText(text, x, y, mTextPaintOutline);
+        canvas.drawText(text, x, y, mTextPaint); // Temporary solution until I figure out why the outline isn't placed at the same position as the text
         canvas.restore();
     }
 }

@@ -1,0 +1,187 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ilios="http://schemas.android.com/apk/res/dk.ilios.influencecounter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_single"
+    android:baselineAligned="false"
+    android:orientation="vertical" >
+
+    <!-- Top player container -->
+
+    <RelativeLayout
+        android:id="@+id/top_player_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <!-- Background layouts for catching clicks -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="vertical"
+            android:weightSum="1" >
+
+            <FrameLayout
+                android:id="@+id/top_player_decrease_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5" />
+
+            <FrameLayout
+                android:id="@+id/top_player_increase_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/top_player_top_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/distance_to_middle"
+            android:background="@drawable/banker_top" />
+
+        <dk.ilios.influencecounter.views.OutlinedTextView
+            android:id="@+id/top_player_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
+            ilios:borderColor="#000000"
+            ilios:borderSize="@dimen/two_player_font_border"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            ilios:rotation="180"
+            android:shadowColor="#ffffbe"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="20"
+            android:text="25"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/two_player_font_size_mdpi"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/top_player_control_bar"
+            android:layout_width="@dimen/bottom_bar_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/bottom_bar_margin"
+            android:background="@drawable/banker_bottom" >
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/top_player_refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                ilios:rotation="180"
+                android:src="@drawable/refresh_button" />
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/top_player_style_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:background="@null"
+                ilios:rotation="180"
+                android:src="@drawable/style_button" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <!-- Bottom player container -->
+
+    <RelativeLayout
+        android:id="@+id/bottom_player_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <!-- Background layouts for catching clicks -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="vertical"
+            android:weightSum="1" >
+
+            <FrameLayout
+                android:id="@+id/bottom_player_increase_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5" />
+
+            <FrameLayout
+                android:id="@+id/bottom_player_decrease_influence_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/bottom_player_top_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/distance_to_middle"
+            android:background="@drawable/rogue_top" />
+
+        <dk.ilios.influencecounter.views.OutlinedTextView
+            android:id="@+id/bottom_player_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            ilios:borderColor="#000000"
+            ilios:borderSize="@dimen/two_player_font_border"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:shadowColor="#ffffbe"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="20"
+            android:text="25"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/two_player_font_size_mdpi"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/bottom_player_control_bar"
+            android:layout_width="@dimen/bottom_bar_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/bottom_bar_margin"
+            android:background="@drawable/rogue_bottom" >
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/bottom_player_refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:src="@drawable/refresh_button"
+                android:text="Refresh" />
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/bottom_player_style_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:src="@drawable/style_button"
+                android:text="Style" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

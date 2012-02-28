@@ -93,7 +93,7 @@
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="30"
-            ilios:borderSize="3dp"
+            ilios:borderSize="2.5dp"
             ilios:borderColor="#000000"
             android:text="25"
             android:textColor="#ffffff"
