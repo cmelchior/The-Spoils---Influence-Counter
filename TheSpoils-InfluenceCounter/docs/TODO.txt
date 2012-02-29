@@ -9,19 +9,59 @@ Unsorted list of future enhancements:
 - Enable / Disable / Choose glow color
 - Prevent numbers from going above 99 and below 0
 - Replace 0 with a skull (find graphic).
+- new launcher icons (also for medium/low dpi) (perhaps use rogue checkered background)
+- Launcher icons in mdpi/ldpi/xhdpi
+- New promo graphics (180x120 and 1024x500)
+- Sounds when changing influence
+- configurable +/- buttons as supplement to arrows
+- History function
+- List of "Games" (from refresh)
+
 
 ===============================================================================
 RELEASE 1.0
 -------------------------------------------------------------------------------
 
+Influence Counter is a influence or life counter for the TCG The Spoils and similar games.
+
+Influence Counter is primarly a tool for the trading card game (TCG) The Spoils, and
+can be used to keep track of one or both players Influence during a game.
+
+It can also be used to keep track of life in games like Magic
+the Gathering, Yo-Gi-Oh! and similar games.
+
+
+---------------------------------
+USAGE
+---------------------------------
+
+- Swipe left and right to switch between 1 player and 2 player mode.
+- Press above the counter to increase it.
+- Press below the counter to decrease it.
+
+- Pressing the option button will open a configuration page with options to 
+  customize starting values as well as other options.
+
+
+---------------------------------
+OPEN SOURCE
+---------------------------------
+The source code is open sourced and can be found here: 
+whttps://github.com/cmelchior/The-Spoils---Influence-Counter
+
+Feel free to suggest additional features there as well as bug fixes or use
+the email button below.
+
+---------------------------------
+CREDITS
+---------------------------------
+For more info about The Spoils visit www.thespoils.com
+Graphics are used by permission from Arcane Tinmen - Thanks!
+
+
 TODO:
-- Buttons seems as they are not on a line - check gfx
-- High res icon (512x512)
-- Promo graphic (180x120)
-- Feature graphic (1024x500)
-- new launcher icons (also for medium/low dpi) (perhaps use rogue checkered background)
-- Credits for using graphics
-- Test on Galaxy Tab 10.1
+- Write promo text (english)
+- Write app text (english)
 
 	
 DONE:
@@ -34,5 +74,11 @@ DONE:
 + disable 2 player view in ldpi mode
 + Test on ldpi phone
 + Test on tablet
++ Buttons seems as they are not on a line - check gfx
++ High res icon (512x512)
++ Test on Galaxy Tab 10.1
++ Promo graphic (180x120)
++ Credits for using graphics (Arcane tinmen)
++ Feature graphic (1024x500)
 	
 --------------------------------------------------------------------------------
