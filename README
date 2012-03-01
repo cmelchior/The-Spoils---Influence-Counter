@@ -1,4 +1,21 @@
-This project contains the source code for the Android app: "Influence Counter", which is a tool to keep track of Influence changes in the trading card game "The Spoils".
+This project contains the source code for the Android app: Influence Counter.
 
-See [MarketLink:Pending]
-See http://www.thespoils.com
+It is a tool for keeping track of Influence (or life) in the trading card game 
+The Spoils and similar games.
+
+================================================================================
+USAGE
+-------------------------------------------------------------------------------
+The source code comes as a Eclipse Project using SDK 16. Just import as a 
+existing project and everything should work.
+
+The folder /docs contains various graphics used and other info.
+
+================================================================================
+REFERENCES
+-------------------------------------------------------------------------------
+- Android Market: https://market.android.com/details?id=dk.ilios.influencecounter
+- The Spoils: http://www.thespoils.com
+
+
+
