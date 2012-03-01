@@ -166,7 +166,6 @@ public class SinglePlayerFragment extends Fragment {
 	 */
 	public void setColors() {
 		mCounterView.setTextColor(mParent.getTextColor());
-		mCounterView.invalidate();
 	}
 	
 	@Override

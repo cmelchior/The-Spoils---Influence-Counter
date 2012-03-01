@@ -17,6 +17,8 @@ import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class TwoPlayerFragment extends Fragment {
 
+	private MainActivity mParent;
+	
 	private int mValueTop = 25;
 	private int mValueBottom = 25;
 	private OutlinedTextView mCounterTop;
@@ -55,14 +57,13 @@ public class TwoPlayerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.two_player_view, container, false);
+		mParent  = (MainActivity) getActivity();
 
 		// Set reference to views
 		mTopbarTop = v.findViewById(R.id.top_player_top_bar);
 		mBottombarTop = v.findViewById(R.id.top_player_control_bar);
 		mTopbarBottom = v.findViewById(R.id.bottom_player_top_bar);
 		mBottombarBottom = v.findViewById(R.id.bottom_player_control_bar);
-		
-		
 		
 		mCounterTop = (OutlinedTextView) v.findViewById(R.id.top_player_counter);
 		mCounterTop.setText(new Integer(mValueTop).toString());
@@ -145,7 +146,12 @@ public class TwoPlayerFragment extends Fragment {
 		return v;
 	}
 
-	
+	@Override
+	public void onResume() {
+		super.onResume();
+		setColors();
+	}
+
 	private void updateTopCounter() {
 		mCounterTop.setText(new Integer(mValueTop).toString());
 	}
@@ -153,6 +159,15 @@ public class TwoPlayerFragment extends Fragment {
 	private void updateBottomCounter() {
 		mCounterBottom.setText(new Integer(mValueBottom).toString());
 	}
+	
+	/**
+	 * Set configured colores
+	 */
+	public void setColors() {
+		mCounterTop.setTextColor(mParent.getTextColor());
+		mCounterBottom.setTextColor(mParent.getTextColor());
+	}
+
 	
 	private void toggleTopStyle() {
 		currentStyleTop = (currentStyleTop + 1) % stylesReversed.size();
