@@ -16,53 +16,15 @@ Unsorted list of future enhancements:
 - configurable +/- buttons as supplement to arrows
 - History function
 - List of "Games" (from refresh)
+- Add new configuration category
 
 
 ===============================================================================
 RELEASE 1.0
 -------------------------------------------------------------------------------
 
-Influence Counter is a influence or life counter for the TCG The Spoils and similar games.
-
-Influence Counter is primarly a tool for the trading card game (TCG) The Spoils, and
-can be used to keep track of one or both players Influence during a game.
-
-It can also be used to keep track of life in games like Magic
-the Gathering, Yo-Gi-Oh! and similar games.
-
-
----------------------------------
-USAGE
----------------------------------
-
-- Swipe left and right to switch between 1 player and 2 player mode.
-- Press above the counter to increase it.
-- Press below the counter to decrease it.
-
-- Pressing the option button will open a configuration page with options to 
-  customize starting values as well as other options.
-
-
----------------------------------
-OPEN SOURCE
----------------------------------
-The source code is open sourced and can be found here: 
-whttps://github.com/cmelchior/The-Spoils---Influence-Counter
-
-Feel free to suggest additional features there as well as bug fixes or use
-the email button below.
-
----------------------------------
-CREDITS
----------------------------------
-For more info about The Spoils visit www.thespoils.com
-Graphics are used by permission from Arcane Tinmen - Thanks!
-
-
 TODO:
-- Write promo text (english)
-- Write app text (english)
-
+- Add License/name to files
 	
 DONE:
 + test hdpi on pre-4.0 phones
@@ -80,5 +42,8 @@ DONE:
 + Promo graphic (180x120)
 + Credits for using graphics (Arcane tinmen)
 + Feature graphic (1024x500)
++ Write promo text (english)
++ Write app text (english)
++ Check for spelling mistakes
 	
 --------------------------------------------------------------------------------

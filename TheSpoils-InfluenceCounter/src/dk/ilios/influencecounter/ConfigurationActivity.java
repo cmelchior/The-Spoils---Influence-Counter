@@ -1,5 +1,9 @@
 package dk.ilios.influencecounter;
-
+/**
+ * Activity that controls the configuration page.
+ * 
+ * @author Christian Melchior <christian@ilios.dk>
+ */
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;

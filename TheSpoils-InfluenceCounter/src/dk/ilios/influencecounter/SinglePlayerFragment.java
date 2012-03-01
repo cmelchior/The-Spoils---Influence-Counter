@@ -2,7 +2,7 @@ package dk.ilios.influencecounter;
 /**
  * Activity that controls a single player Influence Counter
  * 
- * @author Christian Melchior
+ * @author Christian Melchior <christian@ilios.dk>
  */
 import java.util.ArrayList;
 

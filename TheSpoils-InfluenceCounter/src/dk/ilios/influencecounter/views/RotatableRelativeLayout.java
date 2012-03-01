@@ -1,6 +1,10 @@
 package dk.ilios.influencecounter.views;
 /**
- *	ViewGroup rotate all their children 180 degrees
+ * ViewGroup rotate all their children 180 degrees.
+ * Note: Buttons don't work properly if rotated, so only use for static
+ * drawables.
+ *
+ * @author Christian Melchior <christian@ilios.dk>
  */
 import android.content.Context;
 import android.graphics.Canvas;

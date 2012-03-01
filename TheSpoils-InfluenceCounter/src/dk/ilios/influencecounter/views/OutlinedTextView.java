@@ -1,6 +1,6 @@
 package dk.ilios.influencecounter.views;
 /**
- * Advanced textview that supports rotation, outline and glow at the same time
+ * Advanced TextView that supports rotation, outline and glow at the same time.
  * Currently only support centered text, and still a few bugs with the outline
  * placement.
  * 
@@ -8,9 +8,8 @@ package dk.ilios.influencecounter.views;
  * @see http://stackoverflow.com/questions/4342927/how-to-correctly-draw-text-in-an-extended-class-for-textview
  * @see https://bitbucket.org/ABitNo/zi/src/783b6b451ba1/src/me/abitno/zi/widget/view/OutlineTextView.java
  * 
- * @author Christian Melchior
+ * @author Christian Melchior <christian@ilios.dk>
  */
-
 
 import android.content.Context;
 import android.content.res.TypedArray;

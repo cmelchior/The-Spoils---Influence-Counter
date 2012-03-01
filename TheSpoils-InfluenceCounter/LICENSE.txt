@@ -1,0 +1,11 @@
+
+================================================================================
+"THE BEER-WARE LICENSE"
+--------------------------------------------------------------------------------
+
+Christian Melchior <christian@ilios.dk> wrotes this program. As long as you
+credit this project you can do whatever you wish with it.  If we meet some day, 
+and you think this stuff is worth it, you can buy me a beer in return.
+
+Graphics and logos are the property of Arcane Tinmen and must not be used 
+without their permission.

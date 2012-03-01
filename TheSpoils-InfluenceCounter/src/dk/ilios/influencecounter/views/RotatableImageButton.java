@@ -1,4 +1,9 @@
 package dk.ilios.influencecounter.views;
+/**
+ * Rotates a ImageButton.
+ *
+ * @author Christian Melchior <christian@ilios.dk>
+ */
 
 import dk.ilios.influencecounter.R;
 import android.content.Context;
