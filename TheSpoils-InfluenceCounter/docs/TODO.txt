@@ -1,22 +1,3 @@
-Unsorted list of future enhancements:
-
-- Find a better suited font
-- remove plate from trade bottom graphics
-- hint arrows for 2 player view
-- Fix bugs in OutlinedTextView
-- Bluetooth connection to another app 
-- Configurable background / text color
-- Enable / Disable / Choose glow color
-- Prevent numbers from going above 99 and below 0
-- Replace 0 with a skull (find graphic).
-- new launcher icons (also for medium/low dpi) (perhaps use rogue checkered background)
-- Launcher icons in mdpi/ldpi/xhdpi
-- New promo graphics (180x120 and 1024x500)
-- Sounds when changing influence
-- configurable +/- buttons as supplement to arrows
-- History function
-- List of "Games" (from refresh)
-- Add new configuration category
 
 
 ===============================================================================
@@ -24,7 +5,6 @@ RELEASE 1.0
 -------------------------------------------------------------------------------
 
 TODO:
-- Add License/name to files
 	
 DONE:
 + test hdpi on pre-4.0 phones
@@ -45,5 +25,6 @@ DONE:
 + Write promo text (english)
 + Write app text (english)
 + Check for spelling mistakes
++ Add License/name to files
 	
 --------------------------------------------------------------------------------
