@@ -32,6 +32,9 @@ public class MainActivity extends FragmentActivity {
     private boolean mSinglePlayerHintArrows;
     private boolean mTwoPlayerHintArrows; 
     
+    // Colors
+    private int mTextColor;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,7 @@ public class MainActivity extends FragmentActivity {
     	mKeepScreenAlive = prefs.getBoolean("wakelock", false);
     	mSinglePlayerHintArrows = prefs.getBoolean("single_player_hint_arrows", false);
     	mTwoPlayerHintArrows = prefs.getBoolean("two_player_hint_arrows", false);
+    	mTextColor = prefs.getInt("text_color", 0);
     }
 
     private void initializeWakelock() {
@@ -87,6 +91,7 @@ public class MainActivity extends FragmentActivity {
 		if (requestCode == REQUEST_CODE_CONFIGURATION) {
 			initializePreferences();
 			initializeWakelock();
+			
 		}
 	}
 
@@ -122,6 +127,10 @@ public class MainActivity extends FragmentActivity {
 		return mTwoPlayerHintArrows;
 	}
 
+	public int getTextColor() {
+		return mTextColor;
+	}
+	
 	
 /*******************************************************************************
  * PAGE ADAPTER                                                                *

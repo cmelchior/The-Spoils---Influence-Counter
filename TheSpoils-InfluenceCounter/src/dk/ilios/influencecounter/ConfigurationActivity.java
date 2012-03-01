@@ -4,6 +4,7 @@ package dk.ilios.influencecounter;
  * 
  * @author Christian Melchior <christian@ilios.dk>
  */
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -27,6 +28,9 @@ public class ConfigurationActivity extends PreferenceActivity {
 				return true;
 			}
 		});
+        
+        ColorPickerPreference textColor = (ColorPickerPreference) findPreference("text_color");
+        textColor.setAlphaSliderEnabled(true);
     }
 
 }

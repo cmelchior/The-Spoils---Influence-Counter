@@ -18,6 +18,8 @@ import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class SinglePlayerFragment extends Fragment {
 
+	private MainActivity mParent;
+	
 	private int mInfluence = 25;
 	private OutlinedTextView mCounterView;
 	private View mTopbar;
@@ -44,8 +46,8 @@ public class SinglePlayerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.single_player_view, container, false);
-		final MainActivity parent  = (MainActivity) getActivity();
-		mInfluence = parent.getDefaultStartingInfluence();
+		mParent  = (MainActivity) getActivity();
+		mInfluence = mParent.getDefaultStartingInfluence();
 		
 		// Set reference to views
 		mCounterView = (OutlinedTextView) v.findViewById(R.id.counter);
@@ -70,7 +72,7 @@ public class SinglePlayerFragment extends Fragment {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (!parent.showHintArrowsForSinglePlayer()) return false;
+				if (!mParent.showHintArrowsForSinglePlayer()) return false;
 				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
@@ -101,7 +103,7 @@ public class SinglePlayerFragment extends Fragment {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (!parent.showHintArrowsForSinglePlayer()) return false;
+				if (!mParent.showHintArrowsForSinglePlayer()) return false;
 
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
@@ -118,8 +120,6 @@ public class SinglePlayerFragment extends Fragment {
 			}
 		});
 
-		
-		
 		v.findViewById(R.id.refresh_button).setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -141,6 +141,12 @@ public class SinglePlayerFragment extends Fragment {
 		return v;
 	}
 
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		setColors();
+	}
 
 	private void updateCounter() {
 		mCounterView.setText(new Integer(mInfluence).toString());
@@ -153,6 +159,14 @@ public class SinglePlayerFragment extends Fragment {
 		currentStyle = (currentStyle + 1) % styles.size();
 		mTopbar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).top));
 		mBottombar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).bottom));
+	}
+
+	/**
+	 * Set configured colores
+	 */
+	public void setColors() {
+		mCounterView.setTextColor(mParent.getTextColor());
+		mCounterView.invalidate();
 	}
 	
 	@Override

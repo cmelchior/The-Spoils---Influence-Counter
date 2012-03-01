@@ -109,7 +109,12 @@ public class OutlinedTextView extends TextView {
 			/* Ignore */
 		}
 	}
-
+	
+	public void setTextColor(int textColor) {
+		super.setTextColor(textColor);
+		mTextColor = textColor;
+		initPaint();
+	}
 	
 	private void initDrawingCoords() {
         // Figure out the drawing coordinates

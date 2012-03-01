@@ -30,4 +30,12 @@
         android:summary="@string/config_two_player_hint_arrows_summary"
         android:title="@string/config_two_player_hint_arrows_label" />
 
+    <PreferenceCategory android:title="@string/config_category_theme_properties">
+        
+		<net.margaritov.preference.colorpicker.ColorPickerPreference 
+			android:key="text_color"
+			android:title="@string/config_text_color_title" 
+			android:defaultValue="#ffffff" 
+		/>
+    </PreferenceCategory>
 </PreferenceScreen>

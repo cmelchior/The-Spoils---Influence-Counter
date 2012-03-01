@@ -6,7 +6,9 @@
     <string name="wakelock_label">Prevent screen from turning off</string>
     <string name="wakelock_description">Used to keep the screen alive, but dimmed during play. Still follow the configured time in display settings before dimming the screen. It is disabled as default, but can be enabled in the apps configuration page.</string>
     <string name="configuration">Configuration</string>
+	<string name="two_player_view_disabled">Your screen is unfortunately to small to show the current two player view. </string>
     
+	<string name="config_category_theme_properties">Theme</string>
     <string name="config_wakelock_label">Keep screen alive</string>
     <string name="config_wakelock_summary">If enabled, screen is prevented from turning of, and is dimmed instead.</string>
     <string name="config_influence">Starting influence</string>
@@ -15,5 +17,9 @@
     <string name="config_two_player_hint_arrows_summary">Enable changing influence hint arrows for two player view (not implemented yet).</string>
 	<string name="config_single_player_hint_arrows_label">Single player hint arrows</string>    
 	<string name="config_two_player_hint_arrows_label">Two player hint arrows</string>    
-	<string name="two_player_view_disabled">Your screen is unfortunately to small to show the current two player view. </string>
+	<string name="config_text_color_title">Text color</string>
+
+    <!-- Color Picker Preference -->
+    <string name="dialog_color_picker">Color Picker</string>
+    <string name="press_color_to_apply">Press on Color to apply</string>    
 </resources>
