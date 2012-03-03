@@ -168,6 +168,7 @@ public class SinglePlayerFragment extends Fragment {
 		mCounterView.setTextColor(mParent.getTextColor());
 		mCounterView.setGlowColor(mParent.getGlowColor());
 		mCounterView.setGlowEnabled(mParent.isTextGlowEnabled());
+		mCounterView.setBorderColor(mParent.getBorderColor());
 	}
 	
 	@Override

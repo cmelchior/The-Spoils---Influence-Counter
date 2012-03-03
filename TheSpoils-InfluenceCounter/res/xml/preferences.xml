@@ -30,6 +30,12 @@
         android:title="@string/config_two_player_hint_arrows_label" />
 
     <PreferenceCategory android:title="@string/config_category_theme_properties" >
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="#ffffff"
+            android:key="text_color"
+            android:persistent="true"
+            android:title="@string/config_text_color_title" />
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="text_glow"
@@ -38,18 +44,18 @@
             android:title="@string/config_text_glow_title" />
 
         <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:defaultValue="#ffffff"
-            android:key="text_color"
+            android:defaultValue="#ffffbe"
+            android:key="glow_color"
             android:persistent="true"
-            android:title="@string/config_text_color_title" />
+            android:title="@string/config_glow_color_title" />
+
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="#000000"
+            android:key="border_color"
+            android:persistent="true"
+            android:title="@string/config_border_color_title" />
         
-        <net.margaritov.preference.colorpicker.ColorPickerPreference 
-			android:key="glow_color"
-			android:title="@string/config_glow_color_title" 
-			android:persistent="true"
-			android:defaultValue="#ffffbe" 
-		/>
         
-    </PreferenceCategory>
+        </PreferenceCategory>
 
 </PreferenceScreen>

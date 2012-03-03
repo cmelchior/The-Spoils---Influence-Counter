@@ -36,6 +36,7 @@ public class MainActivity extends FragmentActivity {
     // Colors
     private int mTextColor;
     private int mGlowColor;
+    private int mBorderColor;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,9 @@ public class MainActivity extends FragmentActivity {
     	mSinglePlayerHintArrows = prefs.getBoolean("single_player_hint_arrows", false);
     	mTwoPlayerHintArrows = prefs.getBoolean("two_player_hint_arrows", false);
     	mTextGlow = prefs.getBoolean("text_glow", true);
-    	mTextColor = prefs.getInt("text_color", 0xffffff);
-    	mGlowColor = prefs.getInt("glow_color", 0xffffbe);
+    	mTextColor = prefs.getInt("text_color", 0xffffffff);
+    	mGlowColor = prefs.getInt("glow_color", 0xffffffbe);
+    	mBorderColor = prefs.getInt("border_color", 0xff000000);
     }
 
     private void initializeWakelock() {
@@ -141,6 +143,10 @@ public class MainActivity extends FragmentActivity {
 	
 	public int getGlowColor() {
 		return mGlowColor;
+	}
+	
+	public int getBorderColor() {
+		return mBorderColor;
 	}
 	
 	

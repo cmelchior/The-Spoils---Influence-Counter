@@ -178,10 +178,13 @@ public class OutlinedTextView extends TextView {
 	public void setGlowColor(int glowColor) {
 		mOriginalShadowColor = glowColor;
 		mCurrentShadowColor = glowColor;
-
 		initPaint();
 	}
 	
+	public void setBorderColor(int borderColor) {
+		mOutlineColor = borderColor;
+		initPaint();
+	}
 	
 	private void initDrawingCoords() {
         // Figure out the drawing coordinates
