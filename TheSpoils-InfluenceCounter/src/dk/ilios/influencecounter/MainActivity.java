@@ -31,6 +31,7 @@ public class MainActivity extends FragmentActivity {
     private PowerManager.WakeLock mWakeLock;
     private boolean mSinglePlayerHintArrows;
     private boolean mTwoPlayerHintArrows; 
+    private boolean mTextGlow;
     
     // Colors
     private int mTextColor;
@@ -56,7 +57,8 @@ public class MainActivity extends FragmentActivity {
     	mKeepScreenAlive = prefs.getBoolean("wakelock", false);
     	mSinglePlayerHintArrows = prefs.getBoolean("single_player_hint_arrows", false);
     	mTwoPlayerHintArrows = prefs.getBoolean("two_player_hint_arrows", false);
-    	mTextColor = prefs.getInt("text_color", 0);
+    	mTextGlow = prefs.getBoolean("text_glow", true);
+    	mTextColor = prefs.getInt("text_color", 0xffffff);
     }
 
     private void initializeWakelock() {
@@ -129,6 +131,10 @@ public class MainActivity extends FragmentActivity {
 
 	public int getTextColor() {
 		return mTextColor;
+	}
+	
+	public boolean isTextGlowEnabled() {
+		return mTextGlow;
 	}
 	
 	

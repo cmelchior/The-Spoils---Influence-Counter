@@ -18,7 +18,10 @@
 	<string name="config_single_player_hint_arrows_label">Single player hint arrows</string>    
 	<string name="config_two_player_hint_arrows_label">Two player hint arrows</string>    
 	<string name="config_text_color_title">Text color</string>
-
+	<string name="config_text_glow_title">Text glow</string>
+	<string name="config_text_glow_summary">Enable text glow.</string>
+	
+	
     <!-- Color Picker Preference -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on Color to apply</string>    

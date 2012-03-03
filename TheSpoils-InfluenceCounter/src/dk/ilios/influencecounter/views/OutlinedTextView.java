@@ -31,12 +31,25 @@ public class OutlinedTextView extends TextView {
 	private float y;			// Y-value for placing outline
 
 	private TextPaint mTextPaint;
+	private TextPaint mTextPaintWithoutShadow;
 	private TextPaint mTextPaintOutline;
-
+	
 	private int mTextColor;
 	private float mOutlineSize; 	// Beware that small values might cause rendering artifacts
 	private int mOutlineColor;
 	
+	// Shadow attributes for enabling/disabling blur effect at runtime
+	private boolean mOriginalShadowConfigurationSaved = false;
+	private float mOriginalShadowRadius;
+    private float mOriginalShadowDx;
+    private float mOriginalShadowDy;
+    private int mOriginalShadowColor; 
+
+	private float mCurrentShadowRadius;
+    private float mCurrentShadowDx;
+    private float mCurrentShadowDy;
+    private int mCurrentShadowColor; 
+    
     public OutlinedTextView(Context context) {
         super(context);
         initPaint();
@@ -83,18 +96,30 @@ public class OutlinedTextView extends TextView {
 		mTextPaintOutline.setAntiAlias(true);
 		mTextPaintOutline.setTextSize(getTextSize());
 		mTextPaintOutline.setColor(mOutlineColor);
-		mTextPaintOutline.setStyle(Paint.Style.FILL_AND_STROKE);
+		mTextPaintOutline.setStyle(Paint.Style.STROKE);
 		mTextPaintOutline.setTypeface(getTypeface());
 		mTextPaintOutline.setStrokeWidth(mOutlineSize*2); // double up as border is both outside and inside
 		mTextPaintOutline.setTextAlign(Paint.Align.CENTER);
 
+		mTextPaintWithoutShadow = new TextPaint();
+		mTextPaintWithoutShadow.setAntiAlias(true);
+		mTextPaintWithoutShadow.setTextSize(getTextSize());
+		mTextPaintWithoutShadow.setColor(mTextColor);
+		mTextPaintWithoutShadow.setStyle(Paint.Style.FILL);
+		mTextPaintWithoutShadow.setTypeface(getTypeface());
+		mTextPaintWithoutShadow.setTextAlign(Paint.Align.CENTER);
+		
 		mTextPaint = new TextPaint();
 		mTextPaint.setAntiAlias(true);
 		mTextPaint.setTextSize(getTextSize());
-		mTextPaint.setColor(mTextColor);
+		mTextPaint.setColor(0xFF000000);
 		mTextPaint.setStyle(Paint.Style.FILL);
 		mTextPaint.setTypeface(getTypeface());
 		mTextPaint.setTextAlign(Paint.Align.CENTER);
+		
+		if (mCurrentShadowRadius > 0) {
+			mTextPaint.setShadowLayer(mCurrentShadowRadius, mCurrentShadowDx, mCurrentShadowDy, mCurrentShadowColor);
+		}
 	}
 	
 	/**
@@ -110,9 +135,43 @@ public class OutlinedTextView extends TextView {
 		}
 	}
 	
+	@Override
+	public void setShadowLayer(float radius, float dx, float dy, int color) {
+       
+		if (!mOriginalShadowConfigurationSaved) {
+			mOriginalShadowRadius = radius;
+			mOriginalShadowDx = dx;
+			mOriginalShadowDy = dy;
+			mOriginalShadowColor = color;
+			mOriginalShadowConfigurationSaved = true;
+		}
+		
+		mCurrentShadowRadius = radius;
+		mCurrentShadowDx = dx;
+		mCurrentShadowDy = dy;
+		mCurrentShadowColor = color;
+
+       initPaint();
+	}
+	
+
 	public void setTextColor(int textColor) {
 		super.setTextColor(textColor);
 		mTextColor = textColor;
+		initPaint();
+	}
+	
+	public void setGlowEnabled(boolean enabled) {
+		if (!enabled) {
+			mCurrentShadowRadius = 0;
+
+		} else {
+			mCurrentShadowRadius = mOriginalShadowRadius;
+			mCurrentShadowDx = mOriginalShadowDx;
+			mCurrentShadowDy = mOriginalShadowDy;
+			mCurrentShadowColor = mOriginalShadowColor;
+		}
+		
 		initPaint();
 	}
 	
@@ -143,12 +202,12 @@ public class OutlinedTextView extends TextView {
     	// draw everything
 		canvas.save();
 		canvas.rotate(mRotation, getWidth()/2, getHeight()/2);
-        super.onDraw(canvas);
         
         float x = this.x; 
         float y = this.y; 
-        canvas.drawText(text, x, y, mTextPaintOutline);
-        canvas.drawText(text, x, y, mTextPaint); // Temporary solution until I figure out why the outline isn't placed at the same position as the text
+        canvas.drawText(text, x, y, mTextPaint); // Blur effect (with transparent text)
+        canvas.drawText(text, x, y, mTextPaintOutline); // Stroke effect
+        canvas.drawText(text, x, y, mTextPaintWithoutShadow); // Text color on top of it all
         canvas.restore();
     }
 }

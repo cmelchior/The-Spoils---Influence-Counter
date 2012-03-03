@@ -31,10 +31,18 @@
         android:title="@string/config_two_player_hint_arrows_label" />
 
     <PreferenceCategory android:title="@string/config_category_theme_properties">
+
+	<CheckBoxPreference
+        android:defaultValue="true"
+        android:key="text_glow"
+        android:persistent="true"
+        android:summary="@string/config_text_glow_summary"
+        android:title="@string/config_text_glow_title" />
         
 		<net.margaritov.preference.colorpicker.ColorPickerPreference 
 			android:key="text_color"
 			android:title="@string/config_text_color_title" 
+			android:persistent="true"
 			android:defaultValue="#ffffff" 
 		/>
     </PreferenceCategory>

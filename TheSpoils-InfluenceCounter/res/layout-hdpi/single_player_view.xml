@@ -96,7 +96,7 @@
             ilios:borderSize="2.5dp"
             ilios:borderColor="#000000"
             android:text="25"
-            android:textColor="#ffffff"
+            android:textColor="#00FFFFFF"
             android:textSize="200dp"
             android:textStyle="bold" />
 		
