@@ -28,14 +28,16 @@ public class SinglePlayerFragment extends Fragment {
 	private View mUpArrow;
 	private View mDownArrow;
 	
-	private int currentStyle = -1;
+	private int currentStyle;
 	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
 	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		mParent  = (MainActivity) getActivity();
+		currentStyle = mParent.getSinglePlayerTheme() - 1;
+
 		styles.add(new StyleTemplate(R.drawable.warlords_top, R.drawable.warlords_bottom));
 		styles.add(new StyleTemplate(R.drawable.banker_top, R.drawable.banker_bottom));
 		styles.add(new StyleTemplate(R.drawable.rogue_top, R.drawable.rogue_bottom));
@@ -46,7 +48,6 @@ public class SinglePlayerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.single_player_view, container, false);
-		mParent  = (MainActivity) getActivity();
 		mInfluence = mParent.getDefaultStartingInfluence();
 		
 		// Set reference to views
@@ -157,6 +158,7 @@ public class SinglePlayerFragment extends Fragment {
 	 */
 	private void toggleStyle() {
 		currentStyle = (currentStyle + 1) % styles.size();
+		mParent.setSinglePlayerTheme(currentStyle);
 		mTopbar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).top));
 		mBottombar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).bottom));
 	}

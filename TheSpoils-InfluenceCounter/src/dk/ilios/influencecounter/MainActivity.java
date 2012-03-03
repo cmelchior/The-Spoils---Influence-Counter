@@ -39,6 +39,11 @@ public class MainActivity extends FragmentActivity {
     private int mGlowColor;
     private int mBorderColor;
     
+    // Themes
+    private int mSinglePlayerTheme = 0;
+    private int mTwoPlayerTopTheme = 0;
+    private int mTwoPlayerBottomTheme = 1;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +70,9 @@ public class MainActivity extends FragmentActivity {
     	mGlowColor = prefs.getInt("glow_color", 0xffffffbe);
     	mBorderColor = prefs.getInt("border_color", 0xff000000);
     	mBorder = prefs.getBoolean("text_border", true);
+    	mSinglePlayerTheme = prefs.getInt("theme_single_player", 0);
+    	mTwoPlayerTopTheme = prefs.getInt("theme_two_player_top", 1);
+    	mTwoPlayerBottomTheme = prefs.getInt("theme_two_player_bottom", 2);
     }
 
     private void initializeWakelock() {
@@ -154,6 +162,41 @@ public class MainActivity extends FragmentActivity {
 	public boolean isTextBorderEnabled() {
 		return mBorder;
 	}
+
+	public int getSinglePlayerTheme() {
+		return mSinglePlayerTheme;
+	}
+	
+	public int getTwoPlayerTopTheme() {
+		return mTwoPlayerTopTheme;
+	}
+	
+	public int getTwoPlayerBottomTheme() {
+		return mTwoPlayerBottomTheme;
+	}
+	
+	public void setSinglePlayerTheme(int theme) {
+		mSinglePlayerTheme = theme;
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putInt("theme_single_player", theme);
+        prefsEditor.commit();
+	}
+	
+	public void setTwoPlayerTopTheme(int theme) {
+		mTwoPlayerTopTheme = theme;
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putInt("theme_two_player_top", theme);
+        prefsEditor.commit();
+	}
+	
+	public void setTwoPlayerBottomTheme(int theme) {
+		mTwoPlayerBottomTheme = theme;
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putInt("theme_two_player_bottom", theme);
+        prefsEditor.commit();
+	}
+	
+	
 	
 	
 /*******************************************************************************

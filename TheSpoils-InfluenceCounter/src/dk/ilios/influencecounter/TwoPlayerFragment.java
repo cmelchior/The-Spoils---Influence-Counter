@@ -30,8 +30,8 @@ public class TwoPlayerFragment extends Fragment {
 	private View mTopbarBottom;
 	private View mBottombarBottom;
 	
-	private int currentStyleTop = 1;	// Starting style minus 1;
-	private int currentStyleBottom = -1;	// Starting style minus 1;
+	private int currentStyleTop;
+	private int currentStyleBottom;
 	
 	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
 	private ArrayList<StyleTemplate> stylesReversed = new ArrayList<StyleTemplate>();
@@ -40,6 +40,9 @@ public class TwoPlayerFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mParent  = (MainActivity) getActivity();
+		currentStyleTop = mParent.getTwoPlayerTopTheme() - 1;
+		currentStyleBottom = mParent.getTwoPlayerBottomTheme() - 1;
 		
 		styles.add(new StyleTemplate(R.drawable.warlords_top, R.drawable.warlords_bottom));
 		styles.add(new StyleTemplate(R.drawable.banker_top, R.drawable.banker_bottom));
@@ -57,7 +60,6 @@ public class TwoPlayerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.two_player_view, container, false);
-		mParent  = (MainActivity) getActivity();
 
 		// Set reference to views
 		mTopbarTop = v.findViewById(R.id.top_player_top_bar);
@@ -180,6 +182,7 @@ public class TwoPlayerFragment extends Fragment {
 	
 	private void toggleTopStyle() {
 		currentStyleTop = (currentStyleTop + 1) % stylesReversed.size();
+		mParent.setTwoPlayerTopTheme(currentStyleTop);
 		
 		Drawable d = getResources().getDrawable(stylesReversed.get(currentStyleTop).top);
 		d.setLevel(10000);
@@ -192,6 +195,8 @@ public class TwoPlayerFragment extends Fragment {
 	
 	private void toggleBottomStyle() {
 		currentStyleBottom = (currentStyleBottom + 1) % styles.size();
+		mParent.setTwoPlayerBottomTheme(currentStyleBottom);
+
 		mTopbarBottom.setBackgroundDrawable(getResources().getDrawable(stylesReversed.get(currentStyleBottom).top));
 		mBottombarBottom.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyleBottom).bottom));
 	}
