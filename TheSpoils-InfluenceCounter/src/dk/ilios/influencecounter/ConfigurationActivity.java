@@ -28,9 +28,6 @@ public class ConfigurationActivity extends PreferenceActivity {
 				return true;
 			}
 		});
-        
-        ColorPickerPreference textColor = (ColorPickerPreference) findPreference("text_color");
-        textColor.setAlphaSliderEnabled(true);
     }
 
 }

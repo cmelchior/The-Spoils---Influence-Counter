@@ -112,7 +112,7 @@ public class OutlinedTextView extends TextView {
 		mTextPaint = new TextPaint();
 		mTextPaint.setAntiAlias(true);
 		mTextPaint.setTextSize(getTextSize());
-		mTextPaint.setColor(0xFF000000);
+		mTextPaint.setColor(mTextColor);
 		mTextPaint.setStyle(Paint.Style.FILL);
 		mTextPaint.setTypeface(getTypeface());
 		mTextPaint.setTextAlign(Paint.Align.CENTER);
