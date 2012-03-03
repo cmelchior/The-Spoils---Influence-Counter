@@ -32,6 +32,7 @@ public class MainActivity extends FragmentActivity {
     private boolean mSinglePlayerHintArrows;
     private boolean mTwoPlayerHintArrows; 
     private boolean mTextGlow;
+    private boolean mBorder;
     
     // Colors
     private int mTextColor;
@@ -63,6 +64,7 @@ public class MainActivity extends FragmentActivity {
     	mTextColor = prefs.getInt("text_color", 0xffffffff);
     	mGlowColor = prefs.getInt("glow_color", 0xffffffbe);
     	mBorderColor = prefs.getInt("border_color", 0xff000000);
+    	mBorder = prefs.getBoolean("text_border", true);
     }
 
     private void initializeWakelock() {
@@ -147,6 +149,10 @@ public class MainActivity extends FragmentActivity {
 	
 	public int getBorderColor() {
 		return mBorderColor;
+	}
+	
+	public boolean isTextBorderEnabled() {
+		return mBorder;
 	}
 	
 	

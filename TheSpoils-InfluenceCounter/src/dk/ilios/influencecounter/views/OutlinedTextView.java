@@ -34,6 +34,8 @@ public class OutlinedTextView extends TextView {
 	private TextPaint mTextPaintWithoutShadow;
 	private TextPaint mTextPaintOutline;
 	
+	private boolean mShowBorder = true;
+	
 	private int mTextColor;
 	private float mOutlineSize; 	// Beware that small values might cause rendering artifacts
 	private int mOutlineColor;
@@ -186,6 +188,11 @@ public class OutlinedTextView extends TextView {
 		initPaint();
 	}
 	
+	public void setBorderEnabled(boolean enabled) {
+		mShowBorder = enabled;
+		invalidate();
+	}
+	
 	private void initDrawingCoords() {
         // Figure out the drawing coordinates
 		// If we do this in onDraw, the textBounds will change a little, causing
@@ -217,7 +224,11 @@ public class OutlinedTextView extends TextView {
         float x = this.x; 
         float y = this.y; 
         canvas.drawText(text, x, y, mTextPaint); // Blur effect (with transparent text)
-        canvas.drawText(text, x, y, mTextPaintOutline); // Stroke effect
+        
+        if (mShowBorder) {
+        	canvas.drawText(text, x, y, mTextPaintOutline); // Stroke effect
+        }
+        
         canvas.drawText(text, x, y, mTextPaintWithoutShadow); // Text color on top of it all
         canvas.restore();
     }

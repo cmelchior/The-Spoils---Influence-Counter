@@ -49,13 +49,18 @@
             android:persistent="true"
             android:title="@string/config_glow_color_title" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="text_border"
+            android:persistent="true"
+            android:summary="@string/config_text_border_summary"
+            android:title="@string/config_text_border_title" />
+
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:defaultValue="#000000"
             android:key="border_color"
             android:persistent="true"
             android:title="@string/config_border_color_title" />
-        
-        
-        </PreferenceCategory>
+    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -20,9 +20,11 @@
 	<string name="config_text_color_title">Text color</string>
 	<string name="config_text_glow_title">Text glow</string>
 	<string name="config_text_glow_summary">Enable text glow.</string>
-	<string name="config_glow_color_title">Glow color</string>
-	<string name="config_border_color_title">Border color</string>
-	
+	<string name="config_glow_color_title">Text glow color</string>
+	<string name="config_border_color_title">Text border color</string>
+	<string name="config_text_border_title">Text border</string>
+	<string name="config_text_border_summary">Enable text border.</string>
+		
     <!-- Color Picker Preference -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on Color to apply</string>    

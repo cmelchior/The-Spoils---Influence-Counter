@@ -168,11 +168,13 @@ public class TwoPlayerFragment extends Fragment {
 		mCounterTop.setGlowEnabled(mParent.isTextGlowEnabled());
 		mCounterTop.setGlowColor(mParent.getGlowColor());
 		mCounterTop.setBorderColor(mParent.getBorderColor());
+		mCounterTop.setBorderEnabled(mParent.isTextBorderEnabled());
 
 		mCounterBottom.setTextColor(mParent.getTextColor());
 		mCounterBottom.setGlowEnabled(mParent.isTextGlowEnabled());
 		mCounterBottom.setGlowColor(mParent.getGlowColor());
 		mCounterBottom.setBorderColor(mParent.getBorderColor());
+		mCounterBottom.setBorderEnabled(mParent.isTextBorderEnabled());
 	}
 
 	
