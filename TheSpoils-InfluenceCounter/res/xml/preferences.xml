@@ -12,8 +12,8 @@
         android:defaultValue="25"
         android:dialogTitle="@string/config_set_influence"
         android:key="default_starting_influence"
-        android:persistent="true"
         android:numeric="integer"
+        android:persistent="true"
         android:title="@string/config_influence" />
 
     <CheckBoxPreference
@@ -22,7 +22,6 @@
         android:persistent="true"
         android:summary="@string/config_single_player_hint_arrows_summary"
         android:title="@string/config_single_player_hint_arrows_label" />
-    
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="two_player_hint_arrows"
@@ -30,20 +29,27 @@
         android:summary="@string/config_two_player_hint_arrows_summary"
         android:title="@string/config_two_player_hint_arrows_label" />
 
-    <PreferenceCategory android:title="@string/config_category_theme_properties">
+    <PreferenceCategory android:title="@string/config_category_theme_properties" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="text_glow"
+            android:persistent="true"
+            android:summary="@string/config_text_glow_summary"
+            android:title="@string/config_text_glow_title" />
 
-	<CheckBoxPreference
-        android:defaultValue="true"
-        android:key="text_glow"
-        android:persistent="true"
-        android:summary="@string/config_text_glow_summary"
-        android:title="@string/config_text_glow_title" />
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="#ffffff"
+            android:key="text_color"
+            android:persistent="true"
+            android:title="@string/config_text_color_title" />
         
-		<net.margaritov.preference.colorpicker.ColorPickerPreference 
-			android:key="text_color"
-			android:title="@string/config_text_color_title" 
+        <net.margaritov.preference.colorpicker.ColorPickerPreference 
+			android:key="glow_color"
+			android:title="@string/config_glow_color_title" 
 			android:persistent="true"
-			android:defaultValue="#ffffff" 
+			android:defaultValue="#ffffbe" 
 		/>
+        
     </PreferenceCategory>
+
 </PreferenceScreen>

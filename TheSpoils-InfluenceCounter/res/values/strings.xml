@@ -20,7 +20,7 @@
 	<string name="config_text_color_title">Text color</string>
 	<string name="config_text_glow_title">Text glow</string>
 	<string name="config_text_glow_summary">Enable text glow.</string>
-	
+	<string name="config_glow_color_title">Glow color</string>
 	
     <!-- Color Picker Preference -->
     <string name="dialog_color_picker">Color Picker</string>

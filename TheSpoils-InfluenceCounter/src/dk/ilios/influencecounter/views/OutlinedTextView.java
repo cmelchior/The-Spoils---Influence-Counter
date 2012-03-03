@@ -175,6 +175,14 @@ public class OutlinedTextView extends TextView {
 		initPaint();
 	}
 	
+	public void setGlowColor(int glowColor) {
+		mOriginalShadowColor = glowColor;
+		mCurrentShadowColor = glowColor;
+
+		initPaint();
+	}
+	
+	
 	private void initDrawingCoords() {
         // Figure out the drawing coordinates
 		// If we do this in onDraw, the textBounds will change a little, causing
