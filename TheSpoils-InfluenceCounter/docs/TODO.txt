@@ -1,6 +1,36 @@
 
 
 ===============================================================================
+RELEASE 1.1
+-------------------------------------------------------------------------------
+
+TODO:
+- History
+	- History icon
+	- Drop-shadow on top/bottom graphics
+	- In-animation
+	- Determine layout on 2-player view
+	- Database model
+	- Configuration setting for grouping changes
+	- Swipe between game history
+	- Press game name to change it
+	- Delete single game function
+	- Delete history function
+	- Unit tests for history
+	
+	
+	
+DONE:
++ Border toggle
++ Border color
++ Glow toggle
++ Glow color
++ Text color
++ Remember last theme
+
+
+
+===============================================================================
 RELEASE 1.0
 -------------------------------------------------------------------------------
 
