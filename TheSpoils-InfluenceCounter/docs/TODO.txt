@@ -6,9 +6,9 @@ RELEASE 1.1
 
 TODO:
 - History
-	- History icon
+	+ History icon
 	- Drop-shadow on top/bottom graphics
-	- In-animation
+	+ In-animation (might needs to be changed with data)
 	- Determine layout on 2-player view
 	- Database model
 	- Configuration setting for grouping changes

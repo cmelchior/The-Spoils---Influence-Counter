@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class SinglePlayerFragment extends Fragment {
@@ -24,10 +27,13 @@ public class SinglePlayerFragment extends Fragment {
 	private OutlinedTextView mCounterView;
 	private View mTopbar;
 	private View mBottombar;
+	private View mHistoryContainer;
 	
 	private View mUpArrow;
 	private View mDownArrow;
-	
+
+	private boolean mIsAnimationInProgress;
+	private boolean mIsHistoryVisible;
 	private int currentStyle;
 	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
 	
@@ -47,10 +53,12 @@ public class SinglePlayerFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.single_player_view, container, false);
+		final View v = inflater.inflate(R.layout.single_player_view, container, false);
 		mInfluence = mParent.getDefaultStartingInfluence();
 		
 		// Set reference to views
+		mHistoryContainer = v.findViewById(R.id.history);
+
 		mCounterView = (OutlinedTextView) v.findViewById(R.id.counter);
 		mCounterView.setText(new Integer(mInfluence).toString());
 
@@ -90,7 +98,13 @@ public class SinglePlayerFragment extends Fragment {
 			}
 		});
 
-		
+		v.findViewById(R.id.history_button).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				toggleHistory();
+			}
+		});
 		
 		v.findViewById(R.id.decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
@@ -173,6 +187,79 @@ public class SinglePlayerFragment extends Fragment {
 		mCounterView.setBorderColor(mParent.getBorderColor());
 		mCounterView.setBorderEnabled(mParent.isTextBorderEnabled());
 	}
+
+	/**
+	 * 
+	 */
+	private void toggleHistory() {
+		if (mIsAnimationInProgress) return;
+		
+		if (mIsHistoryVisible) {
+			hideHistory();
+		} else {
+			showHistory();
+		}
+	}
+	
+	private void showHistory() {
+		Animation anim = AnimationUtils.loadAnimation(mParent, R.anim.show_history);
+		anim.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mIsAnimationInProgress = false;
+				mIsHistoryVisible = true;
+				mHistoryContainer.setVisibility(View.VISIBLE);
+			}
+		});
+		mHistoryContainer.setAnimation(anim);
+
+		mIsAnimationInProgress = true;
+		anim.start();
+	}
+	
+	private void hideHistory() {
+		Animation anim = AnimationUtils.loadAnimation(mParent, R.anim.hide_history);
+		anim.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mIsAnimationInProgress = false;
+				mIsHistoryVisible = false;
+				mHistoryContainer.setVisibility(View.INVISIBLE);
+			}
+		});
+		mHistoryContainer.setAnimation(anim);
+
+		mIsAnimationInProgress = true;
+		anim.start();
+	}
+	
+	
 	
 	@Override
 	public void onPause() {

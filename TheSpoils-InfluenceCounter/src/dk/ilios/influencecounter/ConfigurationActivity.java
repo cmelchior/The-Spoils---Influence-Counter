@@ -4,7 +4,6 @@ package dk.ilios.influencecounter;
  * 
  * @author Christian Melchior <christian@ilios.dk>
  */
-import net.margaritov.preference.colorpicker.ColorPickerPreference;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
