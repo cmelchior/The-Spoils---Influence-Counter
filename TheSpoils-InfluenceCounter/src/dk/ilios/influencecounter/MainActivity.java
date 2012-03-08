@@ -17,6 +17,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 
 public class MainActivity extends FragmentActivity {
 
@@ -33,6 +35,11 @@ public class MainActivity extends FragmentActivity {
     private boolean mTwoPlayerHintArrows; 
     private boolean mTextGlow;
     private boolean mBorder;
+    
+    private View mHistoryContainer; // Reference to a visible history container (if any)
+	private int mHistoryContainerBottom; // Screen y-coordinate for history view
+	private int mHistoryContainerTop; // Screen y-coordinate for history view
+
     
     // Colors
     private int mTextColor;
@@ -53,7 +60,7 @@ public class MainActivity extends FragmentActivity {
     	prefs = PreferenceManager.getDefaultSharedPreferences(this);
         initializePreferences();
         initializeWakelock();
-        
+    
         mAdapter = new PagerViewsAdapter(getSupportFragmentManager());
 
         mPager = (ViewPager)findViewById(R.id.pager);
@@ -82,6 +89,8 @@ public class MainActivity extends FragmentActivity {
             
         }
     }
+    
+    
     
     @Override
     protected void onResume() {
@@ -131,6 +140,44 @@ public class MainActivity extends FragmentActivity {
 		return true;
 	}
 
+	
+	
+	
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+
+		// Only dispatch events to history view pager if it is visible and we
+		// don't hit any toolbars at the top or bottom of the page.
+		if (mHistoryContainer != null) {
+			if (ev.getRawY() > mHistoryContainerTop && ev.getRawY() < mHistoryContainerBottom) {
+				mHistoryContainer.dispatchTouchEvent(ev);
+				return true;
+			}
+		}
+
+		return super.dispatchTouchEvent(ev);
+	}
+
+	
+	public void setVisibleHistoryContainer(View v) { 
+		mHistoryContainer = v;
+
+		if (mHistoryContainer != null) {
+			// Get size of bottom/top drawable so we know when not to dispatch
+	        // events to the history view.
+	        // All bottom drawables have the same size, so just use a random one.
+	        int toolbarHeight = getResources().getDrawable(R.drawable.arcanist_bottom).getIntrinsicHeight(); 
+			int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+        
+			mHistoryContainerBottom = screenHeight - toolbarHeight;
+			mHistoryContainerTop = mHistoryContainerBottom - mHistoryContainer.getHeight();
+
+		} else {
+			mHistoryContainerBottom = 0;
+			mHistoryContainerTop = 0;
+		}
+	}
+	
 	public int getDefaultStartingInfluence() {
 		return mDefaultStartingInfluence;
 	}

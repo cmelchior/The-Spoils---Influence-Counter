@@ -10,16 +10,16 @@ TODO:
 	- Drop-shadow on top/bottom graphics
 	+ In-animation (might needs to be changed with data)
 	- Determine layout on 2-player view
-	- Database model
+	+ Database model
 	- Configuration setting for grouping changes
 	- Swipe between game history
 	- Press game name to change it
 	- Delete single game function
 	- Delete history function
 	- Unit tests for history
-	
-	
-	
+	- Database demo data
+	- Show history information
+
 DONE:
 + Border toggle
 + Border color

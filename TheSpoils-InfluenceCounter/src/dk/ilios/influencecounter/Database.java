@@ -1,5 +1,14 @@
 package dk.ilios.influencecounter;
-
+/**
+ * Database controller
+ * 
+ * A few important invariants to maintain:
+ * - player_id in game_state is the player number from 1 - x.
+ * - Timestamps, when doing the first change, the original number is saved first
+ *   with the same timestamp, eg. 25 -> 24 is saved as to states with the same time.
+ * 
+ * @author Christian Melchior <christian@ilios.dk>
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

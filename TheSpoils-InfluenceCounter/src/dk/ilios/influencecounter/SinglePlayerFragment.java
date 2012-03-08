@@ -6,8 +6,11 @@ package dk.ilios.influencecounter;
  */
 import java.util.ArrayList;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,9 +36,14 @@ public class SinglePlayerFragment extends Fragment {
 	private View mDownArrow;
 
 	private boolean mIsAnimationInProgress;
-	private boolean mIsHistoryVisible;
 	private int currentStyle;
 	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
+	
+	// History properties
+	private boolean mIsHistoryVisible;
+	private ViewPager mPager;
+	private FragmentStatePagerAdapter mAdapter;
+
 	
 	
 	@Override
@@ -57,7 +65,7 @@ public class SinglePlayerFragment extends Fragment {
 		mInfluence = mParent.getDefaultStartingInfluence();
 		
 		// Set reference to views
-		mHistoryContainer = v.findViewById(R.id.history);
+		initHistory(v);
 
 		mCounterView = (OutlinedTextView) v.findViewById(R.id.counter);
 		mCounterView.setText(new Integer(mInfluence).toString());
@@ -156,6 +164,26 @@ public class SinglePlayerFragment extends Fragment {
 		return v;
 	}
 
+	private void initHistory(View v) {
+		mHistoryContainer = v.findViewById(R.id.history);
+		mAdapter = new GamesListAdapter(getFragmentManager());
+
+		mPager = (ViewPager) v.findViewById(R.id.history_pager);
+		new setAdapterTask().execute(); // Fix to avoid crash when nesting fragments
+	}
+	
+	private class setAdapterTask extends AsyncTask<Void,Void,Void>{
+	      protected Void doInBackground(Void... params) {
+	            return null;
+	        }
+
+	        @Override
+	        protected void onPostExecute(Void result) {
+	        	mPager.setAdapter(mAdapter);
+	        	int selected = mAdapter.getCount() > 0 ? mAdapter.getCount() - 1 : 0;
+	        	mPager.setCurrentItem(selected);
+	        }
+	}
 	
 	@Override
 	public void onResume() {
@@ -227,6 +255,7 @@ public class SinglePlayerFragment extends Fragment {
 		mHistoryContainer.setAnimation(anim);
 
 		mIsAnimationInProgress = true;
+		mParent.setVisibleHistoryContainer(null);
 		anim.start();
 	}
 	
@@ -251,6 +280,7 @@ public class SinglePlayerFragment extends Fragment {
 				mIsAnimationInProgress = false;
 				mIsHistoryVisible = false;
 				mHistoryContainer.setVisibility(View.INVISIBLE);
+				mParent.setVisibleHistoryContainer(null);
 			}
 		});
 		mHistoryContainer.setAnimation(anim);

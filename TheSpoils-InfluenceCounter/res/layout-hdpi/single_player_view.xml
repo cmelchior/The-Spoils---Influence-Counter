@@ -27,11 +27,12 @@
             android:layout_weight="0.5" />
     </LinearLayout>
 
-        <!-- Use layout to position because of measure bug in OutlineTextView -->
+    <!-- Use layout to position because of measure bug in OutlineTextView -->
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
+
         <ImageView
             android:id="@+id/up_arrow"
             android:layout_width="wrap_content"
@@ -84,10 +85,14 @@
         android:layout_marginTop="26dip"
         android:background="@android:color/white"
         android:visibility="invisible" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/history_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </android.support.v4.view.ViewPager>
     </RelativeLayout>
-    
-    
-    
+
     <FrameLayout
         android:id="@+id/top_bar"
         android:layout_width="wrap_content"
@@ -135,4 +140,5 @@
             android:src="@drawable/history_button"
             android:text="History" />
     </RelativeLayout>
+
 </RelativeLayout>
