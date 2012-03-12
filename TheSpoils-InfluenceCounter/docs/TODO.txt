@@ -12,13 +12,17 @@ TODO:
 	- Determine layout on 2-player view
 	+ Database model
 	- Configuration setting for grouping changes
-	- Swipe between game history
+	+ Swipe between game history
 	- Press game name to change it
 	- Delete single game function
 	- Delete history function
 	- Unit tests for history
 	- Database demo data
 	- Show history information
+	- Record history information
+	- Only swipe list/name. Not pagenr / buttons
+	- Close DB onDestroy
+	- ListView optimization pattern
 
 DONE:
 + Border toggle

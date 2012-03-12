@@ -3,6 +3,17 @@
 
     <string name="app_name">Influence Counter</string>
 
+    <string name="delete_game">Delete game</string>
+    <string name="delete_history">Clear history</string>
+    <string name="influence_change">%1$s -> %2$s</string>
+    <string name="start_history_marker">-</string>
+    
+    <string name="column_label_time">Time</string>
+    <string name="column_label_influence">Influence</string>
+    <string name="column_label_change">Change</string>
+    <string name="column_label_player1">Player 1</string>
+    <string name="column_label_player2">Player 2</string>
+    
     <string name="wakelock_label">Prevent screen from turning off</string>
     <string name="wakelock_description">Used to keep the screen alive, but dimmed during play. Still follow the configured time in display settings before dimming the screen. It is disabled as default, but can be enabled in the apps configuration page.</string>
     <string name="configuration">Configuration</string>

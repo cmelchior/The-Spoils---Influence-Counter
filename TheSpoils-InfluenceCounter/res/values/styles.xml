@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="history_list_column_label">
+        <item name="android:textColor">@color/column_label_color</item>
+        <item name="android:textSize">@dimen/history_list_column_label_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

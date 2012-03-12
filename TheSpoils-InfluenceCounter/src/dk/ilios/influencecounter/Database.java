@@ -34,7 +34,7 @@ public class Database extends SQLiteOpenHelper {
 	public static final String TABLE_GAME_STATE = "game_state_changes";
 
 	// Columns
-	public static final String COLUMN__ID = "_ID";
+	public static final String COLUMN__ID = "_id";
 
 	// Games
 	public static final String COLUMN_GAME_NAME = "name";
@@ -64,7 +64,7 @@ public class Database extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 
 		// Read schema from file
-		importData("readings.db.sql", db);
+		importData("history.db.sql", db);
 
 		// Read demo data in debug mode
 		if (Constants.DEBUG) {

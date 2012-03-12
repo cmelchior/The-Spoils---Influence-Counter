@@ -37,9 +37,9 @@ public class MainActivity extends FragmentActivity {
     private boolean mBorder;
     
     private View mHistoryContainer; // Reference to a visible history container (if any)
-	private int mHistoryContainerBottom; // Screen y-coordinate for history view
+    private int mHistoryContainerBottom; // Screen y-coordinate for history view
 	private int mHistoryContainerTop; // Screen y-coordinate for history view
-
+	
     
     // Colors
     private int mTextColor;
@@ -148,6 +148,10 @@ public class MainActivity extends FragmentActivity {
 
 		// Only dispatch events to history view pager if it is visible and we
 		// don't hit any toolbars at the top or bottom of the page.
+		// 
+		// There is apparently some trouble with the ListView not getting some 
+		// events so dispatch to this view as well. Possible due to the viewpager
+		// eating some events.
 		if (mHistoryContainer != null) {
 			if (ev.getRawY() > mHistoryContainerTop && ev.getRawY() < mHistoryContainerBottom) {
 				mHistoryContainer.dispatchTouchEvent(ev);

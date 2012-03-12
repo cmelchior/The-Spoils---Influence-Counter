@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="history_row_background_1">#f3f8bc</color>
+    <color name="history_row_background_2">#ffffff</color>
+    <color name="history_row_font_color">#000000</color>
+    <color name="history_button_color">#000000</color>
+    
+    <color name="postive_influence_change">#b8c52b</color>
+    <color name="negative_influence_change">#d83418</color>
+    <color name="column_label_color">#000000</color>
+</resources>

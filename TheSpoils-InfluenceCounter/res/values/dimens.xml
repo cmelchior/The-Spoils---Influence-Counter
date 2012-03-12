@@ -7,4 +7,5 @@
     <dimen name="two_player_font_size">115sp</dimen>
     <dimen name="two_player_font_size_mdpi">95sp</dimen>
     <dimen name="two_player_font_border">1.75dp</dimen>
+    <dimen name="history_list_column_label_size">11sp</dimen>
 </resources>

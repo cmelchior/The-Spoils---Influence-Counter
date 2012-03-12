@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import dk.ilios.influencecounter.history.GamesListAdapter;
 import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class SinglePlayerFragment extends Fragment {
@@ -42,7 +42,7 @@ public class SinglePlayerFragment extends Fragment {
 	// History properties
 	private boolean mIsHistoryVisible;
 	private ViewPager mPager;
-	private FragmentStatePagerAdapter mAdapter;
+	private GamesListAdapter mAdapter;
 
 	
 	
@@ -50,6 +50,9 @@ public class SinglePlayerFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mParent  = (MainActivity) getActivity();
+		mAdapter = new GamesListAdapter(getFragmentManager(), (MainActivity) getActivity());
+		getLoaderManager().initLoader(0x01, null, mAdapter);
+		
 		currentStyle = mParent.getSinglePlayerTheme() - 1;
 
 		styles.add(new StyleTemplate(R.drawable.warlords_top, R.drawable.warlords_bottom));
@@ -166,7 +169,6 @@ public class SinglePlayerFragment extends Fragment {
 
 	private void initHistory(View v) {
 		mHistoryContainer = v.findViewById(R.id.history);
-		mAdapter = new GamesListAdapter(getFragmentManager());
 
 		mPager = (ViewPager) v.findViewById(R.id.history_pager);
 		new setAdapterTask().execute(); // Fix to avoid crash when nesting fragments
@@ -191,6 +193,15 @@ public class SinglePlayerFragment extends Fragment {
 		setColors();
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (mAdapter != null) {
+			mAdapter.closeDatabase();
+		}
+	}
+	
+	
 	private void updateCounter() {
 		mCounterView.setText(new Integer(mInfluence).toString());
 	}
@@ -233,17 +244,8 @@ public class SinglePlayerFragment extends Fragment {
 		Animation anim = AnimationUtils.loadAnimation(mParent, R.anim.show_history);
 		anim.setAnimationListener(new AnimationListener() {
 			
-			@Override
-			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
+			@Override public void onAnimationStart(Animation animation) {}
+			@Override public void onAnimationRepeat(Animation animation) {}
 			
 			@Override
 			public void onAnimationEnd(Animation animation) {
@@ -252,10 +254,10 @@ public class SinglePlayerFragment extends Fragment {
 				mHistoryContainer.setVisibility(View.VISIBLE);
 			}
 		});
-		mHistoryContainer.setAnimation(anim);
 
+		mHistoryContainer.setAnimation(anim);
+		mParent.setVisibleHistoryContainer(mHistoryContainer);
 		mIsAnimationInProgress = true;
-		mParent.setVisibleHistoryContainer(null);
 		anim.start();
 	}
 	
@@ -280,11 +282,11 @@ public class SinglePlayerFragment extends Fragment {
 				mIsAnimationInProgress = false;
 				mIsHistoryVisible = false;
 				mHistoryContainer.setVisibility(View.INVISIBLE);
-				mParent.setVisibleHistoryContainer(null);
 			}
 		});
 		mHistoryContainer.setAnimation(anim);
 
+		mParent.setVisibleHistoryContainer(null);
 		mIsAnimationInProgress = true;
 		anim.start();
 	}
