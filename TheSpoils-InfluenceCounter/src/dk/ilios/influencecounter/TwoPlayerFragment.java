@@ -23,6 +23,10 @@ public class TwoPlayerFragment extends Fragment {
 	private int mValueBottom = 25;
 	private OutlinedTextView mCounterTop;
 	private OutlinedTextView mCounterBottom;
+
+	// A new game is considered started if both top/bottom are refreshed
+	private boolean mTopRefreshed = false;
+	private boolean mBottomRefreshed = false;
 	
 	private View mTopbarTop;
 	private View mBottombarTop;
@@ -78,6 +82,8 @@ public class TwoPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mValueTop++;
+				mTopRefreshed = false;
+				GameTracker.setInfluence(1, mValueTop);
 				updateTopCounter();
 			}
 		});
@@ -86,6 +92,8 @@ public class TwoPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mValueBottom++;
+				mBottomRefreshed = false;
+				GameTracker.setInfluence(0, mValueBottom);
 				updateBottomCounter();
 			}
 		});
@@ -94,6 +102,8 @@ public class TwoPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mValueTop--;
+				mTopRefreshed = false;
+				GameTracker.setInfluence(1, mValueTop);
 				updateTopCounter();
 			}
 		});
@@ -102,6 +112,8 @@ public class TwoPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mValueBottom--;
+				mBottomRefreshed = false;
+				GameTracker.setInfluence(0, mValueBottom);
 				updateBottomCounter();
 			}
 		});
@@ -112,6 +124,12 @@ public class TwoPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mValueTop = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+				mTopRefreshed = true;
+				
+				// Both sides refreshed -> New Game
+				if (isNewGame()) {
+					GameTracker.startGame(mValueBottom, mValueTop);
+				}
 				updateTopCounter();
 			}
 		});
@@ -121,6 +139,12 @@ public class TwoPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mValueBottom = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+				mBottomRefreshed = true;
+				
+				// Both sides refreshed -> New Game
+				if (isNewGame()) {
+					GameTracker.startGame(mValueBottom, mValueTop);
+				}
 				updateBottomCounter();
 			}
 		});
@@ -154,6 +178,10 @@ public class TwoPlayerFragment extends Fragment {
 		setColors();
 	}
 
+	private boolean isNewGame() {
+		return mBottomRefreshed && mTopRefreshed;
+	}
+	
 	private void updateTopCounter() {
 		mCounterTop.setText(new Integer(mValueTop).toString());
 	}

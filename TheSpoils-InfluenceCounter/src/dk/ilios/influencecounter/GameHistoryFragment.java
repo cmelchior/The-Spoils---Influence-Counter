@@ -48,7 +48,11 @@ public class GameHistoryFragment extends Fragment {
 		mGameId = getArguments().getInt("gameId", 0);
 		mGameName = getArguments().getString("gameName", "");
 		mPlayers = getArguments().getInt("players", 0);
-		
+
+		if (mGameId == GameTracker.getCurrentGameId()) {
+			GameTracker.setGameHistoryFragment(this);
+		}
+
 		new DatabaseConnection().execute(getActivity());
 	}
 
@@ -68,6 +72,13 @@ public class GameHistoryFragment extends Fragment {
 		((TextView) v.findViewById(R.id.game_name)).setText(mGameName);
 
 		return v;
+	}
+	
+	public void refreshAdapter() {
+		if (mDb != null) {
+			Cursor c = mDb.query(Database.TABLE_GAME_STATE, Database.HISTORY_GAME_STATE_COLUMNS, "game_id=" + mGameId, null, null, null, "_id ASC");
+			((CursorAdapter) mHistoryList.getAdapter()).changeCursor(c);
+		}
 	}
 	
 	/**

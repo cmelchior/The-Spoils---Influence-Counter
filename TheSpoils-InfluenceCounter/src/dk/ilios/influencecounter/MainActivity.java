@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -62,7 +63,6 @@ public class MainActivity extends FragmentActivity {
         initializeWakelock();
     
         mAdapter = new PagerViewsAdapter(getSupportFragmentManager());
-
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
     }
@@ -86,7 +86,6 @@ public class MainActivity extends FragmentActivity {
         if (mKeepScreenAlive) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "InfluenceCounterWakeLock");
-            
         }
     }
     

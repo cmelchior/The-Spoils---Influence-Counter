@@ -6,9 +6,12 @@ package dk.ilios.influencecounter;
  */
 import java.util.ArrayList;
 
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,9 +23,10 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import dk.ilios.influencecounter.history.GamesListAdapter;
+import dk.ilios.influencecounter.history.GamesListCursorLoader;
 import dk.ilios.influencecounter.views.OutlinedTextView;
 
-public class SinglePlayerFragment extends Fragment {
+public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cursor> {
 
 	private MainActivity mParent;
 	
@@ -50,8 +54,9 @@ public class SinglePlayerFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mParent  = (MainActivity) getActivity();
-		mAdapter = new GamesListAdapter(getFragmentManager(), (MainActivity) getActivity());
-		getLoaderManager().initLoader(0x01, null, mAdapter);
+		mAdapter = new GamesListAdapter(getFragmentManager());
+		getLoaderManager().initLoader(0x01, null, this);
+		GameTracker.setHistoryListAdapter(this);
 		
 		currentStyle = mParent.getSinglePlayerTheme() - 1;
 
@@ -62,6 +67,11 @@ public class SinglePlayerFragment extends Fragment {
 		styles.add(new StyleTemplate(R.drawable.gearsmith_top, R.drawable.gearsmith_bottom));
 	}
 
+	public void refreshAdapter() {
+		getLoaderManager().restartLoader(0x01, null, this);
+	}
+	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View v = inflater.inflate(R.layout.single_player_view, container, false);
@@ -84,6 +94,7 @@ public class SinglePlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mInfluence++;
+				GameTracker.setInfluence(0, mInfluence);
 				updateCounter();
 			}
 		});
@@ -121,6 +132,7 @@ public class SinglePlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mInfluence--;
+				GameTracker.setInfluence(0, mInfluence);
 				updateCounter();
 			}
 		});
@@ -151,6 +163,7 @@ public class SinglePlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+				GameTracker.startGame(mInfluence, 0);
 				updateCounter();
 			}
 		});
@@ -196,9 +209,6 @@ public class SinglePlayerFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (mAdapter != null) {
-			mAdapter.closeDatabase();
-		}
 	}
 	
 	
@@ -304,4 +314,23 @@ public class SinglePlayerFragment extends Fragment {
     	outState.putString("bugFix", "bugFix");
     	super.onSaveInstanceState(outState);
     }
+    
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new GamesListCursorLoader(getActivity());
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		mAdapter.setCursor(data);
+		mAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		mAdapter.setCursor(null);
+		mAdapter.notifyDataSetChanged();
+	}
+	
+
 }

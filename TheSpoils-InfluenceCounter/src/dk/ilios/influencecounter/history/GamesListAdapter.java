@@ -6,7 +6,6 @@ package dk.ilios.influencecounter.history;
  * @author Christian Melchior <christian@ilios.dk>
  */
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,17 +16,22 @@ import dk.ilios.influencecounter.Database;
 import dk.ilios.influencecounter.GameHistoryFragment;
 import dk.ilios.influencecounter.MainActivity;
 
-public class GamesListAdapter extends FragmentStatePagerAdapter implements LoaderCallbacks<Cursor> {
+public class GamesListAdapter extends FragmentStatePagerAdapter {
 
-	private SQLiteDatabase mDb;
 	private int mGameCount = 0;
 	private Cursor mCursor;
-	private MainActivity mContext;
 	
-	public GamesListAdapter(FragmentManager fm, MainActivity activity) {
+	public GamesListAdapter(FragmentManager fm) {
 		super(fm);
-		mContext = activity;
 	}
+	
+	public void setCursor(Cursor cursor) {
+		mCursor = cursor;
+		mGameCount = (cursor != null) ? cursor.getCount() : 0;
+		notifyDataSetChanged();
+		
+	}
+	
 	
 	@Override
 	public int getCount() {
@@ -44,31 +48,6 @@ public class GamesListAdapter extends FragmentStatePagerAdapter implements Loade
 			return GameHistoryFragment.newInstance(gameId, gameName, players);
 		}
 		
-		return null;
-	}
-	
-	public void closeDatabase() {
-		if (mDb != null) {
-			mDb.close();
-		}
-	}
-	
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return new GamesListCursorLoader(mContext);
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		mGameCount = data.getCount();
-		mCursor = data;
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
-		mGameCount = 0;
-		mCursor = null;
-		notifyDataSetChanged();
+  		return null;
 	}
 }

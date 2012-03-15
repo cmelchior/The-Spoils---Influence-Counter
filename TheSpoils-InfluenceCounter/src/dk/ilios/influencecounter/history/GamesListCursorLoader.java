@@ -26,10 +26,19 @@ public class GamesListCursorLoader extends SimpleCursorLoader {
 		return c;	
 	}
 	
-	/**
-	 * Close the loader gracefully so no database connections are left open
-	 */
-	public void closeDatabase() {
+    @Override
+    protected void onStopLoading() {
+    	super.onStopLoading();
+        closeDatabase();
+    }
+
+    @Override
+    public void onCanceled(Cursor cursor) {
+    	super.onCanceled(cursor);
+    	closeDatabase();
+    }
+	
+	private void closeDatabase() {
 		if (mDb != null) {
 			mDb.close();
 		}
