@@ -75,7 +75,7 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View v = inflater.inflate(R.layout.single_player_view, container, false);
-		mInfluence = mParent.getDefaultStartingInfluence();
+		mInfluence = mParent.getDefaultStartingInfluencePlayer1();
 		
 		// Set reference to views
 		initHistory(v);
@@ -162,7 +162,7 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 			
 			@Override
 			public void onClick(View v) {
-				mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+				mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer1();
 				GameTracker.startGame(mInfluence, 0);
 				updateCounter();
 			}

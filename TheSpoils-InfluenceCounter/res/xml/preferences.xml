@@ -16,6 +16,15 @@
         android:persistent="true"
         android:title="@string/config_influence" />
 
+	<EditTextPreference
+        android:defaultValue="25"
+        android:dialogTitle="@string/config_set_influence"
+        android:key="default_starting_influence_player2"
+        android:numeric="integer"
+        android:persistent="true"
+        android:title="@string/config_influence_player2" />
+    
+    
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="single_player_hint_arrows"

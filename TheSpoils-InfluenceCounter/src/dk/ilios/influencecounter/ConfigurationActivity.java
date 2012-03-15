@@ -27,6 +27,19 @@ public class ConfigurationActivity extends PreferenceActivity {
 				return true;
 			}
 		});
+
+        Preference pref2 = findPreference("default_starting_influence_player2");
+        pref2.setSummary((pref.getSharedPreferences().getString("default_starting_influence_player2", "0")));
+        pref2.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				preference.setSummary((String) newValue);
+				return true;
+			}
+		});
+
+    
     }
 
 }

@@ -29,7 +29,9 @@ public class MainActivity extends FragmentActivity {
     private PagerViewsAdapter mAdapter;
     private ViewPager mPager;
     
-    private int mDefaultStartingInfluence;
+    private int mDefaultStartingInfluencePlayer1;
+    private int mDefaultStartingInfluencePlayer2;
+
     private boolean mKeepScreenAlive;
     private PowerManager.WakeLock mWakeLock;
     private boolean mSinglePlayerHintArrows;
@@ -68,7 +70,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void initializePreferences() {
-    	mDefaultStartingInfluence = Integer.parseInt(prefs.getString("default_starting_influence", "0"));
+    	mDefaultStartingInfluencePlayer1 = Integer.parseInt(prefs.getString("default_starting_influence", "0"));
+    	mDefaultStartingInfluencePlayer2 = Integer.parseInt(prefs.getString("default_starting_influence_player2", "0"));
     	mKeepScreenAlive = prefs.getBoolean("wakelock", false);
     	mSinglePlayerHintArrows = prefs.getBoolean("single_player_hint_arrows", false);
     	mTwoPlayerHintArrows = prefs.getBoolean("two_player_hint_arrows", false);
@@ -181,9 +184,14 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
-	public int getDefaultStartingInfluence() {
-		return mDefaultStartingInfluence;
+	public int getDefaultStartingInfluencePlayer1() {
+		return mDefaultStartingInfluencePlayer1;
 	}
+
+	public int getDefaultStartingInfluencePlayer2() {
+		return mDefaultStartingInfluencePlayer2;
+	}
+
 	
 	public boolean showHintArrowsForSinglePlayer() {
 		return mSinglePlayerHintArrows;

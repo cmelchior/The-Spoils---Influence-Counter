@@ -123,7 +123,7 @@ public class TwoPlayerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				mValueTop = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+				mValueTop = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer2();
 				mTopRefreshed = true;
 				
 				// Both sides refreshed -> New Game
@@ -138,7 +138,7 @@ public class TwoPlayerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				mValueBottom = ((MainActivity) getActivity()).getDefaultStartingInfluence();
+				mValueBottom = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer1();
 				mBottomRefreshed = true;
 				
 				// Both sides refreshed -> New Game
