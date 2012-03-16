@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 import dk.ilios.influencecounter.history.GamesListAdapter;
 import dk.ilios.influencecounter.history.GamesListCursorLoader;
 import dk.ilios.influencecounter.views.OutlinedTextView;
@@ -47,7 +49,8 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 	private boolean mIsHistoryVisible;
 	private ViewPager mPager;
 	private GamesListAdapter mAdapter;
-
+	private TextView mPageNumber;
+	
 	
 	
 	@Override
@@ -182,9 +185,22 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 
 	private void initHistory(View v) {
 		mHistoryContainer = v.findViewById(R.id.history);
-
+		mPageNumber = (TextView) mHistoryContainer.findViewById(R.id.page_number);
+		mPageNumber.setText("");
 		mPager = (ViewPager) v.findViewById(R.id.history_pager);
 		new setAdapterTask().execute(); // Fix to avoid crash when nesting fragments
+		mPager.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				if (mAdapter != null) {
+					mPageNumber.setText((position+1) + "/" + mAdapter.getCount());
+				}
+			}
+			
+			@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+			@Override public void onPageScrollStateChanged(int state) {}
+		});
 	}
 	
 	private class setAdapterTask extends AsyncTask<Void,Void,Void>{

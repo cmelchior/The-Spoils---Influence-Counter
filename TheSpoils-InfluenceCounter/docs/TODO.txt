@@ -12,7 +12,7 @@ TODO:
 	- In-animation -> Hide content when doing animation
 	- Determine layout on 2-player view
 	+ Database model
-	- Configuration setting for grouping changes
+	+ Configuration setting for grouping changes
 	+ Configuration setting for player starting influence
 	+ Swipe between game history
 	- Press game name to change it
@@ -23,7 +23,7 @@ TODO:
 	+ Show history information
 	- Do proper pager number
 	+ Record history information
-	- Only swipe list/name. Not pagenr / buttons
+	+ Only swipe list/name. Not pagenr / buttons
 	- Close DB onDestroy
 	- ListView optimization pattern
 	- Reconsider usage of CursorAdapters for 2-player games

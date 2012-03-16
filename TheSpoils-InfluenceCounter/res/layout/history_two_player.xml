@@ -2,18 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="15dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingTop="30dp" >
-
-    <TextView
-        android:id="@+id/page_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="1/1" />
 
     <TextView
         android:id="@+id/game_name"
@@ -22,34 +13,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="5dp"
-        android:layout_toLeftOf="@id/page_number"
         android:text="Game 1"
         android:textColor="#000000"
         android:textSize="30dp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/delete_game_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
-        android:text="@string/delete_game"
-        android:textColor="@color/history_button_color"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/delete_history_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@null"
-        android:text="@string/delete_history"
-        android:textColor="@color/history_button_color"
-        android:textSize="20sp"
         android:textStyle="bold" />
 
     <!-- Label row -->
@@ -87,13 +53,10 @@
             style="@style/history_list_column_label" />
     </LinearLayout>
 
-
-
     <ListView
         android:id="@+id/history_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/delete_game_button"
         android:layout_below="@id/listview_labels"
         android:layout_marginBottom="10dp"
         android:cacheColorHint="#00000000"
