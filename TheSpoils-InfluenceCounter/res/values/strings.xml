@@ -21,11 +21,15 @@
 	<string name="two_player_view_disabled">Your screen is unfortunately to small to show the current two player view. </string>
     
 	<string name="config_category_theme_properties">Theme</string>
+	<string name="config_category_history">History view</string>
     <string name="config_wakelock_label">Keep screen alive</string>
     <string name="config_wakelock_summary">If enabled, screen is prevented from turning of, and is dimmed instead.</string>
     <string name="config_influence">Player 1 starting influence</string>
     <string name="config_influence_player2">Player 2 starting influence</string>
     <string name="config_set_influence">Set default starting influence</string>
+    <string name="config_set_history_grouping_timer">Set timer after each influence change before a log entry is created (in seconds).</string>
+	<string name="config_history_grouping_timer">Log timer</string>
+	<string name="config_history_grouping_timer_summary">%1$s seconds</string>
     <string name="config_single_player_hint_arrows_summary">Enable changing influence hint arrows for single player view.</string>
     <string name="config_two_player_hint_arrows_summary">Enable changing influence hint arrows for two player view (not implemented yet).</string>
 	<string name="config_single_player_hint_arrows_label">Single player hint arrows</string>    

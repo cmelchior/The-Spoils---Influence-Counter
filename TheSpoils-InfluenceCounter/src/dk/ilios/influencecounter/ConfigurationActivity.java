@@ -39,7 +39,21 @@ public class ConfigurationActivity extends PreferenceActivity {
 			}
 		});
 
-    
+        Preference pref3 = findPreference("history_grouping_timer");
+        pref3.setSummary(createHistoryTimerSummary((pref.getSharedPreferences().getString("history_grouping_timer", "2"))));
+        pref3.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				preference.setSummary(createHistoryTimerSummary((String) newValue));
+				return true;
+			}
+		});
     }
 
+    private String createHistoryTimerSummary(String value) {
+    	return String.format(getText(R.string.config_history_grouping_timer_summary).toString(), value);
+    }
+    
+    
 }

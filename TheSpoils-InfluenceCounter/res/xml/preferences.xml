@@ -15,16 +15,14 @@
         android:numeric="integer"
         android:persistent="true"
         android:title="@string/config_influence" />
-
-	<EditTextPreference
+    <EditTextPreference
         android:defaultValue="25"
         android:dialogTitle="@string/config_set_influence"
         android:key="default_starting_influence_player2"
         android:numeric="integer"
         android:persistent="true"
         android:title="@string/config_influence_player2" />
-    
-    
+
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="single_player_hint_arrows"
@@ -38,6 +36,15 @@
         android:summary="@string/config_two_player_hint_arrows_summary"
         android:title="@string/config_two_player_hint_arrows_label" />
 
+    <PreferenceCategory android:title="@string/config_category_history" >
+        <EditTextPreference
+            android:defaultValue="2"
+            android:dialogTitle="@string/config_set_history_grouping_timer"
+            android:key="history_grouping_timer"
+            android:numeric="decimal"
+            android:persistent="true"
+            android:title="@string/config_history_grouping_timer" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/config_category_theme_properties" >
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:defaultValue="#ffffff"

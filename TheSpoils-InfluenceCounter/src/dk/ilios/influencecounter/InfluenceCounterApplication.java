@@ -12,7 +12,7 @@ public class InfluenceCounterApplication extends Application {
 		
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);	// Initialize if not done already
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    	long influenceChangeGroupingTimer = Integer.parseInt(prefs.getString("influce_change_group_timer", "2000"));
+    	int influenceChangeGroupingTimer = (int) Float.parseFloat(prefs.getString("history_grouping_timer", "2")) * 1000;
 		
 		GameTracker.initialize(getApplicationContext(), influenceChangeGroupingTimer);
 	}

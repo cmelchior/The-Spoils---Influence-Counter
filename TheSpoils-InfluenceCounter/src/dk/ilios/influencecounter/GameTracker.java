@@ -29,10 +29,16 @@ public class GameTracker {
 	
 	public static void initialize(Context context, long timeoutInMilliSeconds) {
 		isInitialized = true;
-		if (timeoutInMilliSeconds > 0) {
-			mTimeoutInMilliSeconds = timeoutInMilliSeconds;
-		}
+		mTimeoutInMilliSeconds = timeoutInMilliSeconds;
 		mContext = context;
+		
+		// Make sure that timers are stopped
+		for (int i = 0; i < timerThreads.length; i++) {
+			Thread t = timerThreads[i];
+			if (t != null) {
+				t.interrupt();
+			}
+		}
 	}
 
 	public static void setHistoryListAdapter(SinglePlayerFragment fragment) {

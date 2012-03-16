@@ -33,6 +33,7 @@ public class MainActivity extends FragmentActivity {
     private int mDefaultStartingInfluencePlayer2;
 
     private boolean mKeepScreenAlive;
+    private int mLogTimer;
     private PowerManager.WakeLock mWakeLock;
     private boolean mSinglePlayerHintArrows;
     private boolean mTwoPlayerHintArrows; 
@@ -72,6 +73,7 @@ public class MainActivity extends FragmentActivity {
     private void initializePreferences() {
     	mDefaultStartingInfluencePlayer1 = Integer.parseInt(prefs.getString("default_starting_influence", "0"));
     	mDefaultStartingInfluencePlayer2 = Integer.parseInt(prefs.getString("default_starting_influence_player2", "0"));
+    	mLogTimer = (int) Float.parseFloat(prefs.getString("history_grouping_timer", "2")) * 1000;
     	mKeepScreenAlive = prefs.getBoolean("wakelock", false);
     	mSinglePlayerHintArrows = prefs.getBoolean("single_player_hint_arrows", false);
     	mTwoPlayerHintArrows = prefs.getBoolean("two_player_hint_arrows", false);
@@ -118,7 +120,7 @@ public class MainActivity extends FragmentActivity {
 		if (requestCode == REQUEST_CODE_CONFIGURATION) {
 			initializePreferences();
 			initializeWakelock();
-			
+			GameTracker.initialize(getApplicationContext(), mLogTimer);
 		}
 	}
 
