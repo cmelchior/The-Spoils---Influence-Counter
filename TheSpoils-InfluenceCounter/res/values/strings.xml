@@ -4,7 +4,7 @@
     <string name="app_name">Influence Counter</string>
 
     <string name="delete_game">Delete game</string>
-    <string name="delete_history">Clear history</string>
+    <string name="delete_history">Delete all</string>
     <string name="influence_change">%1$s -> %2$s</string>
     <string name="start_history_marker">-</string>
 	<string name="game_name">Game %1$s</string>

@@ -7,6 +7,7 @@ package dk.ilios.influencecounter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -14,12 +15,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import dk.ilios.influencecounter.views.DisableableViewPager;
 
 public class MainActivity extends FragmentActivity {
 
@@ -27,7 +26,7 @@ public class MainActivity extends FragmentActivity {
 	
 	private SharedPreferences prefs;	
     private PagerViewsAdapter mAdapter;
-    private ViewPager mPager;
+    private DisableableViewPager mPager;
     
     private int mDefaultStartingInfluencePlayer1;
     private int mDefaultStartingInfluencePlayer2;
@@ -39,12 +38,13 @@ public class MainActivity extends FragmentActivity {
     private boolean mTwoPlayerHintArrows; 
     private boolean mTextGlow;
     private boolean mBorder;
-    
+
+    // History
+    private SQLiteDatabase mDb;		// Reference to the database connection for this activity
     private View mHistoryContainer; // Reference to a visible history container (if any)
     private int mHistoryContainerBottom; // Screen y-coordinate for history view
 	private int mHistoryContainerTop; // Screen y-coordinate for history view
 	
-    
     // Colors
     private int mTextColor;
     private int mGlowColor;
@@ -66,10 +66,20 @@ public class MainActivity extends FragmentActivity {
         initializeWakelock();
     
         mAdapter = new PagerViewsAdapter(getSupportFragmentManager());
-        mPager = (ViewPager)findViewById(R.id.pager);
+        mPager = (DisableableViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
     }
 
+    @Override
+    protected void onStart() {
+    	super.onStart();
+    }
+    
+    @Override 
+    protected void onStop() {
+    	super.onStop();
+    }
+    
     private void initializePreferences() {
     	mDefaultStartingInfluencePlayer1 = Integer.parseInt(prefs.getString("default_starting_influence", "0"));
     	mDefaultStartingInfluencePlayer2 = Integer.parseInt(prefs.getString("default_starting_influence_player2", "0"));
@@ -93,8 +103,6 @@ public class MainActivity extends FragmentActivity {
             mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "InfluenceCounterWakeLock");
         }
     }
-    
-    
     
     @Override
     protected void onResume() {
@@ -120,7 +128,7 @@ public class MainActivity extends FragmentActivity {
 		if (requestCode == REQUEST_CODE_CONFIGURATION) {
 			initializePreferences();
 			initializeWakelock();
-			GameTracker.initialize(getApplicationContext(), mLogTimer);
+			GameTracker.initialize(this, mLogTimer);
 		}
 	}
 
@@ -147,30 +155,31 @@ public class MainActivity extends FragmentActivity {
 	
 	
 	
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent ev) {
-
-		// Only dispatch events to history view pager if it is visible and we
-		// don't hit any toolbars at the top or bottom of the page.
-		// 
-		// There is apparently some trouble with the ListView not getting some 
-		// events so dispatch to this view as well. Possible due to the viewpager
-		// eating some events.
-		if (mHistoryContainer != null) {
-			if (ev.getRawY() > mHistoryContainerTop && ev.getRawY() < mHistoryContainerBottom) {
-				mHistoryContainer.dispatchTouchEvent(ev);
-				return true;
-			}
-		}
-
-		return super.dispatchTouchEvent(ev);
-	}
+//	@Override
+//	public boolean dispatchTouchEvent(MotionEvent ev) {
+//
+//		// Only dispatch events to history view pager if it is visible and we
+//		// don't hit any toolbars at the top or bottom of the page.
+//		// 
+//		// There is apparently some trouble with the ListView not getting some 
+//		// events so dispatch to this view as well. Possible due to the viewpager
+//		// eating some events.
+//		if (mHistoryContainer != null) {
+////			if (ev.getRawY() > mHistoryContainerTop && ev.getRawY() < mHistoryContainerBottom) {
+//				mHistoryContainer.dispatchTouchEvent(ev);
+//				return true;
+////			}
+//		}
+//
+//		return super.dispatchTouchEvent(ev);
+//	}
 
 	
 	public void setVisibleHistoryContainer(View v) { 
 		mHistoryContainer = v;
 
 		if (mHistoryContainer != null) {
+			mPager.setPagingEnabled(false);
 			// Get size of bottom/top drawable so we know when not to dispatch
 	        // events to the history view.
 	        // All bottom drawables have the same size, so just use a random one.
@@ -181,6 +190,7 @@ public class MainActivity extends FragmentActivity {
 			mHistoryContainerTop = mHistoryContainerBottom - mHistoryContainer.getHeight();
 
 		} else {
+			mPager.setPagingEnabled(true);
 			mHistoryContainerBottom = 0;
 			mHistoryContainerTop = 0;
 		}
@@ -255,9 +265,6 @@ public class MainActivity extends FragmentActivity {
         prefsEditor.putInt("theme_two_player_bottom", theme);
         prefsEditor.commit();
 	}
-	
-	
-	
 	
 /*******************************************************************************
  * PAGE ADAPTER                                                                *

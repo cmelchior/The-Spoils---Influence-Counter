@@ -6,9 +6,11 @@ package dk.ilios.influencecounter;
  */
 import java.util.ArrayList;
 
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
@@ -23,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 import dk.ilios.influencecounter.history.GamesListAdapter;
 import dk.ilios.influencecounter.history.GamesListCursorLoader;
@@ -50,15 +53,15 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 	private ViewPager mPager;
 	private GamesListAdapter mAdapter;
 	private TextView mPageNumber;
-	
-	
+	private Button mDeleteGameButton;
+	private Button mDeleteAllButton;
+	private Cursor mCurrentCursor;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mParent  = (MainActivity) getActivity();
 		mAdapter = new GamesListAdapter(getFragmentManager());
-		getLoaderManager().initLoader(0x01, null, this);
 		GameTracker.setHistoryListAdapter(this);
 		
 		currentStyle = mParent.getSinglePlayerTheme() - 1;
@@ -68,6 +71,8 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		styles.add(new StyleTemplate(R.drawable.rogue_top, R.drawable.rogue_bottom));
 		styles.add(new StyleTemplate(R.drawable.arcanist_top, R.drawable.arcanist_bottom));
 		styles.add(new StyleTemplate(R.drawable.gearsmith_top, R.drawable.gearsmith_bottom));
+
+		getLoaderManager().initLoader(0x01, null, this);
 	}
 
 	public void refreshAdapter() {
@@ -201,6 +206,28 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 			@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 			@Override public void onPageScrollStateChanged(int state) {}
 		});
+		
+		// Buttons
+		mDeleteGameButton = (Button) mHistoryContainer.findViewById(R.id.delete_game_button);
+		mDeleteGameButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int gameId = ((GameHistoryFragment) mAdapter.getItem(mPager.getCurrentItem())).getGameId();
+				GameTracker.deleteGame(gameId);
+			
+				
+				if (mAdapter.getCount() == 1) {
+					// TODO Show No games
+				} else if (mPager.getCurrentItem() == 0) {
+					mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+				} else {
+					mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+				}
+			}
+		});
+		
+		mDeleteAllButton = (Button) mHistoryContainer.findViewById(R.id.delete_history_button);
+		
 	}
 	
 	private class setAdapterTask extends AsyncTask<Void,Void,Void>{
@@ -338,15 +365,26 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		mAdapter.setCursor(data);
-		mAdapter.notifyDataSetChanged();
+		if (mCurrentCursor != null) {
+			mCurrentCursor.unregisterContentObserver(observer);
+			mCurrentCursor.close();
+		}
+
+		mCurrentCursor = data;
+		mCurrentCursor.registerContentObserver(observer);
+		mAdapter.swapCursor(mCurrentCursor);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		mAdapter.setCursor(null);
-		mAdapter.notifyDataSetChanged();
+		mAdapter.swapCursor(null);
 	}
 	
-
+	
+	ContentObserver observer = new ContentObserver(new Handler()) {
+		@Override
+		public void onChange(boolean selfChange) {
+			getLoaderManager().restartLoader(0x01, null, SinglePlayerFragment.this);
+		}
+	};
 }

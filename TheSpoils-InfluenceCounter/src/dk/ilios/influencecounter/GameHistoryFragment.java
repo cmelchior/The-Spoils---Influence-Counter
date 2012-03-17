@@ -3,6 +3,7 @@ package dk.ilios.influencecounter;
 import java.text.DateFormat;
 import java.util.Date;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,7 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import dk.ilios.influencecounter.history.HistoryContentProvider;
 import dk.ilios.influencecounter.utils.Formatter;
+import dk.ilios.influencecounter.utils.Logger;
 
 public class GameHistoryFragment extends Fragment {
 
@@ -45,63 +48,72 @@ public class GameHistoryFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mGameId = getArguments().getInt("gameId", 0);
+		mGameId = getArguments().getInt("gameId", -1);
 		mGameName = getArguments().getString("gameName", "");
 		mPlayers = getArguments().getInt("players", 0);
-
 		if (mGameId == GameTracker.getCurrentGameId()) {
 			GameTracker.setGameHistoryFragment(this);
 		}
-
+		
 		new DatabaseConnection().execute(getActivity());
+		Logger.i("InfluenceCounter", "HistoryFragment created: " + mGameId);
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		Logger.i("InfluenceCounter", "HistoryFragment destroyed: " + mGameId);
 		if (mDb != null) {
 			mDb.close();
 		}
 	}
 	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		int layout = (mPlayers == 2) ? R.layout.history_two_player : R.layout.history_single_player;
 		View v = inflater.inflate(layout, null);
 		mHistoryList = (ListView) v.findViewById(R.id.history_list);
 		((TextView) v.findViewById(R.id.game_name)).setText(mGameName);
-
+		
 		return v;
 	}
 	
 	public void refreshAdapter() {
-		if (mDb != null) {
+		if (mDb != null && mDb.isOpen()) {
 			Cursor c = mDb.query(Database.TABLE_GAME_STATE, Database.HISTORY_GAME_STATE_COLUMNS, "game_id=" + mGameId, null, null, null, "_id ASC");
 			((CursorAdapter) mHistoryList.getAdapter()).changeCursor(c);
 		}
 	}
 	
+	public int getGameId() {
+		return getArguments().getInt("gameId", -1);
+	}
+	
+	
 	/**
-	 * Async open database connection for the CursorAdapter
+	 * Fetch rows in a async manner
 	 */
-	private class DatabaseConnection extends AsyncTask<Context, Void, SQLiteDatabase> {
+	private class DatabaseConnection extends AsyncTask<Context, Void, Cursor> {
+		
+		private Context mContext;
 		
 		@Override
-		protected SQLiteDatabase doInBackground(Context... params) {
-			return new Database(params[0]).getReadableDatabase();
+		protected Cursor doInBackground(Context... params) {
+			mContext = params[0];
+			ContentResolver cr = mContext.getContentResolver();
+			return cr.query(HistoryContentProvider.GAMES_STATE_URI, Database.HISTORY_GAME_STATE_COLUMNS, Database.COLUMN_GAME_ID+"="+mGameId, null, null);
 		}
 
 		@Override
-		protected void onPostExecute(SQLiteDatabase result) {
+		protected void onPostExecute(Cursor result) {
 			super.onPostExecute(result);
-			mDb = result;
-			Cursor c = mDb.query(Database.TABLE_GAME_STATE, Database.HISTORY_GAME_STATE_COLUMNS, "game_id=" + mGameId, null, null, null, "_id ASC");
 
 			CursorAdapter adapter;
 			if (mPlayers == 2) {
-				adapter = new TwoPlayerHistoryAdapter(getActivity(), R.layout.history_row, c, 0);
+				adapter = new TwoPlayerHistoryAdapter(mContext, R.layout.history_row, result, 0);
 			} else {
-				adapter = new SinglePlayerHistoryAdapter(getActivity(), R.layout.history_row, c, 0);
+				adapter = new SinglePlayerHistoryAdapter(mContext, R.layout.history_row, result, 0);
 			}
 			
 			mHistoryList.setAdapter(adapter);

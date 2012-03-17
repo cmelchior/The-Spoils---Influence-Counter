@@ -16,12 +16,12 @@ TODO:
 	+ Configuration setting for player starting influence
 	+ Swipe between game history
 	- Press game name to change it
-	- Delete single game function
+	+ Delete single game function
 	- Delete history function
 	- Unit tests for history
 	- Database demo data
 	+ Show history information
-	- Do proper pager number
+	+ Do proper pager number
 	+ Record history information
 	+ Only swipe list/name. Not pagenr / buttons
 	- Close DB onDestroy
@@ -30,7 +30,10 @@ TODO:
 	- Clean up games with no data
 	- Make sure a new game is started when app starts and on swipes
 	- Support for 0-timer grouping
-	
+	- Improve history swipe animation smootheness.
+	- Button pressed effect
+	- Handle no games in Database
+	- Creating new games based on _ID in database
 
 DONE:
 + Border toggle

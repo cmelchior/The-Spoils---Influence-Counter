@@ -5,12 +5,17 @@ package dk.ilios.influencecounter;
  * 
  * @author Christian Melchior <christian@ilios.dk>
  */
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.net.Uri;
 import android.os.AsyncTask;
+import dk.ilios.influencecounter.history.HistoryContentProvider;
 import dk.ilios.influencecounter.utils.Logger;
 
 public class GameTracker {
@@ -25,7 +30,6 @@ public class GameTracker {
 	private static boolean isInitialized = false;
 	private static long mTimeoutInMilliSeconds = 2*1000; // Default is 2 seconds
 	private static long  mCurrentGameId = -1;				// -1 = no current game
-	
 	
 	public static void initialize(Context context, long timeoutInMilliSeconds) {
 		isInitialized = true;
@@ -104,6 +108,11 @@ public class GameTracker {
 	public static long getCurrentGameId() {
 		return mCurrentGameId;
 	}
+
+	public static void deleteGame(int gameId) {
+		new DeleteGame().execute(gameId);
+		
+	}
 	
 	/**************************************************************************
 	 * Async task for new games                                               *
@@ -115,7 +124,9 @@ public class GameTracker {
 			Logger.i("InfluenceCounter", "ASync - NewGame");
 			if (!isInitialized) return null;
 
-			SQLiteDatabase db = new Database(mContext).getWritableDatabase();
+			ContentResolver cr = mContext.getContentResolver();
+			
+			SQLiteDatabase db = new Database(mContext).getReadableDatabase();
 			
 			// Get current number of games
 		    String sql = "SELECT COUNT(*) FROM " + Database.TABLE_GAMES;
@@ -133,9 +144,10 @@ public class GameTracker {
 			ContentValues values = new ContentValues();
 			values.put(Database.COLUMN_GAME_NAME, String.format(mContext.getString(R.string.game_name), (gamesCount+1)));
 			values.put(Database.COLUMN_PLAYERS, players);
-			long id = db.insert(Database.TABLE_GAMES, null, values);
-			Logger.i("InfluenceCounter", "New game: " + id);
-			mCurrentGameId = id;
+			
+			Uri result = cr.insert(HistoryContentProvider.GAMES_URI, values);
+			mCurrentGameId = ContentUris.parseId(result);
+			Logger.i("InfluenceCounter", "New game: " + mCurrentGameId);
 			db.close();
 
 			// Save starting influence as well
@@ -154,9 +166,9 @@ public class GameTracker {
 		
 		@Override
 		protected void onPostExecute(Void result) {
-			if(mSinglePlayerFragment != null) {
-				mSinglePlayerFragment.refreshAdapter();
-			}
+//			if(mSinglePlayerFragment != null) {
+//				mSinglePlayerFragment.refreshAdapter();
+//			}
 		}
 	}
 
@@ -170,7 +182,7 @@ public class GameTracker {
 			Logger.i("InfluenceCounter", "ASync - SaveInfluenceChange");
 			if (!isInitialized) return null;
 
-			SQLiteDatabase db = new Database(mContext).getWritableDatabase();
+			ContentResolver cr = mContext.getContentResolver();
 			
 			for (int i = 0; i < params.length; i++) {
 				InfluenceChange change = params[i];
@@ -179,21 +191,45 @@ public class GameTracker {
 				values.put(Database.COLUMN_INFLUENCE, change.influenceChange);
 				values.put(Database.COLUMN_TIMESTAMP, change.timestamp);
 				values.put(Database.COLUMN_GAME_ID, change.gameId);
-				db.insert(Database.TABLE_GAME_STATE, null, values);
+				cr.insert(HistoryContentProvider.GAMES_STATE_URI, values);
 			}
-			
-			db.close();
 
 			return null;
 		}
 		
 		@Override
 		protected void onPostExecute(Void result) {
-			if (mGameHistoryFragment != null) {
-				mGameHistoryFragment.refreshAdapter();
-			}
+//			if (mGameHistoryFragment != null) {
+//				mGameHistoryFragment.refreshAdapter();
+//			}
 		}
 	}
+	
+	/***************************************************************************
+	 * Async task for deleting a game                                          *
+	 **************************************************************************/
+	private static class DeleteGame extends AsyncTask<Integer, Void, Void> {
+		@Override
+		protected Void doInBackground(Integer... params) {
+			Logger.i("InfluenceCounter", "ASync - Delete Game: " + params[0]);
+			if (!isInitialized) return null;
+
+			int gameId = params[0];
+			ContentResolver cr = mContext.getContentResolver();
+			int rows = cr.delete(HistoryContentProvider.GAMES_URI, Database.COLUMN__ID + "=" + gameId, null);
+			int rows2 = cr.delete(HistoryContentProvider.GAMES_STATE_URI, Database.COLUMN_GAME_ID+"="+gameId, null);
+			Logger.i("Database", "Deleted: " + rows + " , "  + rows2);
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+//			if(mSinglePlayerFragment != null) {
+//				mSinglePlayerFragment.refreshAdapter();
+//			}
+		}
+	}
+	
 	
 	/***************************************************************************
 	 * Async task for removing old games with only starting values             *

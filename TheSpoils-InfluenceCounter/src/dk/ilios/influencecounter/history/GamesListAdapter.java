@@ -1,35 +1,50 @@
 package dk.ilios.influencecounter.history;
 /**
- * Page adapter for showing games. The Database is monitored and new
- * games are automatically inserted.
- * 
+ * Page adapter for showing games.
+ * Note: FragmentPageAdapter seems to remove the inner lists for some reason,
+ * FragmentStatePagerAdpater doesn't do that, but it seems to make the 
+ * animations more choppy.
+ *  
  * @author Christian Melchior <christian@ilios.dk>
  */
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
+import android.support.v4.view.PagerAdapter;
 import dk.ilios.influencecounter.Database;
 import dk.ilios.influencecounter.GameHistoryFragment;
-import dk.ilios.influencecounter.MainActivity;
 
 public class GamesListAdapter extends FragmentStatePagerAdapter {
 
 	private int mGameCount = 0;
 	private Cursor mCursor;
+	private int[] oldIds = null;	// List of Id's from old cursor
+	private int[] currentIds = null; // List of Id's from new cursor;
 	
 	public GamesListAdapter(FragmentManager fm) {
 		super(fm);
 	}
 	
-	public void setCursor(Cursor cursor) {
+	public void swapCursor(Cursor cursor) {
 		mCursor = cursor;
 		mGameCount = (cursor != null) ? cursor.getCount() : 0;
-		notifyDataSetChanged();
 		
+		// Save a list of game Ids
+		oldIds = currentIds;
+		currentIds = (cursor != null) ? new int[cursor.getCount()] : null;
+	
+		if (cursor != null) {
+			int startPotion = mCursor.getPosition();
+			int i = 0;
+			while (cursor.moveToNext()) {
+				currentIds[i] = cursor.getInt(cursor.getColumnIndex(Database.COLUMN__ID));
+				i++;
+			}
+			cursor.moveToPosition(startPotion);
+		}
+
+		notifyDataSetChanged();
 	}
 	
 	
@@ -49,5 +64,41 @@ public class GamesListAdapter extends FragmentStatePagerAdapter {
 		}
 		
   		return null;
+	}
+	
+	@Override
+	public int getItemPosition(Object object) {
+		GameHistoryFragment fragment = (GameHistoryFragment) object;
+		int gameId = fragment.getGameId();
+		
+		// Trivial case (first cursor)
+		if (oldIds == null) {
+			return PagerAdapter.POSITION_UNCHANGED;
+		}
+		
+		// Find position in new and old cursor
+		int oldPosition = -1;
+		int newPosition = -1;
+		
+		for (int i = 0; i < oldIds.length; i++) {
+			if (oldIds[i] == gameId) {
+				oldPosition = i;
+			}
+		}
+		
+		for (int i = 0; i < currentIds.length; i++) {
+			if (currentIds[i] == gameId) {
+				newPosition = i;
+			}
+		}
+		
+		// Determine if fragment has been deleted or moved position
+		if (newPosition == -1) {
+			return PagerAdapter.POSITION_NONE;
+		} else if (oldPosition == newPosition) {
+			return PagerAdapter.POSITION_UNCHANGED;
+		} else {
+			return newPosition;
+		}
 	}
 }

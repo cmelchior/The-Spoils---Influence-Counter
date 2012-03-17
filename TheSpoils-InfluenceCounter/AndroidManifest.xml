@@ -14,9 +14,11 @@
         android:label="@string/wakelock_description" />
 
     <application
+        android:name=".InfluenceCounterApplication"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:name=".InfluenceCounterApplication" >
+        android:label="@string/app_name" >
+
+        <!-- Activities -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -28,9 +30,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name=".ConfigurationActivity"
             android:theme="@android:style/Theme.Holo" />
-    </application>
 
+        <!-- ContenProviders -->
+        <provider
+            android:name="dk.ilios.influencecounter.history.HistoryContentProvider"
+            android:authorities="dk.ilios.influencecounter">
+        </provider>
+    </application>
 </manifest>

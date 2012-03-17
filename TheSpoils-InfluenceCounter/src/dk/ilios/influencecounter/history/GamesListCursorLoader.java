@@ -4,14 +4,14 @@ package dk.ilios.influencecounter.history;
  * 
  * @author Christian Melchior <christian@ilios.dk>
  */
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.content.CursorLoader;
 import dk.ilios.influencecounter.Database;
 
-public class GamesListCursorLoader extends SimpleCursorLoader {
+public class GamesListCursorLoader extends CursorLoader {
 
-	private SQLiteDatabase mDb;
 	private Context mContext;
 	
 	public GamesListCursorLoader(Context ctx) {
@@ -21,26 +21,17 @@ public class GamesListCursorLoader extends SimpleCursorLoader {
 	
 	@Override
 	public Cursor loadInBackground() {
-		mDb = new Database(mContext).getReadableDatabase(); 
-		Cursor c = mDb.query(Database.TABLE_GAMES, Database.HISTORY_GAME_COLUMNS, null, null, null, null, "_id ASC");
-		return c;	
+		ContentResolver cr = mContext.getContentResolver();
+		return cr.query(HistoryContentProvider.GAMES_URI, Database.HISTORY_GAME_COLUMNS, null, null, Database.COLUMN__ID + " ASC");
 	}
 	
     @Override
     protected void onStopLoading() {
     	super.onStopLoading();
-        closeDatabase();
     }
 
     @Override
     public void onCanceled(Cursor cursor) {
     	super.onCanceled(cursor);
-    	closeDatabase();
     }
-	
-	private void closeDatabase() {
-		if (mDb != null) {
-			mDb.close();
-		}
-	}
 }
