@@ -24,7 +24,7 @@ TODO:
 	+ Do proper pager number
 	+ Record history information
 	+ Only swipe list/name. Not pagenr / buttons
-	- Close DB onDestroy
+	+ Close DB onDestroy (No longer needed after ContentProvider)
 	- ListView optimization pattern
 	- Reconsider usage of CursorAdapters for 2-player games
 	- Clean up games with no data
@@ -34,6 +34,7 @@ TODO:
 	- Button pressed effect
 	- Handle no games in Database
 	- Creating new games based on _ID in database
+	- Pager not updated when inserting new games
 
 DONE:
 + Border toggle

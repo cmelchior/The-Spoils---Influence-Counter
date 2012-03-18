@@ -6,5 +6,5 @@
         <item name="android:textSize">@dimen/history_list_column_label_size</item>
         <item name="android:textStyle">bold</item>
     </style>
-
+    
 </resources>

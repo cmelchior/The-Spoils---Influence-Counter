@@ -209,6 +209,7 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		
 		// Buttons
 		mDeleteGameButton = (Button) mHistoryContainer.findViewById(R.id.delete_game_button);
+		mDeleteGameButton.setOnTouchListener(toggleButtonTextShadow); // Shadow state changes not support in XML
 		mDeleteGameButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -226,7 +227,11 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 			}
 		});
 		
+		
+		
+		
 		mDeleteAllButton = (Button) mHistoryContainer.findViewById(R.id.delete_history_button);
+		mDeleteAllButton.setOnTouchListener(toggleButtonTextShadow); // Shadow state changes not support in XML
 		
 	}
 	
@@ -387,4 +392,23 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 			getLoaderManager().restartLoader(0x01, null, SinglePlayerFragment.this);
 		}
 	};
+	
+	OnTouchListener toggleButtonTextShadow = new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			TextView button = (TextView) v;
+			switch(event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				button.setShadowLayer(3, -5, 0, getResources().getColor(R.color.button_shadow_color));
+				break;
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_CANCEL:
+				button.setShadowLayer(0,0,0,0);
+				break;
+			}
+			return false;
+		}
+	};
+	
 }

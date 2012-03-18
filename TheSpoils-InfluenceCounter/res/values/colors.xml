@@ -8,4 +8,6 @@
     <color name="postive_influence_change">#b8c52b</color>
     <color name="negative_influence_change">#d83418</color>
     <color name="column_label_color">#000000</color>
+    
+    <color name="button_shadow_color">#ebec70</color>
 </resources>
