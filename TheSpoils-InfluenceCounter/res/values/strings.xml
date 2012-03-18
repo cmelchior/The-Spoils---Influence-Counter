@@ -8,6 +8,7 @@
     <string name="influence_change">%1$s -> %2$s</string>
     <string name="start_history_marker">-</string>
 	<string name="game_name">Game %1$s</string>
+	<string name="empty_history_message">The history log is empty. Press refresh to start logging a new game.</string>
     
     <string name="column_label_time">Time</string>
     <string name="column_label_influence">Influence</string>

@@ -34,7 +34,7 @@ public class GamesListAdapter extends FragmentStatePagerAdapter {
 		oldIds = currentIds;
 		currentIds = (cursor != null) ? new int[cursor.getCount()] : null;
 	
-		if (cursor != null) {
+		if (cursor != null && cursor.getCount() > 0) {
 			int startPotion = mCursor.getPosition();
 			int i = 0;
 			while (cursor.moveToNext()) {

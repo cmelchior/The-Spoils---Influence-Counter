@@ -55,6 +55,7 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 	private TextView mPageNumber;
 	private Button mDeleteGameButton;
 	private Button mDeleteAllButton;
+	private TextView mEmptyHistoryMsg;
 	private Cursor mCurrentCursor;
 	
 	@Override
@@ -190,8 +191,13 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 
 	private void initHistory(View v) {
 		mHistoryContainer = v.findViewById(R.id.history);
+		
 		mPageNumber = (TextView) mHistoryContainer.findViewById(R.id.page_number);
 		mPageNumber.setText("");
+		
+		mEmptyHistoryMsg = (TextView) mHistoryContainer.findViewById(R.id.empty_history_message);
+		mEmptyHistoryMsg.setVisibility(View.GONE);
+		
 		mPager = (ViewPager) v.findViewById(R.id.history_pager);
 		new setAdapterTask().execute(); // Fix to avoid crash when nesting fragments
 		mPager.setOnPageChangeListener(new OnPageChangeListener() {
@@ -213,16 +219,17 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		mDeleteGameButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				int gameId = ((GameHistoryFragment) mAdapter.getItem(mPager.getCurrentItem())).getGameId();
-				GameTracker.deleteGame(gameId);
-			
+				if (mAdapter.getCount() > 0) {
+					int gameId = ((GameHistoryFragment) mAdapter.getItem(mPager.getCurrentItem())).getGameId();
+					GameTracker.deleteGame(gameId);
 				
-				if (mAdapter.getCount() == 1) {
-					// TODO Show No games
-				} else if (mPager.getCurrentItem() == 0) {
-					mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-				} else {
-					mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+					if (mAdapter.getCount() == 1) {
+						mPager.setCurrentItem(0);
+					} else if (mPager.getCurrentItem() == 0) {
+						mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+					} else {
+						mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+					}
 				}
 			}
 		});
@@ -232,7 +239,13 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		
 		mDeleteAllButton = (Button) mHistoryContainer.findViewById(R.id.delete_history_button);
 		mDeleteAllButton.setOnTouchListener(toggleButtonTextShadow); // Shadow state changes not support in XML
-		
+		mDeleteAllButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				GameTracker.clearHistory();
+			}
+		});
 	}
 	
 	private class setAdapterTask extends AsyncTask<Void,Void,Void>{
@@ -378,6 +391,16 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		mCurrentCursor = data;
 		mCurrentCursor.registerContentObserver(observer);
 		mAdapter.swapCursor(mCurrentCursor);
+
+		// Update counter
+		mPageNumber.setText((mPager.getCurrentItem() + 1) + "/" + mAdapter.getCount());
+
+		// Show empty list message if needed
+		if (mCurrentCursor.getCount() == 0) {
+			mEmptyHistoryMsg.setVisibility(View.VISIBLE);
+		} else {
+			mEmptyHistoryMsg.setVisibility(View.GONE);
+		}
 	}
 
 	@Override

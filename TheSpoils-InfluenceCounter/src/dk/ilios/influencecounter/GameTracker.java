@@ -5,7 +5,6 @@ package dk.ilios.influencecounter;
  * 
  * @author Christian Melchior <christian@ilios.dk>
  */
-import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -97,12 +96,20 @@ public class GameTracker {
 	
 	/**
 	 * Set new influence for a player
-	 * @param playerId
+	 * @param playerId		zero-index based (ie. player 1 is 0, player 2 is 1)
 	 * @param influence
 	 */
 	public static void setInfluence(int playerId, int influence) {
-		resetTimer(playerId);
+		
+		if (mTimeoutInMilliSeconds > 0) {
+			resetTimer(playerId);
+		}
+		
 		playerInfluence[playerId] = new GameTracker.InfluenceChange(playerId, influence, System.currentTimeMillis(), mCurrentGameId);
+		
+		if (mTimeoutInMilliSeconds == 0) {
+			saveInfluenceState(playerId);
+		}
 	}
 	
 	public static long getCurrentGameId() {
@@ -112,6 +119,10 @@ public class GameTracker {
 	public static void deleteGame(int gameId) {
 		new DeleteGame().execute(gameId);
 		
+	}
+	
+	public static void clearHistory() {
+		new ClearHistory().execute();
 	}
 	
 	/**************************************************************************
@@ -129,9 +140,9 @@ public class GameTracker {
 			SQLiteDatabase db = new Database(mContext).getReadableDatabase();
 			
 			// Get current number of games
-		    String sql = "SELECT COUNT(*) FROM " + Database.TABLE_GAMES;
+		    String sql = "SELECT MAX(_id) FROM " + Database.TABLE_GAMES;
 		    SQLiteStatement statement = db.compileStatement(sql);
-		    long gamesCount = statement.simpleQueryForLong();			
+		    long currentMaxGameId = statement.simpleQueryForLong();			
 
 			NewGameConfiguration config = params[0];
 
@@ -142,7 +153,7 @@ public class GameTracker {
 		    }
 		    
 			ContentValues values = new ContentValues();
-			values.put(Database.COLUMN_GAME_NAME, String.format(mContext.getString(R.string.game_name), (gamesCount+1)));
+			values.put(Database.COLUMN_GAME_NAME, String.format(mContext.getString(R.string.game_name), (currentMaxGameId+1)));
 			values.put(Database.COLUMN_PLAYERS, players);
 			
 			Uri result = cr.insert(HistoryContentProvider.GAMES_URI, values);
@@ -162,13 +173,6 @@ public class GameTracker {
 			}
 
 			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-//			if(mSinglePlayerFragment != null) {
-//				mSinglePlayerFragment.refreshAdapter();
-//			}
 		}
 	}
 
@@ -196,13 +200,6 @@ public class GameTracker {
 
 			return null;
 		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-//			if (mGameHistoryFragment != null) {
-//				mGameHistoryFragment.refreshAdapter();
-//			}
-		}
 	}
 	
 	/***************************************************************************
@@ -221,12 +218,22 @@ public class GameTracker {
 			Logger.i("Database", "Deleted: " + rows + " , "  + rows2);
 			return null;
 		}
-		
+	}
+
+	/***************************************************************************
+	 * Async task for clearing whole history                                          *
+	 **************************************************************************/
+	private static class ClearHistory extends AsyncTask<Void, Void, Void> {
 		@Override
-		protected void onPostExecute(Void result) {
-//			if(mSinglePlayerFragment != null) {
-//				mSinglePlayerFragment.refreshAdapter();
-//			}
+		protected Void doInBackground(Void... params) {
+			Logger.i("InfluenceCounter", "ASync - Clear history");
+			if (!isInitialized) return null;
+
+			ContentResolver cr = mContext.getContentResolver();
+			int rows = cr.delete(HistoryContentProvider.GAMES_URI, "1=1", null);
+			int rows2 = cr.delete(HistoryContentProvider.GAMES_STATE_URI, "1=1", null);
+			Logger.i("Database", "Deleted: " + rows + " , "  + rows2);
+			return null;
 		}
 	}
 	
@@ -261,11 +268,6 @@ public class GameTracker {
 			db.close();
 
 			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-			// TODO Update game list
 		}
 	}
 	
