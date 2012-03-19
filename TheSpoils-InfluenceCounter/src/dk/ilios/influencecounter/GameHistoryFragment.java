@@ -3,13 +3,14 @@ package dk.ilios.influencecounter;
 import java.text.DateFormat;
 import java.util.Date;
 
-import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.text.TextUtils;
@@ -22,13 +23,16 @@ import dk.ilios.influencecounter.history.HistoryContentProvider;
 import dk.ilios.influencecounter.utils.Formatter;
 import dk.ilios.influencecounter.utils.Logger;
 
-public class GameHistoryFragment extends Fragment {
+public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cursor> {
 
+	private static final int LOADER_ID = 0x02;
+	
 	private ListView mHistoryList;
-	private SQLiteDatabase mDb;
 	private int mGameId;
 	private String mGameName;
 	private int mPlayers;
+	private Cursor mCurrentCursor;
+	private CursorAdapter mAdapter;
 	
 	public static GameHistoryFragment newInstance(int gameId, String gameName, int players) {
         GameHistoryFragment f = new GameHistoryFragment();
@@ -55,71 +59,92 @@ public class GameHistoryFragment extends Fragment {
 			GameTracker.setGameHistoryFragment(this);
 		}
 		
-		new DatabaseConnection().execute(getActivity());
+		if (mPlayers == 2) {
+			mAdapter = new TwoPlayerHistoryAdapter(getActivity(), R.layout.history_row, null, 0);
+		} else {
+			mAdapter = new SinglePlayerHistoryAdapter(getActivity(), R.layout.history_row, null, 0);
+		}
+		
+		getLoaderManager().initLoader(LOADER_ID, null, this);
 		Logger.i("InfluenceCounter", "HistoryFragment created: " + mGameId);
 	}
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		Logger.i("InfluenceCounter", "HistoryFragment destroyed: " + mGameId);
-		if (mDb != null) {
-			mDb.close();
+		super.onDestroy();
+		getLoaderManager().destroyLoader(LOADER_ID);
+		if (mCurrentCursor != null && !mCurrentCursor.isClosed()) {
+			mCurrentCursor.close();
+			mCurrentCursor.unregisterContentObserver(observer);
 		}
 	}
 	
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		int layout = (mPlayers == 2) ? R.layout.history_two_player : R.layout.history_single_player;
 		View v = inflater.inflate(layout, null);
 		mHistoryList = (ListView) v.findViewById(R.id.history_list);
+		mHistoryList.setAdapter(mAdapter);
+
 		((TextView) v.findViewById(R.id.game_name)).setText(mGameName);
-		
 		return v;
-	}
-	
-	public void refreshAdapter() {
-		if (mDb != null && mDb.isOpen()) {
-			Cursor c = mDb.query(Database.TABLE_GAME_STATE, Database.HISTORY_GAME_STATE_COLUMNS, "game_id=" + mGameId, null, null, null, "_id ASC");
-			((CursorAdapter) mHistoryList.getAdapter()).changeCursor(c);
-		}
 	}
 	
 	public int getGameId() {
 		return getArguments().getInt("gameId", -1);
 	}
-	
-	
-	/**
-	 * Fetch rows in a async manner
-	 */
-	private class DatabaseConnection extends AsyncTask<Context, Void, Cursor> {
-		
-		private Context mContext;
-		
-		@Override
-		protected Cursor doInBackground(Context... params) {
-			mContext = params[0];
-			ContentResolver cr = mContext.getContentResolver();
-			return cr.query(HistoryContentProvider.GAMES_STATE_URI, Database.HISTORY_GAME_STATE_COLUMNS, Database.COLUMN_GAME_ID+"="+mGameId, null, null);
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new android.support.v4.content.CursorLoader(getActivity(), 
+				HistoryContentProvider.GAMES_STATE_URI, 
+				Database.HISTORY_GAME_STATE_COLUMNS, 
+				Database.COLUMN_GAME_ID+"="+mGameId, 
+				null,
+				Database.COLUMN_TIMESTAMP + " ASC");
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		if (isRemoving()) return;
+
+		if (mCurrentCursor != null) {
+			mCurrentCursor.unregisterContentObserver(observer);
+			mCurrentCursor.close();
 		}
+		
+		mCurrentCursor = data;
+		mCurrentCursor.registerContentObserver(observer);
+		Cursor c = mAdapter.swapCursor(mCurrentCursor);
+		if (c != null && !c.isClosed()) {
+			c.close();
+		}
+	}
 
-		@Override
-		protected void onPostExecute(Cursor result) {
-			super.onPostExecute(result);
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		if (isRemoving()) return;
 
-			CursorAdapter adapter;
-			if (mPlayers == 2) {
-				adapter = new TwoPlayerHistoryAdapter(mContext, R.layout.history_row, result, 0);
-			} else {
-				adapter = new SinglePlayerHistoryAdapter(mContext, R.layout.history_row, result, 0);
+		if (mAdapter != null) {
+			Cursor c = mAdapter.swapCursor(null);
+			if (c != null) {
+				c.close();
 			}
-			
-			mHistoryList.setAdapter(adapter);
 		}
 	}
 	
+	ContentObserver observer = new ContentObserver(new Handler()) {
+		@Override
+		public void onChange(boolean selfChange) {
+			if (isAdded() && !isRemoving()) {
+				getLoaderManager().restartLoader(LOADER_ID, null, GameHistoryFragment.this);
+			}
+		}
+	};
+
+	
+
 /*******************************************************************************
  * SINGLE PLAYER ROW ADAPTER                                                   *
  ******************************************************************************/

@@ -11,7 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.AsyncTask;
 import dk.ilios.influencecounter.history.HistoryContentProvider;
@@ -136,43 +135,19 @@ public class GameTracker {
 			if (!isInitialized) return null;
 
 			ContentResolver cr = mContext.getContentResolver();
+		    NewGameConfiguration config = params[0];
 			
-			SQLiteDatabase db = new Database(mContext).getReadableDatabase();
-			
-			// Get current number of games
-		    String sql = "SELECT MAX(_id) FROM " + Database.TABLE_GAMES;
-		    SQLiteStatement statement = db.compileStatement(sql);
-		    long currentMaxGameId = statement.simpleQueryForLong();			
-
-			NewGameConfiguration config = params[0];
-
 		    // Determine number of players
-			int players = 1;
+		    ContentValues values = new ContentValues();
+		    values.put("player1", config.player1StartingInfluence);
 		    if (config.player2StartingInfluence > 0) {
-		    	players = 2;
+		    	values.put("player2", config.player2StartingInfluence);
 		    }
-		    
-			ContentValues values = new ContentValues();
-			values.put(Database.COLUMN_GAME_NAME, String.format(mContext.getString(R.string.game_name), (currentMaxGameId+1)));
-			values.put(Database.COLUMN_PLAYERS, players);
-			
-			Uri result = cr.insert(HistoryContentProvider.GAMES_URI, values);
+
+		    Uri result = cr.insert(HistoryContentProvider.GAMES_NEWGAME_URI, values);
 			mCurrentGameId = ContentUris.parseId(result);
-			Logger.i("InfluenceCounter", "New game: " + mCurrentGameId);
-			db.close();
 
-			// Save starting influence as well
-			long timestamp = System.currentTimeMillis();
-			InfluenceChange player1 = new InfluenceChange(0, config.player1StartingInfluence, timestamp, mCurrentGameId);
-			InfluenceChange player2 = new InfluenceChange(1, config.player2StartingInfluence, timestamp, mCurrentGameId);
-			
-			if (players == 2) {
-				new SaveInfluenceChange().execute(player1, player2);
-			} else {
-				new SaveInfluenceChange().execute(player1);
-			}
-
-			return null;
+		    return null;
 		}
 	}
 
@@ -213,9 +188,7 @@ public class GameTracker {
 
 			int gameId = params[0];
 			ContentResolver cr = mContext.getContentResolver();
-			int rows = cr.delete(HistoryContentProvider.GAMES_URI, Database.COLUMN__ID + "=" + gameId, null);
-			int rows2 = cr.delete(HistoryContentProvider.GAMES_STATE_URI, Database.COLUMN_GAME_ID+"="+gameId, null);
-			Logger.i("Database", "Deleted: " + rows + " , "  + rows2);
+			cr.delete(HistoryContentProvider.GAMES_DELETE_URI, null, new String[] { Integer.toString(gameId) });
 			return null;
 		}
 	}

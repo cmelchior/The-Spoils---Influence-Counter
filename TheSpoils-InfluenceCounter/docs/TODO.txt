@@ -33,8 +33,8 @@ TODO:
 	- Improve history swipe animation smootheness.
 	+ Button pressed effect
 	- Handle no games in Database
-	- Creating new games based on _ID in database
-	- Pager not updated when inserting new games
+	+ Creating new games based on _ID in database
+	+ Pager not updated when inserting new games
 	+ Empty history list view
 	- Show loading icon for list views when swiping (history)
 	- Support mdpi/ldpi/tablet

@@ -33,6 +33,8 @@ import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cursor> {
 
+	private static final int LOADER_ID = 0x01;
+	
 	private MainActivity mParent;
 	
 	private int mInfluence = 25;
@@ -73,14 +75,9 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		styles.add(new StyleTemplate(R.drawable.arcanist_top, R.drawable.arcanist_bottom));
 		styles.add(new StyleTemplate(R.drawable.gearsmith_top, R.drawable.gearsmith_bottom));
 
-		getLoaderManager().initLoader(0x01, null, this);
+		getLoaderManager().initLoader(LOADER_ID, null, this);
 	}
 
-	public void refreshAdapter() {
-		getLoaderManager().restartLoader(0x01, null, this);
-	}
-	
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View v = inflater.inflate(R.layout.single_player_view, container, false);
@@ -223,13 +220,13 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 					int gameId = ((GameHistoryFragment) mAdapter.getItem(mPager.getCurrentItem())).getGameId();
 					GameTracker.deleteGame(gameId);
 				
-					if (mAdapter.getCount() == 1) {
-						mPager.setCurrentItem(0);
-					} else if (mPager.getCurrentItem() == 0) {
-						mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-					} else {
-						mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-					}
+//					if (mAdapter.getCount() == 1) {
+//						mPager.setCurrentItem(0);
+//					} else if (mPager.getCurrentItem() == 0) {
+//						mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+//					} else {
+//						mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+//					}
 				}
 			}
 		});
@@ -267,9 +264,13 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		setColors();
 	}
 
-	@Override
+	@Override	
 	public void onDestroy() {
 		super.onDestroy();
+		getLoaderManager().destroyLoader(LOADER_ID);
+		if (mCurrentCursor != null && !mCurrentCursor.isClosed()) {
+			mCurrentCursor.close();
+		}
 	}
 	
 	
@@ -385,15 +386,21 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		if (mCurrentCursor != null) {
 			mCurrentCursor.unregisterContentObserver(observer);
-			mCurrentCursor.close();
 		}
 
 		mCurrentCursor = data;
 		mCurrentCursor.registerContentObserver(observer);
-		mAdapter.swapCursor(mCurrentCursor);
-
+		Cursor c = mAdapter.swapCursor(mCurrentCursor);
+		if (c != null && !c.isClosed()) {
+			c.close();
+		}
+		
+		mPager.setCurrentItem(mAdapter.getCount() - 1);
+		mAdapter.notifyDataSetChanged();
+		
 		// Update counter
-		mPageNumber.setText((mPager.getCurrentItem() + 1) + "/" + mAdapter.getCount());
+		int currentPage = (mAdapter.getCount() > 0) ? mPager.getCurrentItem() + 1 : 0;
+		mPageNumber.setText(currentPage + "/" + mAdapter.getCount());
 
 		// Show empty list message if needed
 		if (mCurrentCursor.getCount() == 0) {
@@ -405,14 +412,19 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		mAdapter.swapCursor(null);
+		if (mAdapter != null) {
+			Cursor c = mAdapter.swapCursor(null);
+			if (c != null && !c.isClosed()) {
+				c.close();
+			}
+			mAdapter.notifyDataSetChanged();
+		}
 	}
-	
 	
 	ContentObserver observer = new ContentObserver(new Handler()) {
 		@Override
 		public void onChange(boolean selfChange) {
-			getLoaderManager().restartLoader(0x01, null, SinglePlayerFragment.this);
+			getLoaderManager().restartLoader(LOADER_ID, null, SinglePlayerFragment.this);
 		}
 	};
 	
