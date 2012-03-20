@@ -1,6 +1,7 @@
 package dk.ilios.influencecounter;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.Context;
@@ -13,13 +14,12 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import dk.ilios.influencecounter.history.HistoryContentProvider;
@@ -35,7 +35,7 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	private String mGameName;
 	private int mPlayers;
 	private Cursor mCurrentCursor;
-	private CursorAdapter mAdapter;
+	private BaseAdapter mAdapter;
 
 	private TextView totalGainedColumn3;
 	private TextView totalLostColumn2;
@@ -73,7 +73,8 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 		}
 		
 		if (mPlayers == 2) {
-			mAdapter = new TwoPlayerHistoryAdapter(getActivity(), R.layout.history_row, null, 0);
+			mAdapter = new TwoPlayerHistoryAdapter(getActivity(), 0);
+//			mAdapter = new TwoPlayerHistoryAdapter(getActivity(), R.layout.history_row, null, 0);
 		} else {
 			mAdapter = new SinglePlayerHistoryAdapter(getActivity(), R.layout.history_row, null, 0);
 		}
@@ -209,18 +210,80 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 			
 		}
 		
-		
 		// Insert new cursor
-		Cursor c = mAdapter.swapCursor(mCurrentCursor);
-		if (c != null && !c.isClosed()) {
-			c.close();
+		if (mPlayers == 1 && mAdapter instanceof CursorAdapter) {
+			Cursor c = ((CursorAdapter) mAdapter).swapCursor(mCurrentCursor);
+			if (c != null && !c.isClosed()) {	
+				c.close();
+			}
+		} else {
+			((ArrayAdapter<TwoPlayerRow>) mAdapter).clear();
+			((ArrayAdapter<TwoPlayerRow>) mAdapter).addAll(createTwoPlayerRows());
+			
 		}
 	}
+	
+	private ArrayList<TwoPlayerRow> createTwoPlayerRows() {
+		Cursor c = mCurrentCursor;
+		ArrayList<TwoPlayerRow> rows = new ArrayList<GameHistoryFragment.TwoPlayerRow>();
+
+		int columnTimestamp = c.getColumnIndex(Database.COLUMN_TIMESTAMP);
+		int columnPlayer = c.getColumnIndex(Database.COLUMN_PLAYER_ID);
+		int columnInfluence = c.getColumnIndex(Database.COLUMN_INFLUENCE);
+		
+		int lastPlayer1Influence = 0;
+		int lastPlayer2Influence = 0;
+		
+		// Invariant 1st row is player 1 start value, 2nd row is player 2
+		c.moveToFirst();
+		long timestamp = c.getInt(columnTimestamp);
+		int player1StartInfluence = lastPlayer1Influence = c.getInt(columnInfluence);
+		c.moveToNext();
+		int player2StartInfluence = lastPlayer2Influence = c.getInt(columnInfluence);
+		
+		rows.add(new TwoPlayerRow(timestamp, player1StartInfluence, 0, player2StartInfluence, 0));
+		
+		while(c.moveToNext()) {
+			int player = c.getInt(columnPlayer);
+			int influence = c.getInt(columnInfluence);
+			timestamp = c.getInt(columnTimestamp);
+			
+			if (player == 0) {
+				int diff = influence - lastPlayer1Influence;
+				if (diff < 0) {
+					player1TotalLost += diff;
+				} else {
+					player1TotalGained += diff;
+				}
+				
+				lastPlayer1Influence = influence;
+				if (mPlayers == 1) {
+					rows.add(new TwoPlayerRow(timestamp, lastPlayer1Influence, diff, 0, 0));
+				} else { 
+					rows.add(new TwoPlayerRow(timestamp, lastPlayer1Influence, diff, lastPlayer2Influence, 0));
+				}
+				
+			} else if (player == 1) {
+				int diff = influence - lastPlayer2Influence;
+				if (diff < 0) {
+					player2TotalLost += diff;
+				} else {
+					player2TotalGained += diff;
+				}
+				
+				lastPlayer2Influence = influence;
+				rows.add(new TwoPlayerRow(timestamp, lastPlayer1Influence, 0, lastPlayer2Influence, diff));
+			}
+		}
+		
+		return rows;
+	}
+	
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		if (mAdapter != null) {
-			Cursor c = mAdapter.swapCursor(null);
+		if (mAdapter != null && mAdapter instanceof CursorAdapter) {
+			Cursor c = ((CursorAdapter) mAdapter).swapCursor(null);
 			if (c != null) {
 				c.close();
 			}
@@ -283,114 +346,169 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	}
 	
 /*******************************************************************************
- * SINGLE PLAYER ROW ADAPTER                                                   *
+ * TWO PLAYER ROW ADAPTER                                                   *
  ******************************************************************************/
-	private static class TwoPlayerHistoryAdapter extends ResourceCursorAdapter {
+	public static class TwoPlayerRow {
+		public long timestamp;
+		public int player1Influence;
+		public int player1Change;
+		public int player2Influence;
+		public int player2Change;
+		
+		public TwoPlayerRow(long timestamp, int player1Influence, int player1Change, int player2Influence, int player2Change) {
+			this.timestamp = timestamp;
+			this.player1Influence = player1Influence;
+			this.player1Change = player1Change;
+			this.player2Influence = player2Influence;
+			this.player2Change = player2Change;
+		}
+	}
+	
+	private static class TwoPlayerHistoryAdapter extends ArrayAdapter<TwoPlayerRow> {
 
+		private LayoutInflater mInflater;
+		private Context mContext;
 		private DateFormat mTimeFormatter;
 
-		public TwoPlayerHistoryAdapter(Context context, int layout, Cursor c, int flags) {
-			super(context, layout, c, flags);
+		public TwoPlayerHistoryAdapter(Context context, int textViewResourceId) {
+			super(context, textViewResourceId);
+			mInflater = LayoutInflater.from(context);
+			mContext = context;
 			mTimeFormatter = Formatter.getTimeFormatter(context);
 		}
-		
+
 		@Override
-		public void bindView(View view, Context context, Cursor cursor) {
-			if (cursor.getPosition() % 2 == 0) {
-				view.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_1));
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View v = (convertView != null) ? convertView : mInflater.inflate(R.layout.history_row, null);
+
+			if (position % 2 == 0) {
+				v.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_1));
 			} else {
-				view.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_2));
+				v.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_2));
 			}
 
-			int player1ActualInfluence = 0;
-			int player1Change = 0;
-			int player2ActualInfluence = 0;
-			int player2Change = 0;
+			TwoPlayerRow item = getItem(position);
+
+			TextView c1 = (TextView) v.findViewById(R.id.column_1);
+			TextView c2 = (TextView) v.findViewById(R.id.column_2);
+			TextView c3 = (TextView) v.findViewById(R.id.column_3);
 			
-			// Hide starting row
-			if (cursor.isFirst()) {
-				view.setVisibility(View.GONE);
-				return;
+			c1.setText(mTimeFormatter.format(new Date(item.timestamp)));
+			
+			if (item.player1Change != 0) {
+				c2.setText(TextUtils.concat(Integer.toString(item.player1Influence), Formatter.colorize(" (%1$s)", item.player1Change, mContext)));
 			} else {
-				view.setVisibility(View.VISIBLE);
+				c2.setText(Integer.toString(item.player1Influence));
 			}
 			
-			// Assume 2nd row is the "starting row"
-			// Invariant: 2nd player is row 2, 1st player is row 1
-			
-			boolean startRow = false;
-			int player = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_PLAYER_ID));
-
-			if (cursor.getPosition() == 1) {
-				startRow = true;
-				player2ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-				cursor.moveToPrevious();
-				player1ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-				cursor.moveToNext();
-
+			if (item.player2Change != 0) {
+				c3.setText(TextUtils.concat(Integer.toString(item.player2Influence), Formatter.colorize(" (%1$s)", item.player2Change, mContext)));
 			} else {
-				if (player == 1) {
-					player1ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-					player1Change = player1ActualInfluence - getPlayerInfluence(cursor, 1);
-					player2ActualInfluence = getPlayerInfluence(cursor, 2);
-							
-				} else {
-					player2ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-					player2Change = player2ActualInfluence - getPlayerInfluence(cursor, 2);
-					player1ActualInfluence = getPlayerInfluence(cursor, 1);
-				}
+				c3.setText(Integer.toString(item.player2Influence));
 			}
 			
-			
-			TextView time = (TextView) view.findViewById(R.id.column_1);
-			time.setText(mTimeFormatter.format(new Date(cursor.getLong(cursor.getColumnIndex(Database.COLUMN_TIMESTAMP)))));
-
-			TextView influenceChange = (TextView) view.findViewById(R.id.column_2);
-			if (startRow || player1Change == 0) {
-				influenceChange.setText(Integer.toString(player1ActualInfluence));
-			} else {
-				influenceChange.setText(TextUtils.concat(Integer.toString(player1ActualInfluence), Formatter.colorize(" (%1$s)", player1Change, mContext)));
-			}
-
-			TextView tv = (TextView) view.findViewById(R.id.column_3);
-			if (startRow || player2Change == 0) {
-				tv.setText(Integer.toString(player2ActualInfluence));
-			} else {
-				tv.setText(TextUtils.concat(Integer.toString(player2ActualInfluence), Formatter.colorize(" (%1$s)", player2Change, mContext)));
-			}
-			
+			return v;
 		}
 		
-		/**
-		 * Finds the last occurence of a players influence.
-		 * Invariant: It is assumed the cursor is positioned at the last element,
-		 * so searching is only backwards.
-		 * 
-		 * The last element is also ignored
-		 * 
-		 * @param c			Cursor to search (list of game_state_changes)
-		 * @param player	Player id
-		 * @return	Players influence
-		 */
-		private int getPlayerInfluence(Cursor c, int player) {
-			
-			int playerInfluence = 0;
-			int startPosition = c.getPosition();
-
-			c.moveToPrevious(); // Ignore last element
-			while(!c.isBeforeFirst()) {
-				int rowPlayerId = c.getInt(c.getColumnIndexOrThrow(Database.COLUMN_PLAYER_ID));
-				if (rowPlayerId == player) {
-					playerInfluence = c.getInt(c.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-					break;
-				}
-				
-				c.moveToPrevious();
-			}
-			
-			c.moveToPosition(startPosition);
-			return playerInfluence;
-		}
+		
+		
+//		@Override
+//		public void bindView(View view, Context context, Cursor cursor) {
+//			if (cursor.getPosition() % 2 == 0) {
+//				view.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_1));
+//			} else {
+//				view.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_2));
+//			}
+//
+//			int player1ActualInfluence = 0;
+//			int player1Change = 0;
+//			int player2ActualInfluence = 0;
+//			int player2Change = 0;
+//			
+//			// Hide starting row
+//			if (cursor.isFirst()) {
+//				view.setVisibility(View.GONE);
+//				return;
+//			} else {
+//				view.setVisibility(View.VISIBLE);
+//			}
+//			
+//			// Assume 2nd row is the "starting row"
+//			// Invariant: 2nd player is row 2, 1st player is row 1
+//			
+//			boolean startRow = false;
+//			int player = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_PLAYER_ID));
+//
+//			if (cursor.getPosition() == 1) {
+//				startRow = true;
+//				player2ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
+//				cursor.moveToPrevious();
+//				player1ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
+//				cursor.moveToNext();
+//
+//			} else {
+//				if (player == 1) {
+//					player1ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
+//					player1Change = player1ActualInfluence - getPlayerInfluence(cursor, 1);
+//					player2ActualInfluence = getPlayerInfluence(cursor, 2);
+//							
+//				} else {
+//					player2ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
+//					player2Change = player2ActualInfluence - getPlayerInfluence(cursor, 2);
+//					player1ActualInfluence = getPlayerInfluence(cursor, 1);
+//				}
+//			}
+//			
+//			
+//			TextView time = (TextView) view.findViewById(R.id.column_1);
+//			time.setText();
+//
+//			TextView influenceChange = (TextView) view.findViewById(R.id.column_2);
+//			if (startRow || player1Change == 0) {
+//				influenceChange.setText(Integer.toString(player1ActualInfluence));
+//			} else {
+//				influenceChange.setText(TextUtils.concat(Integer.toString(player1ActualInfluence), Formatter.colorize(" (%1$s)", player1Change, mContext)));
+//			}
+//
+//			TextView tv = (TextView) view.findViewById(R.id.column_3);
+//			if (startRow || player2Change == 0) {
+//				tv.setText(Integer.toString(player2ActualInfluence));
+//			} else {
+//				tv.setText(TextUtils.concat(Integer.toString(player2ActualInfluence), Formatter.colorize(" (%1$s)", player2Change, mContext)));
+//			}
+//			
+//		}
+//		
+//		/**
+//		 * Finds the last occurence of a players influence.
+//		 * Invariant: It is assumed the cursor is positioned at the last element,
+//		 * so searching is only backwards.
+//		 * 
+//		 * The last element is also ignored
+//		 * 
+//		 * @param c			Cursor to search (list of game_state_changes)
+//		 * @param player	Player id
+//		 * @return	Players influence
+//		 */
+//		private int getPlayerInfluence(Cursor c, int player) {
+//			
+//			int playerInfluence = 0;
+//			int startPosition = c.getPosition();
+//
+//			c.moveToPrevious(); // Ignore last element
+//			while(!c.isBeforeFirst()) {
+//				int rowPlayerId = c.getInt(c.getColumnIndexOrThrow(Database.COLUMN_PLAYER_ID));
+//				if (rowPlayerId == player) {
+//					playerInfluence = c.getInt(c.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
+//					break;
+//				}
+//				
+//				c.moveToPrevious();
+//			}
+//			
+//			c.moveToPosition(startPosition);
+//			return playerInfluence;
+//		}
 		
 	}
 }
