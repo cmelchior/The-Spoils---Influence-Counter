@@ -13,7 +13,10 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,16 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	private int mPlayers;
 	private Cursor mCurrentCursor;
 	private CursorAdapter mAdapter;
+
+	private TextView totalGainedColumn3;
+	private TextView totalLostColumn2;
+	private TextView totalGainedColumn2;
+	private TextView totalLostColumn3;
+	
+	private int player1TotalGained = 0;
+	private int player1TotalLost = 0;
+	private int player2TotalGained = 0;
+	private int player2TotalLost = 0;
 	
 	public static GameHistoryFragment newInstance(int gameId, String gameName, int players) {
         GameHistoryFragment f = new GameHistoryFragment();
@@ -88,6 +101,33 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 		mHistoryList.setAdapter(mAdapter);
 
 		((TextView) v.findViewById(R.id.game_name)).setText(mGameName);
+		
+		// Summary
+		View totalGainedRow = v.findViewById(R.id.total_gained);
+		View totalLostRow = v.findViewById(R.id.total_lost);
+		
+		((TextView)totalGainedRow.findViewById(R.id.column_1)).setText(R.string.total_gained);
+		totalGainedColumn2 = (TextView)totalGainedRow.findViewById(R.id.column_2);
+		totalGainedColumn3 = (TextView) totalGainedRow.findViewById(R.id.column_3);
+		
+		((TextView)totalLostRow.findViewById(R.id.column_1)).setText(R.string.total_lost);
+		totalLostColumn2 = (TextView)totalLostRow.findViewById(R.id.column_2);
+		totalLostColumn3 = (TextView)totalLostRow.findViewById(R.id.column_3);
+
+		if (mPlayers == 1) {
+			totalGainedColumn2.setText("");
+			totalGainedColumn3.setText(Formatter.colorize(0, getActivity()));
+			totalLostColumn2.setText("");
+			totalLostColumn3.setText(Formatter.colorizeNegative(null, "-0", getActivity()));
+		} else {
+			totalGainedColumn2.setText(Formatter.colorize(0, getActivity()));
+			totalGainedColumn3.setText(Formatter.colorize(0, getActivity()));
+			totalLostColumn2.setText(Formatter.colorizeNegative(null, "-0", getActivity()));
+			totalLostColumn3.setText(Formatter.colorizeNegative(null, "-0", getActivity()));
+		}
+		
+		totalGainedColumn3.setText(Formatter.colorize(0, getActivity()));
+			
 		return v;
 	}
 	
@@ -107,8 +147,6 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		if (isRemoving()) return;
-
 		if (mCurrentCursor != null) {
 			mCurrentCursor.unregisterContentObserver(observer);
 			mCurrentCursor.close();
@@ -116,6 +154,63 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 		
 		mCurrentCursor = data;
 		mCurrentCursor.registerContentObserver(observer);
+
+		// Calculate summary values
+		player1TotalGained = 0;
+		player1TotalLost = 0;
+		player2TotalGained = 0;
+		player2TotalLost = 0;
+
+		int startPosition = mCurrentCursor.getPosition();
+		int lastPlayer1Influence = Integer.MAX_VALUE;
+		int lastPlayer2Influence = Integer.MAX_VALUE;
+		
+		while (mCurrentCursor.moveToNext()) {
+			int player = mCurrentCursor.getInt(mCurrentCursor.getColumnIndexOrThrow(Database.COLUMN_PLAYER_ID));
+			int influence = mCurrentCursor.getInt(mCurrentCursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
+			
+			if (player == 0) {
+				if (lastPlayer1Influence != Integer.MAX_VALUE) {
+					int diff = influence - lastPlayer1Influence;
+					if (diff < 0) {
+						player1TotalLost += diff;
+					} else {
+						player1TotalGained += diff;
+					}
+				}
+				
+				lastPlayer1Influence = influence;
+				
+			} else if (player == 1) {
+				if (lastPlayer2Influence != Integer.MAX_VALUE) {
+					int diff = influence - lastPlayer2Influence;
+					if (diff < 0) {
+						player2TotalLost += diff;
+					} else {
+						player2TotalGained += diff;
+					}
+				}
+				
+				lastPlayer2Influence = influence;
+			}
+		}
+		
+		mCurrentCursor.moveToPosition(startPosition);
+		
+		if (mPlayers == 1) {
+			totalGainedColumn3.setText(Formatter.colorizePositive(null, "+" + Integer.toString(player1TotalGained), getActivity()));
+			totalLostColumn3.setText(Formatter.colorizeNegative(null, (player1TotalLost == 0) ? "-" + player1TotalLost : Integer.toString(player1TotalLost), getActivity()));
+		 	
+		} else if (mPlayers == 2) {
+			totalGainedColumn2.setText(Formatter.colorizePositive(null, "+" + Integer.toString(player1TotalGained), getActivity()));
+			totalLostColumn2.setText(Formatter.colorizeNegative(null, (player1TotalLost == 0) ? "-" + player1TotalLost : Integer.toString(player1TotalLost), getActivity()));
+			totalGainedColumn3.setText(Formatter.colorizePositive(null, "+" + Integer.toString(player2TotalGained), getActivity()));
+			totalLostColumn3.setText(Formatter.colorizeNegative(null, (player2TotalLost == 0) ? "-" + player2TotalLost : Integer.toString(player2TotalLost), getActivity()));
+			
+		}
+		
+		
+		// Insert new cursor
 		Cursor c = mAdapter.swapCursor(mCurrentCursor);
 		if (c != null && !c.isClosed()) {
 			c.close();
@@ -124,8 +219,6 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		if (isRemoving()) return;
-
 		if (mAdapter != null) {
 			Cursor c = mAdapter.swapCursor(null);
 			if (c != null) {

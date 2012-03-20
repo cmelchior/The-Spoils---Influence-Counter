@@ -18,8 +18,7 @@ TODO:
 	- Press game name to change it
 	+ Delete single game function
 	+ Delete history function
-	- Unit tests for history
-	- Database demo data
+	+ Database demo data
 	+ Show history information
 	+ Do proper pager number
 	+ Record history information
@@ -31,8 +30,9 @@ TODO:
 	- Make sure a new game is started when app starts and on swipes
 	+ Support for 0-timer grouping
 	- Improve history swipe animation smootheness.
+	+ Show total damage taken / influence received
 	+ Button pressed effect
-	- Handle no games in Database
+	- Handle no games in Database (no games but change happen?)
 	+ Creating new games based on _ID in database
 	+ Pager not updated when inserting new games
 	+ Empty history list view

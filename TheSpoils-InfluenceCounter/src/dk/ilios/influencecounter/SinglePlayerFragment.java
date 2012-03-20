@@ -266,11 +266,12 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 
 	@Override	
 	public void onDestroy() {
-		super.onDestroy();
 		getLoaderManager().destroyLoader(LOADER_ID);
 		if (mCurrentCursor != null && !mCurrentCursor.isClosed()) {
 			mCurrentCursor.close();
 		}
+		
+		super.onDestroy();
 	}
 	
 	
