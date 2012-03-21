@@ -22,8 +22,6 @@ public class GameTracker {
 	private static Thread[] timerThreads = new Thread[Constants.MAX_PLAYERS];
 		
 	private static Context mContext;
-	private static SinglePlayerFragment mSinglePlayerFragment;
-	private static GameHistoryFragment mGameHistoryFragment;
 	
 	private static boolean isInitialized = false;
 	private static long mTimeoutInMilliSeconds = 2*1000; // Default is 2 seconds
@@ -43,14 +41,6 @@ public class GameTracker {
 		}
 	}
 
-	public static void setHistoryListAdapter(SinglePlayerFragment fragment) {
-		mSinglePlayerFragment = fragment;
-	}
-	
-	public static void setGameHistoryFragment(GameHistoryFragment fragment) {
-		mGameHistoryFragment = fragment;
-	}
-	
 	/**
 	 * Starts logging a new game
 	 */
@@ -118,6 +108,10 @@ public class GameTracker {
 	public static void deleteGame(int gameId) {
 		new DeleteGame().execute(gameId);
 		
+	}
+	
+	public static void updateGameName(int gameId, String gameName) {
+		new UpdateGameName().execute(Integer.toString(gameId), gameName);
 	}
 	
 	public static void clearHistory() {
@@ -209,6 +203,26 @@ public class GameTracker {
 			return null;
 		}
 	}
+
+	/***************************************************************************
+	 * Async task for updating a game name						               *
+	 **************************************************************************/
+	private static class UpdateGameName extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... params) {
+			Logger.i("InfluenceCounter", "ASync - Update name");
+			if (!isInitialized) return null;
+
+			ContentResolver cr = mContext.getContentResolver();
+			ContentValues values = new ContentValues();
+			values.put(Database.COLUMN_GAME_NAME, params[1]);
+			
+			cr.update(HistoryContentProvider.GAMES_URI, values, Database.COLUMN__ID+"=?", new String[] { params[0] });
+			return null;
+		}
+	}
+
 	
 	
 	/***************************************************************************

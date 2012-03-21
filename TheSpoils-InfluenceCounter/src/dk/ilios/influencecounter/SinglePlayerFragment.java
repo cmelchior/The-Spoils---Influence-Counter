@@ -65,7 +65,6 @@ public class SinglePlayerFragment extends Fragment implements LoaderCallbacks<Cu
 		super.onCreate(savedInstanceState);
 		mParent  = (MainActivity) getActivity();
 		mAdapter = new GamesListAdapter(getFragmentManager());
-		GameTracker.setHistoryListAdapter(this);
 		
 		currentStyle = mParent.getSinglePlayerTheme() - 1;
 

@@ -10,8 +10,8 @@ TODO:
 	- Drop-shadow on top/bottom graphics
 	+ In-animation (might needs to be changed with data)
 	- In-animation -> Hide content when doing animation
-	- Determine layout on 2-player view
-	- Reconsider usage of CursorAdapters for 2-player games
+	+ Determine layout on 2-player view
+	+ Reconsider usage of CursorAdapters for 2-player games
 	+ Database model
 	+ Configuration setting for grouping changes
 	+ Configuration setting for player starting influence

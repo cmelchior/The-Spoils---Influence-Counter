@@ -311,17 +311,23 @@ public class HistoryContentProvider extends ContentProvider {
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 		int rowsUpdated = 0;
+		boolean notify = true;
 		
 		switch(sUriMatcher.match(uri)) {
 		case GAME_ID:
 			rowsUpdated = db.update(Database.TABLE_GAMES, values, Database.COLUMN__ID+"="+ContentUris.parseId(uri), null);
 			break;
+		case GAMES: 
+			rowsUpdated = db.update(Database.TABLE_GAMES, values, selection, selectionArgs);
+			notify = false;
+			break;
+			
 		default:
 			throw new IllegalArgumentException("Unsupported delete URI: " + uri);        
 		}
 		
 		// Notify that a new row has been inserted
-		if (rowsUpdated > 0) {
+		if (rowsUpdated > 0 && notify) {
 	         getContext().getContentResolver().notifyChange(uri, null);    
 		} 
 

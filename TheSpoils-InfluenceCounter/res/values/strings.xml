@@ -8,6 +8,10 @@
     <string name="influence_change">%1$s -> %2$s</string>
     <string name="start_history_marker">-</string>
 	<string name="game_name">Game %1$s</string>
+	<string name="game_name_dialog_title">Game name</string>
+	<string name="game_name_dialog_msg">Set game name.</string>
+	<string name="dialog_ok">Ok</string>
+	<string name="dialog_cancel">Cancel</string>
 	<string name="empty_history_message">The history log is empty. Press refresh to start logging a new game.</string>
     <string name="total_gained">Total gained</string>
 	<string name="total_lost">Total lost</string>

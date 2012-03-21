@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,10 +18,15 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import dk.ilios.influencecounter.history.HistoryContentProvider;
@@ -37,6 +44,8 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	private Cursor mCurrentCursor;
 	private BaseAdapter mAdapter;
 
+	private Button mGameNameView;
+	
 	private TextView totalGainedColumn3;
 	private TextView totalLostColumn2;
 	private TextView totalGainedColumn2;
@@ -48,7 +57,7 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	private int player2TotalLost = 0;
 	
 	public static GameHistoryFragment newInstance(int gameId, String gameName, int players) {
-        GameHistoryFragment f = new GameHistoryFragment();
+		GameHistoryFragment f = new GameHistoryFragment();
         Bundle args = new Bundle();
         args.putInt("gameId", gameId);
         args.putString("gameName", gameName);
@@ -68,13 +77,9 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 		mGameId = getArguments().getInt("gameId", -1);
 		mGameName = getArguments().getString("gameName", "");
 		mPlayers = getArguments().getInt("players", 0);
-		if (mGameId == GameTracker.getCurrentGameId()) {
-			GameTracker.setGameHistoryFragment(this);
-		}
 		
 		if (mPlayers == 2) {
 			mAdapter = new TwoPlayerHistoryAdapter(getActivity(), 0);
-//			mAdapter = new TwoPlayerHistoryAdapter(getActivity(), R.layout.history_row, null, 0);
 		} else {
 			mAdapter = new SinglePlayerHistoryAdapter(getActivity(), R.layout.history_row, null, 0);
 		}
@@ -101,7 +106,50 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 		mHistoryList = (ListView) v.findViewById(R.id.history_list);
 		mHistoryList.setAdapter(mAdapter);
 
-		((TextView) v.findViewById(R.id.game_name)).setText(mGameName);
+		mGameNameView = (Button) v.findViewById(R.id.game_name);
+		mGameNameView.setText(mGameName);
+		mGameNameView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				TextView button = (TextView) v;
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					button.setShadowLayer(3, -5, 0, getResources().getColor(R.color.button_shadow_color));
+					break;
+				case MotionEvent.ACTION_UP:
+				case MotionEvent.ACTION_CANCEL:
+					button.setShadowLayer(0,0,0,0);
+					break;
+				}
+				return false;
+			}
+		});
+		
+		mGameNameView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				View dialogView = getActivity().getLayoutInflater().inflate(R.layout.edit_name_dialog, null);
+				final EditText input = (EditText) dialogView.findViewById(R.id.edit_name_input);
+				input.setText(mGameName);
+				
+				new AlertDialog.Builder(getActivity())
+			    .setTitle(R.string.game_name_dialog_title)
+			    .setView(dialogView)
+			    .setPositiveButton(getText(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int whichButton) {
+			        	mGameName = input.getText().toString(); 
+			        	mGameNameView.setText(mGameName);
+			        	GameTracker.updateGameName(mGameId, mGameName);
+			        }
+			    }).setNegativeButton(getText(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int whichButton) {
+			            // Do nothing.
+			        }
+			    }).show();				
+			}
+		});
 		
 		// Summary
 		View totalGainedRow = v.findViewById(R.id.total_gained);
