@@ -427,136 +427,53 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = (convertView != null) ? convertView : mInflater.inflate(R.layout.history_row, null);
-
+			
+			View v = convertView;
+			if (v == null) {
+				v = mInflater.inflate(R.layout.history_row, null);
+				TextView c1 = (TextView) v.findViewById(R.id.column_1);
+				TextView c2 = (TextView) v.findViewById(R.id.column_2);
+				TextView c3 = (TextView) v.findViewById(R.id.column_3);
+				v.setTag(new TwoPlayerRowViewHolder(c1, c2, c3));
+			}
+			
 			if (position % 2 == 0) {
 				v.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_1));
 			} else {
 				v.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_2));
 			}
 
+			TwoPlayerRowViewHolder holder = (TwoPlayerRowViewHolder) v.getTag();
 			TwoPlayerRow item = getItem(position);
 
-			TextView c1 = (TextView) v.findViewById(R.id.column_1);
-			TextView c2 = (TextView) v.findViewById(R.id.column_2);
-			TextView c3 = (TextView) v.findViewById(R.id.column_3);
-			
-			c1.setText(mTimeFormatter.format(new Date(item.timestamp)));
+			holder.column1.setText(mTimeFormatter.format(new Date(item.timestamp)));
 			
 			if (item.player1Change != 0) {
-				c2.setText(TextUtils.concat(Integer.toString(item.player1Influence), Formatter.colorize(" (%1$s)", item.player1Change, mContext)));
+				holder.column2.setText(TextUtils.concat(Integer.toString(item.player1Influence), Formatter.colorize(" (%1$s)", item.player1Change, mContext)));
 			} else {
-				c2.setText(Integer.toString(item.player1Influence));
+				holder.column2.setText(Integer.toString(item.player1Influence));
 			}
 			
 			if (item.player2Change != 0) {
-				c3.setText(TextUtils.concat(Integer.toString(item.player2Influence), Formatter.colorize(" (%1$s)", item.player2Change, mContext)));
+				holder.column3.setText(TextUtils.concat(Integer.toString(item.player2Influence), Formatter.colorize(" (%1$s)", item.player2Change, mContext)));
 			} else {
-				c3.setText(Integer.toString(item.player2Influence));
+				holder.column3.setText(Integer.toString(item.player2Influence));
 			}
 			
 			return v;
 		}
 		
-		
-		
-//		@Override
-//		public void bindView(View view, Context context, Cursor cursor) {
-//			if (cursor.getPosition() % 2 == 0) {
-//				view.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_1));
-//			} else {
-//				view.setBackgroundColor(mContext.getResources().getColor(R.color.history_row_background_2));
-//			}
-//
-//			int player1ActualInfluence = 0;
-//			int player1Change = 0;
-//			int player2ActualInfluence = 0;
-//			int player2Change = 0;
-//			
-//			// Hide starting row
-//			if (cursor.isFirst()) {
-//				view.setVisibility(View.GONE);
-//				return;
-//			} else {
-//				view.setVisibility(View.VISIBLE);
-//			}
-//			
-//			// Assume 2nd row is the "starting row"
-//			// Invariant: 2nd player is row 2, 1st player is row 1
-//			
-//			boolean startRow = false;
-//			int player = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_PLAYER_ID));
-//
-//			if (cursor.getPosition() == 1) {
-//				startRow = true;
-//				player2ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-//				cursor.moveToPrevious();
-//				player1ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-//				cursor.moveToNext();
-//
-//			} else {
-//				if (player == 1) {
-//					player1ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-//					player1Change = player1ActualInfluence - getPlayerInfluence(cursor, 1);
-//					player2ActualInfluence = getPlayerInfluence(cursor, 2);
-//							
-//				} else {
-//					player2ActualInfluence = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-//					player2Change = player2ActualInfluence - getPlayerInfluence(cursor, 2);
-//					player1ActualInfluence = getPlayerInfluence(cursor, 1);
-//				}
-//			}
-//			
-//			
-//			TextView time = (TextView) view.findViewById(R.id.column_1);
-//			time.setText();
-//
-//			TextView influenceChange = (TextView) view.findViewById(R.id.column_2);
-//			if (startRow || player1Change == 0) {
-//				influenceChange.setText(Integer.toString(player1ActualInfluence));
-//			} else {
-//				influenceChange.setText(TextUtils.concat(Integer.toString(player1ActualInfluence), Formatter.colorize(" (%1$s)", player1Change, mContext)));
-//			}
-//
-//			TextView tv = (TextView) view.findViewById(R.id.column_3);
-//			if (startRow || player2Change == 0) {
-//				tv.setText(Integer.toString(player2ActualInfluence));
-//			} else {
-//				tv.setText(TextUtils.concat(Integer.toString(player2ActualInfluence), Formatter.colorize(" (%1$s)", player2Change, mContext)));
-//			}
-//			
-//		}
-//		
-//		/**
-//		 * Finds the last occurence of a players influence.
-//		 * Invariant: It is assumed the cursor is positioned at the last element,
-//		 * so searching is only backwards.
-//		 * 
-//		 * The last element is also ignored
-//		 * 
-//		 * @param c			Cursor to search (list of game_state_changes)
-//		 * @param player	Player id
-//		 * @return	Players influence
-//		 */
-//		private int getPlayerInfluence(Cursor c, int player) {
-//			
-//			int playerInfluence = 0;
-//			int startPosition = c.getPosition();
-//
-//			c.moveToPrevious(); // Ignore last element
-//			while(!c.isBeforeFirst()) {
-//				int rowPlayerId = c.getInt(c.getColumnIndexOrThrow(Database.COLUMN_PLAYER_ID));
-//				if (rowPlayerId == player) {
-//					playerInfluence = c.getInt(c.getColumnIndexOrThrow(Database.COLUMN_INFLUENCE));
-//					break;
-//				}
-//				
-//				c.moveToPrevious();
-//			}
-//			
-//			c.moveToPosition(startPosition);
-//			return playerInfluence;
-//		}
+		private static class TwoPlayerRowViewHolder {
+			public TextView column1;
+			public TextView column2;
+			public TextView column3;
+			
+			public TwoPlayerRowViewHolder(TextView c1, TextView c2, TextView c3) {
+				column1 = c1;
+				column2 = c2;
+				column3 = c3;
+			}
+		}
 		
 	}
 }
