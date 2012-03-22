@@ -152,29 +152,6 @@ public class MainActivity extends FragmentActivity {
 		return true;
 	}
 
-	
-	
-	
-//	@Override
-//	public boolean dispatchTouchEvent(MotionEvent ev) {
-//
-//		// Only dispatch events to history view pager if it is visible and we
-//		// don't hit any toolbars at the top or bottom of the page.
-//		// 
-//		// There is apparently some trouble with the ListView not getting some 
-//		// events so dispatch to this view as well. Possible due to the viewpager
-//		// eating some events.
-//		if (mHistoryContainer != null) {
-////			if (ev.getRawY() > mHistoryContainerTop && ev.getRawY() < mHistoryContainerBottom) {
-//				mHistoryContainer.dispatchTouchEvent(ev);
-//				return true;
-////			}
-//		}
-//
-//		return super.dispatchTouchEvent(ev);
-//	}
-
-	
 	public void setVisibleHistoryContainer(View v) { 
 		mHistoryContainer = v;
 
@@ -281,6 +258,8 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+
+        	
         	if (position == 0) {
         		return new SinglePlayerFragment();
         		

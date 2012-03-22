@@ -25,7 +25,8 @@ public class GameTracker {
 	
 	private static boolean isInitialized = false;
 	private static long mTimeoutInMilliSeconds = 2*1000; // Default is 2 seconds
-	private static long  mCurrentGameId = -1;				// -1 = no current game
+	private static long  mCurrentSinglePlayerGameId = -1;	// -1 = no current game
+	private static long mCurrentTwoPlayerGameId = -1;
 	
 	public static void initialize(Context context, long timeoutInMilliSeconds) {
 		isInitialized = true;
@@ -88,21 +89,31 @@ public class GameTracker {
 	 * @param playerId		zero-index based (ie. player 1 is 0, player 2 is 1)
 	 * @param influence
 	 */
-	public static void setInfluence(int playerId, int influence) {
+	public static void setInfluence(PlayType gameType, int playerId, int influence) {
 		
 		if (mTimeoutInMilliSeconds > 0) {
 			resetTimer(playerId);
 		}
 		
-		playerInfluence[playerId] = new GameTracker.InfluenceChange(playerId, influence, System.currentTimeMillis(), mCurrentGameId);
+		long gameId = -1;
+		switch(gameType) {
+		case SINGLE_PLAYER: gameId = mCurrentSinglePlayerGameId; break;
+		case TWO_PLAYER: gameId = mCurrentTwoPlayerGameId; break;
+		}
+		
+		playerInfluence[playerId] = new GameTracker.InfluenceChange(playerId, influence, System.currentTimeMillis(), gameId);
 		
 		if (mTimeoutInMilliSeconds == 0) {
 			saveInfluenceState(playerId);
 		}
 	}
 	
-	public static long getCurrentGameId() {
-		return mCurrentGameId;
+	public static long getCurrentGameId(PlayType gameType) {
+		switch(gameType) {
+		case SINGLE_PLAYER: return mCurrentSinglePlayerGameId;
+		case TWO_PLAYER: return mCurrentTwoPlayerGameId;
+		default: return -1;
+		}
 	}
 
 	public static void deleteGame(int gameId) {
@@ -139,8 +150,13 @@ public class GameTracker {
 		    }
 
 		    Uri result = cr.insert(HistoryContentProvider.GAMES_NEWGAME_URI, values);
-			mCurrentGameId = ContentUris.parseId(result);
-
+			
+		    if (config.player2StartingInfluence > 0 ) {
+		    	mCurrentTwoPlayerGameId = ContentUris.parseId(result);
+		    } else {
+		    	mCurrentSinglePlayerGameId = ContentUris.parseId(result);
+		    }
+		    
 		    return null;
 		}
 	}
@@ -197,8 +213,7 @@ public class GameTracker {
 			if (!isInitialized) return null;
 
 			ContentResolver cr = mContext.getContentResolver();
-			int rows = cr.delete(HistoryContentProvider.GAMES_URI, "1=1", null);
-			int rows2 = cr.delete(HistoryContentProvider.GAMES_STATE_URI, "1=1", null);
+			int rows = cr.delete(HistoryContentProvider.GAMES_URI, "1=1", null);			int rows2 = cr.delete(HistoryContentProvider.GAMES_STATE_URI, "1=1", null);
 			Logger.i("Database", "Deleted: " + rows + " , "  + rows2);
 			return null;
 		}

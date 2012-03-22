@@ -8,26 +8,23 @@ import java.util.ArrayList;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import dk.ilios.influencecounter.views.OutlinedTextView;
 
-public class TwoPlayerFragment extends Fragment {
+public class TwoPlayerFragment extends HistoryFragment {
 
+	protected int LOADER_ID = 0x02;
+	
 	private MainActivity mParent;
 	
-	private int mValueTop = 25;
-	private int mValueBottom = 25;
+	private int mInfluenceTop = 0;
+	private int mInfluenceBottom = 0;
 	private OutlinedTextView mCounterTop;
 	private OutlinedTextView mCounterBottom;
 
-	// A new game is considered started if both top/bottom are refreshed
-	private boolean mTopRefreshed = false;
-	private boolean mBottomRefreshed = false;
-	
 	private View mTopbarTop;
 	private View mBottombarTop;
 
@@ -59,12 +56,17 @@ public class TwoPlayerFragment extends Fragment {
 		stylesReversed.add(new StyleTemplate(R.drawable.rogue_top_reversed, R.drawable.rogue_bottom_reversed));
 		stylesReversed.add(new StyleTemplate(R.drawable.arcanist_top_reversed, R.drawable.arcanist_bottom_reversed));
 		stylesReversed.add(new StyleTemplate(R.drawable.gearsmith_top_reversed, R.drawable.gearsmith_bottom_reversed));
+		
+		mInfluenceTop = mParent.getDefaultStartingInfluencePlayer1();
+		mInfluenceBottom = mParent.getDefaultStartingInfluencePlayer2();
+		GameTracker.startGame(mInfluenceBottom, mInfluenceTop);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.two_player_view, container, false);
-
+		initHistory(v);
+		
 		// Set reference to views
 		mTopbarTop = v.findViewById(R.id.top_player_top_bar);
 		mBottombarTop = v.findViewById(R.id.top_player_control_bar);
@@ -72,18 +74,17 @@ public class TwoPlayerFragment extends Fragment {
 		mBottombarBottom = v.findViewById(R.id.bottom_player_control_bar);
 		
 		mCounterTop = (OutlinedTextView) v.findViewById(R.id.top_player_counter);
-		mCounterTop.setText(new Integer(mValueTop).toString());
+		mCounterTop.setText(new Integer(mInfluenceTop).toString());
 
 		mCounterBottom = (OutlinedTextView) v.findViewById(R.id.bottom_player_counter);
-		mCounterBottom.setText(new Integer(mValueBottom).toString());
+		mCounterBottom.setText(new Integer(mInfluenceBottom).toString());
 		
 		// Set event handlers
 		v.findViewById(R.id.top_player_increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mValueTop++;
-				mTopRefreshed = false;
-				GameTracker.setInfluence(1, mValueTop);
+				mInfluenceTop++;
+				GameTracker.setInfluence(PlayType.TWO_PLAYER, 1, mInfluenceTop);
 				updateTopCounter();
 			}
 		});
@@ -91,9 +92,8 @@ public class TwoPlayerFragment extends Fragment {
 		v.findViewById(R.id.bottom_player_increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mValueBottom++;
-				mBottomRefreshed = false;
-				GameTracker.setInfluence(0, mValueBottom);
+				mInfluenceBottom++;
+				GameTracker.setInfluence(PlayType.TWO_PLAYER, 0, mInfluenceBottom);
 				updateBottomCounter();
 			}
 		});
@@ -101,9 +101,8 @@ public class TwoPlayerFragment extends Fragment {
 		v.findViewById(R.id.top_player_decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mValueTop--;
-				mTopRefreshed = false;
-				GameTracker.setInfluence(1, mValueTop);
+				mInfluenceTop--;
+				GameTracker.setInfluence(PlayType.TWO_PLAYER, 1, mInfluenceTop);
 				updateTopCounter();
 			}
 		});
@@ -111,9 +110,8 @@ public class TwoPlayerFragment extends Fragment {
 		v.findViewById(R.id.bottom_player_decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mValueBottom--;
-				mBottomRefreshed = false;
-				GameTracker.setInfluence(0, mValueBottom);
+				mInfluenceBottom--;
+				GameTracker.setInfluence(PlayType.TWO_PLAYER, 0, mInfluenceBottom);
 				updateBottomCounter();
 			}
 		});
@@ -123,14 +121,7 @@ public class TwoPlayerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				mValueTop = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer2();
-				mTopRefreshed = true;
-				
-				// Both sides refreshed -> New Game
-				if (isNewGame()) {
-					GameTracker.startGame(mValueBottom, mValueTop);
-				}
-				updateTopCounter();
+				refresh();
 			}
 		});
 
@@ -138,14 +129,7 @@ public class TwoPlayerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				mValueBottom = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer1();
-				mBottomRefreshed = true;
-				
-				// Both sides refreshed -> New Game
-				if (isNewGame()) {
-					GameTracker.startGame(mValueBottom, mValueTop);
-				}
-				updateBottomCounter();
+				refresh();
 			}
 		});
 
@@ -166,28 +150,42 @@ public class TwoPlayerFragment extends Fragment {
 			}
 		});
 		
+		v.findViewById(R.id.history_button).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				toggleHistory();
+			}
+		});
+		
 		toggleBottomStyle();
 		toggleTopStyle();
 
 		return v;
 	}
 
+	private void refresh() {
+		mInfluenceTop = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer2();
+		mInfluenceBottom = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer1();
+		
+		GameTracker.startGame(mInfluenceBottom, mInfluenceTop);
+		updateTopCounter();
+		updateBottomCounter();
+	}
+	
+	
 	@Override
 	public void onResume() {
 		super.onResume();
 		setColors();
 	}
 
-	private boolean isNewGame() {
-		return mBottomRefreshed && mTopRefreshed;
-	}
-	
 	private void updateTopCounter() {
-		mCounterTop.setText(new Integer(mValueTop).toString());
+		mCounterTop.setText(new Integer(mInfluenceTop).toString());
 	}
 	
 	private void updateBottomCounter() {
-		mCounterBottom.setText(new Integer(mValueBottom).toString());
+		mCounterBottom.setText(new Integer(mInfluenceBottom).toString());
 	}
 	
 	/**
@@ -240,4 +238,9 @@ public class TwoPlayerFragment extends Fragment {
     	outState.putString("bugFix", "bugFix");
     	super.onSaveInstanceState(outState);
     }
+
+	@Override
+	public PlayType getPlayType() {
+		return PlayType.TWO_PLAYER;
+	}
 }

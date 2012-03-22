@@ -31,9 +31,9 @@ TODO:
 	+ Empty history list view
 	- In-animation -> Hide content when doing animation
 	- Drop-shadow on top/bottom graphics
-	- ListView optimization pattern
+	+ ListView optimization pattern
 	- Clean up games with no data
-	- Make sure a new game is started when app starts and on swipes
+	+ Make sure a new game is started when app starts and on swipes
 	- Improve history swipe animation smootheness.
 	- Show loading icon for list views when swiping (history)
 	- Support mdpi/ldpi/tablet

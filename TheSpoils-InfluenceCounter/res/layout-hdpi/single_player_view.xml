@@ -28,7 +28,6 @@
     </LinearLayout>
 
     <!-- Use layout to position because of measure bug in OutlineTextView -->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -74,75 +73,7 @@
     </RelativeLayout>
 
     <!-- History view -->
-
-    <RelativeLayout
-        android:id="@+id/history"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="65dip"
-        android:layout_marginLeft="15dip"
-        android:layout_marginRight="15dip"
-        android:layout_marginTop="26dip"
-        android:background="@android:color/white"
-        android:visibility="invisible" >
-
-        <TextView
-            android:id="@+id/page_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:paddingRight="10dp"
-            android:paddingTop="35dp"
-            android:text="1/1" />
-
-        <TextView
-            android:id="@+id/empty_history_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_centerInParent="true"
-            android:layout_margin="20dp"
-            android:textColor="#000000"
-            android:textStyle="bold"
-        	android:text="@string/empty_history_message"
-        	android:visibility="gone" />
-        
-        <Button
-            android:id="@+id/delete_game_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:paddingBottom="15dp"
-            android:background="@null"
-            android:text="@string/delete_game"
-            android:textColor="@color/history_button_color"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/delete_history_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:paddingBottom="15dp"
-            android:background="@null"
-            android:text="@string/delete_history"
-            android:textColor="@color/history_button_color"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/history_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/delete_game_button" >
-        </android.support.v4.view.ViewPager>
-    </RelativeLayout>
+	<include layout="@layout/history" />
 
     <FrameLayout
         android:id="@+id/top_bar"
@@ -159,7 +90,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/warlords_bottom" >
-
+	
         <dk.ilios.influencecounter.views.RotatableImageButton
             android:id="@+id/refresh_button"
             android:layout_width="wrap_content"
