@@ -32,6 +32,7 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 
 	private MainActivity mParent;
 	private View mHistoryContainer;
+	private View mHistoryContainerContentWrapper;
 	private boolean mIsAnimationInProgress;
 
 	private boolean mIsHistoryVisible;
@@ -55,6 +56,7 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 	
 	protected void initHistory(View v) {
 		mHistoryContainer = (getPlayType() == PlayType.SINGLE_PLAYER) ? v.findViewById(R.id.history) : v.findViewById(R.id.history_twoplayer);
+		mHistoryContainerContentWrapper = mHistoryContainer.findViewById(R.id.history_wrapper);
 		
 		mPageNumber = (TextView) mHistoryContainer.findViewById(R.id.page_number);
 		mPageNumber.setText("");
@@ -134,6 +136,20 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 				mIsAnimationInProgress = false;
 				mIsHistoryVisible = true;
 				mHistoryContainer.setVisibility(View.VISIBLE);
+			
+				Animation anim1 = AnimationUtils.loadAnimation(getActivity(), R.anim.show_history_content);
+				anim1.setAnimationListener(new AnimationListener() {
+					@Override public void onAnimationStart(Animation animation) {}
+					@Override public void onAnimationRepeat(Animation animation) {}
+					
+					@Override
+					public void onAnimationEnd(Animation animation) {
+						mHistoryContainerContentWrapper.setVisibility(View.VISIBLE);
+					}
+				});
+				mHistoryContainerContentWrapper.setAnimation(anim1);
+				anim1.start();			
+			
 			}
 		});
 
@@ -144,33 +160,47 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 	}
 	
 	private void hideHistory() {
-		Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_history);
-		anim.setAnimationListener(new AnimationListener() {
-			
-			@Override
-			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
+		
+		Animation anim1 = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_history_content);
+		anim1.setAnimationListener(new AnimationListener() {
+			@Override public void onAnimationStart(Animation animation) {}
+			@Override public void onAnimationRepeat(Animation animation) {}
 			
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				mIsAnimationInProgress = false;
-				mIsHistoryVisible = false;
-				mHistoryContainer.setVisibility(View.INVISIBLE);
+				mHistoryContainerContentWrapper.setVisibility(View.INVISIBLE);
+				Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_history);
+				anim.setAnimationListener(new AnimationListener() {
+					
+					@Override
+					public void onAnimationStart(Animation animation) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onAnimationRepeat(Animation animation) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onAnimationEnd(Animation animation) {
+						mIsAnimationInProgress = false;
+						mIsHistoryVisible = false;
+						mHistoryContainer.setVisibility(View.INVISIBLE);
+					}
+				});
+
+				mHistoryContainer.setAnimation(anim);
+				mParent.setVisibleHistoryContainer(null);
+				anim.start();
 			}
 		});
-		mHistoryContainer.setAnimation(anim);
-
-		mParent.setVisibleHistoryContainer(null);
+		
+		mHistoryContainerContentWrapper.setAnimation(anim1);
 		mIsAnimationInProgress = true;
-		anim.start();
+		anim1.start();			
 	}
 	
 	

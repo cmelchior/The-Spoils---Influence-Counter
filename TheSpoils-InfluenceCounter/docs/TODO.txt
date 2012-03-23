@@ -36,9 +36,9 @@ TODO:
 	+ Only delete games of the chosen view type (single / two player games)
 	+ Handle no games in Database (no games but change happen?)
 	+ Improve history swipe animation smootheness (Seems ok after moving everything Async)
+	+ Show loading icon for list views when swiping (history)
 	- In-animation -> Hide content when doing animation
 	- Clean up games with no data
-	- Show loading icon for list views when swiping (history)
 	- Support mdpi/ldpi/tablet
 
 DONE:
