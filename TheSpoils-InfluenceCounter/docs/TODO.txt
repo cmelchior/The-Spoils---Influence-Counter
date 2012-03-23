@@ -33,7 +33,7 @@ TODO:
 	+ ListView optimization pattern
 	+ Make sure a new game is started when app starts and on swipes
 	+ Drop-shadow on top/bottom graphics (don't implement this)
-	- Only delete games of the chosen view type (single / two player games)
+	+ Only delete games of the chosen view type (single / two player games)
 	- Handle no games in Database (no games but change happen?)
 	- In-animation -> Hide content when doing animation
 	- Clean up games with no data

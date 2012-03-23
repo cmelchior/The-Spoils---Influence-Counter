@@ -13,6 +13,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.view.Gravity;
+import android.widget.Toast;
 import dk.ilios.influencecounter.history.HistoryContentProvider;
 import dk.ilios.influencecounter.utils.Logger;
 
@@ -27,6 +29,8 @@ public class GameTracker {
 	private static long mTimeoutInMilliSeconds = 2*1000; // Default is 2 seconds
 	private static long  mCurrentSinglePlayerGameId = -1;	// -1 = no current game
 	private static long mCurrentTwoPlayerGameId = -1;
+	private static boolean mNoLogWarningShowedSinglePlayer = false;
+	private static boolean mNoLogWarningShowedTwoPlayer = false;
 	
 	public static void initialize(Context context, long timeoutInMilliSeconds) {
 		isInitialized = true;
@@ -101,11 +105,38 @@ public class GameTracker {
 		case TWO_PLAYER: gameId = mCurrentTwoPlayerGameId; break;
 		}
 		
-		playerInfluence[playerId] = new GameTracker.InfluenceChange(playerId, influence, System.currentTimeMillis(), gameId);
-		
-		if (mTimeoutInMilliSeconds == 0) {
-			saveInfluenceState(playerId);
+		if (gameId > -1) {
+			playerInfluence[playerId] = new GameTracker.InfluenceChange(playerId, influence, System.currentTimeMillis(), gameId);
+			
+			if (mTimeoutInMilliSeconds == 0) {
+				saveInfluenceState(playerId);
+			}
+
+		} else {
+			
+			switch (gameType) {
+			case SINGLE_PLAYER: 
+				if (!mNoLogWarningShowedSinglePlayer) {
+					showToast();
+					mNoLogWarningShowedSinglePlayer = true;
+				}
+				break;
+
+			case TWO_PLAYER:
+				if (!mNoLogWarningShowedTwoPlayer) {
+					showToast();
+					mNoLogWarningShowedTwoPlayer = true;
+				}
+				break;
+			}
 		}
+		
+	}
+
+	private static void showToast() {
+		Toast t = Toast.makeText(mContext, mContext.getString(R.string.no_log), Toast.LENGTH_LONG);
+		t.setGravity(Gravity.TOP, 0, (int) mContext.getResources().getDimension(R.dimen.toast_offset));
+		t.show();
 	}
 	
 	public static long getCurrentGameId(PlayType gameType) {
@@ -117,6 +148,12 @@ public class GameTracker {
 	}
 
 	public static void deleteGame(int gameId) {
+		if (mCurrentSinglePlayerGameId == gameId) {
+			mCurrentSinglePlayerGameId = -1;
+		} else if (mCurrentTwoPlayerGameId == gameId) {
+			mCurrentTwoPlayerGameId = -1;
+		}
+		
 		new DeleteGame().execute(gameId);
 		
 	}
@@ -126,6 +163,13 @@ public class GameTracker {
 	}
 	
 	public static void clearHistory(int players) {
+		if (players == 1) {
+			mCurrentSinglePlayerGameId = -1;
+		} else if (players == 2) {
+			mCurrentTwoPlayerGameId = -1;
+		}
+		
+		
 		new ClearHistory().execute(players);
 	}
 	
@@ -153,8 +197,10 @@ public class GameTracker {
 			
 		    if (config.player2StartingInfluence > 0 ) {
 		    	mCurrentTwoPlayerGameId = ContentUris.parseId(result);
+		    	mNoLogWarningShowedSinglePlayer = false;
 		    } else {
 		    	mCurrentSinglePlayerGameId = ContentUris.parseId(result);
+		    	mNoLogWarningShowedTwoPlayer = false;
 		    }
 		    
 		    return null;
