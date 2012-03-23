@@ -28,6 +28,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import dk.ilios.influencecounter.history.HistoryContentProvider;
 import dk.ilios.influencecounter.utils.Formatter;
@@ -45,6 +46,7 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	private BaseAdapter mAdapter;
 
 	private Button mGameNameView;
+	private View mProgressBar;
 	
 	private TextView totalGainedColumn3;
 	private TextView totalLostColumn2;
@@ -92,17 +94,18 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	public void onDestroy() {
 		Logger.i("InfluenceCounter", "HistoryFragment destroyed: " + mGameId);
 		super.onDestroy();
-		getLoaderManager().destroyLoader(LOADER_ID);
-		if (mCurrentCursor != null && !mCurrentCursor.isClosed()) {
-			mCurrentCursor.close();
-			mCurrentCursor.unregisterContentObserver(observer);
-		}
+//		getLoaderManager().destroyLoader(LOADER_ID);
+//		if (mCurrentCursor != null && !mCurrentCursor.isClosed()) {
+//			mCurrentCursor.close();
+//			mCurrentCursor.unregisterContentObserver(observer);
+//		}
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		int layout = (mPlayers == 2) ? R.layout.history_two_player : R.layout.history_single_player;
 		View v = inflater.inflate(layout, null);
+		mProgressBar = v.findViewById(R.id.progress_bar);
 		mHistoryList = (ListView) v.findViewById(R.id.history_list);
 		mHistoryList.setAdapter(mAdapter);
 
@@ -259,6 +262,7 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 		}
 		
 		// Insert new cursor
+		mProgressBar.setVisibility(View.GONE);
 		if (mPlayers == 1 && mAdapter instanceof CursorAdapter) {
 			Cursor c = ((CursorAdapter) mAdapter).swapCursor(mCurrentCursor);
 			if (c != null && !c.isClosed()) {	

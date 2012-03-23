@@ -34,10 +34,10 @@ TODO:
 	+ Make sure a new game is started when app starts and on swipes
 	+ Drop-shadow on top/bottom graphics (don't implement this)
 	+ Only delete games of the chosen view type (single / two player games)
-	- Handle no games in Database (no games but change happen?)
+	+ Handle no games in Database (no games but change happen?)
+	+ Improve history swipe animation smootheness (Seems ok after moving everything Async)
 	- In-animation -> Hide content when doing animation
 	- Clean up games with no data
-	- Improve history swipe animation smootheness.
 	- Show loading icon for list views when swiping (history)
 	- Support mdpi/ldpi/tablet
 
