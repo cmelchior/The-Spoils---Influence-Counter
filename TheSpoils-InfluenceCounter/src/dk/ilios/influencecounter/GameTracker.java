@@ -125,8 +125,8 @@ public class GameTracker {
 		new UpdateGameName().execute(Integer.toString(gameId), gameName);
 	}
 	
-	public static void clearHistory() {
-		new ClearHistory().execute();
+	public static void clearHistory(int players) {
+		new ClearHistory().execute(players);
 	}
 	
 	/**************************************************************************
@@ -206,15 +206,15 @@ public class GameTracker {
 	/***************************************************************************
 	 * Async task for clearing whole history                                          *
 	 **************************************************************************/
-	private static class ClearHistory extends AsyncTask<Void, Void, Void> {
+	private static class ClearHistory extends AsyncTask<Integer, Void, Void> {
 		@Override
-		protected Void doInBackground(Void... params) {
-			Logger.i("InfluenceCounter", "ASync - Clear history");
+		protected Void doInBackground(Integer... params) {
+			Logger.i("InfluenceCounter", "ASync - Clear history: " + params[0]);
 			if (!isInitialized) return null;
 
 			ContentResolver cr = mContext.getContentResolver();
-			int rows = cr.delete(HistoryContentProvider.GAMES_URI, "1=1", null);			int rows2 = cr.delete(HistoryContentProvider.GAMES_STATE_URI, "1=1", null);
-			Logger.i("Database", "Deleted: " + rows + " , "  + rows2);
+			int rows = cr.delete(HistoryContentProvider.GAMES_DELETE_TYPE_URI, null, new String[] { Integer.toString(params[0]) });
+			Logger.i("Database", "Games deleted: " + rows);
 			return null;
 		}
 	}

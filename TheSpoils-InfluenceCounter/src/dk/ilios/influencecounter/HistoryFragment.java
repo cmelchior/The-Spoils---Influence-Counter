@@ -99,7 +99,12 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 			
 			@Override
 			public void onClick(View v) {
-				GameTracker.clearHistory();
+				int players = 1;
+				if (getPlayType() == PlayType.TWO_PLAYER) {
+					players = 2;
+				}
+				
+				GameTracker.clearHistory(players);
 			}
 		});
 	}

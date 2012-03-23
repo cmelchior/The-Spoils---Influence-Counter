@@ -37,6 +37,7 @@ public class HistoryContentProvider extends ContentProvider {
 	private static final int GAMES_MAXID = 5;
 	private static final int GAMES_NEWGAME = 6;
 	private static final int GAMES_DELETE = 7;
+	private static final int GAMES_DELETE_TYPE = 8;
 	private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES, GAMES);				 // Games table
@@ -44,6 +45,7 @@ public class HistoryContentProvider extends ContentProvider {
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/maxId", GAMES_MAXID);		 // Returns current max id
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/newGame", GAMES_NEWGAME);	// Create a new game
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/deleteGame", GAMES_DELETE);
+		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/deleteType", GAMES_DELETE_TYPE);
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAME_STATE, GAMES_CHANGES);	 // Game history table
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAME_STATE+"/#", GAMES_CHANGE_ID); // Game history table row
 	}
@@ -53,6 +55,7 @@ public class HistoryContentProvider extends ContentProvider {
 	public static Uri GAMES_MAX_ID_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/maxId");
 	public static Uri GAMES_NEWGAME_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/newGame");
 	public static Uri GAMES_DELETE_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/deleteGame");
+	public static Uri GAMES_DELETE_TYPE_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/deleteType");
 	public static Uri GAMES_STATE_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAME_STATE);
 	
 	// Private members
@@ -154,6 +157,48 @@ public class HistoryContentProvider extends ContentProvider {
 		
 		return rowsDeleted;
 	}
+	
+	/**
+	 * Delete all games with specified number of players
+	 */
+	public int deleteGameType(SQLiteDatabase db, String players) {
+
+		int gamesDeleted = 0;
+		db.beginTransaction();
+		Cursor c = null;
+		try {
+			
+			// Find all games with the right
+			c = db.query(Database.TABLE_GAMES, 
+					new String[] {Database.COLUMN__ID}, 
+					Database.COLUMN_PLAYERS+"=?", 
+					new String[] {players}, 
+					null, 
+					null, 
+					null);
+			
+			if (c.getCount() > 0) {
+				StringBuilder sb = new StringBuilder();
+				
+				while(c.moveToNext()) {
+					sb.append(c.getInt(0) + ",");
+				}
+
+				sb.delete(sb.length()-1, sb.length());
+			
+				gamesDeleted = db.delete(Database.TABLE_GAMES, Database.COLUMN__ID+" IN (" + sb.toString() + ")", null);
+				db.delete(Database.TABLE_GAME_STATE, Database.COLUMN_GAME_ID+" IN (" + sb.toString() + ")", null);
+			}
+			
+			db.setTransactionSuccessful();
+		} finally {
+			db.endTransaction();
+			c.close();
+		}
+		
+		return gamesDeleted;
+	}
+	
 	
 
 	/***************************************************************************
@@ -285,6 +330,11 @@ public class HistoryContentProvider extends ContentProvider {
 		case GAMES_DELETE:
 			rowsDeleted = deleteGame(db, selectionArgs[0]);
 			break; 
+		
+		case GAMES_DELETE_TYPE:
+			rowsDeleted = deleteGameType(db, selectionArgs[0]);
+			break;
+			
 		case GAMES_CHANGES:
 			rowsDeleted = db.delete(Database.TABLE_GAME_STATE, selection, selectionArgs);
 			break;

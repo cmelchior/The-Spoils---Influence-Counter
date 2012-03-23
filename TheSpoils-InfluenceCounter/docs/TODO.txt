@@ -29,16 +29,17 @@ TODO:
 	+ Creating new games based on _ID in database
 	+ Pager not updated when inserting new games
 	+ Empty history list view
-	- In-animation -> Hide content when doing animation
-	- Drop-shadow on top/bottom graphics
+	+ Enable history button in 2 player view
 	+ ListView optimization pattern
-	- Clean up games with no data
 	+ Make sure a new game is started when app starts and on swipes
+	+ Drop-shadow on top/bottom graphics (don't implement this)
+	- Only delete games of the chosen view type (single / two player games)
+	- Handle no games in Database (no games but change happen?)
+	- In-animation -> Hide content when doing animation
+	- Clean up games with no data
 	- Improve history swipe animation smootheness.
 	- Show loading icon for list views when swiping (history)
 	- Support mdpi/ldpi/tablet
-	- Enable history button in 2 player view
-	- Handle no games in Database (no games but change happen?)
 
 DONE:
 + Border toggle
