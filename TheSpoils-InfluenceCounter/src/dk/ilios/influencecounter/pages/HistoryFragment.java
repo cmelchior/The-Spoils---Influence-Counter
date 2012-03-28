@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -81,7 +80,9 @@ public abstract class HistoryFragment extends PageGenerator implements LoaderCal
 		// in two different fragments result in no views being shown in the 
 		// second view pager.
 		mPager = (getPlayType() == PlayType.SINGLE_PLAYER) ? (ViewPager) v.findViewById(R.id.history_pager) : (ViewPager) v.findViewById(R.id.history_pager_twoplayer);
-		new setAdapterTask().execute(); // Fix to avoid crash when nesting fragments
+    	mPager.setAdapter(mAdapter);
+    	int selected = mAdapter.getCount() > 0 ? mAdapter.getCount() - 1 : 0;
+    	mPager.setCurrentItem(selected);
 		mPager.setOnPageChangeListener(new OnPageChangeListener() {
 			
 			@Override
@@ -213,19 +214,6 @@ public abstract class HistoryFragment extends PageGenerator implements LoaderCal
 		anim1.start();			
 	}
 	
-	private class setAdapterTask extends AsyncTask<Void,Void,Void>{
-	      protected Void doInBackground(Void... params) {
-	            return null;
-	        }
-
-	        @Override
-	        protected void onPostExecute(Void result) {
-	        	mPager.setAdapter(mAdapter);
-	        	int selected = mAdapter.getCount() > 0 ? mAdapter.getCount() - 1 : 0;
-	        	mPager.setCurrentItem(selected);
-	        }
-	}
-
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new GamesListCursorLoader(getActivity(), getPlayType());
@@ -267,7 +255,6 @@ public abstract class HistoryFragment extends PageGenerator implements LoaderCal
 				c.close();
 				c.unregisterContentObserver(observer);
 			}
-			mAdapter.notifyDataSetChanged();
 		}
 	}
 	
