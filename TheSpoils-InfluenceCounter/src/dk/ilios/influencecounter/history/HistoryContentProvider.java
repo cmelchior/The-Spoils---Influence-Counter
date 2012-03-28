@@ -38,6 +38,7 @@ public class HistoryContentProvider extends ContentProvider {
 	private static final int GAMES_NEWGAME = 6;
 	private static final int GAMES_DELETE = 7;
 	private static final int GAMES_DELETE_TYPE = 8;
+	private static final int GAMES_CLEANUP = 9;
 	private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES, GAMES);				 // Games table
@@ -46,6 +47,7 @@ public class HistoryContentProvider extends ContentProvider {
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/newGame", GAMES_NEWGAME);	// Create a new game
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/deleteGame", GAMES_DELETE);
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/deleteType", GAMES_DELETE_TYPE);
+		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAMES + "/cleanup", GAMES_CLEANUP);
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAME_STATE, GAMES_CHANGES);	 // Game history table
 		sUriMatcher.addURI(AUTHORITY, Database.TABLE_GAME_STATE+"/#", GAMES_CHANGE_ID); // Game history table row
 	}
@@ -56,6 +58,7 @@ public class HistoryContentProvider extends ContentProvider {
 	public static Uri GAMES_NEWGAME_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/newGame");
 	public static Uri GAMES_DELETE_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/deleteGame");
 	public static Uri GAMES_DELETE_TYPE_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/deleteType");
+	public static Uri GAMES_CLEANUP_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAMES + "/cleanup");
 	public static Uri GAMES_STATE_URI = Uri.parse(ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/" + Database.TABLE_GAME_STATE);
 	
 	// Private members
@@ -86,6 +89,8 @@ public class HistoryContentProvider extends ContentProvider {
 	/**
 	 * Create a new game with starting influence. Returns id for new game row 
 	 * or -1 if it failed.
+	 * 
+	 * if provided starting values are given as well, this means 
 	 */
 	public long createNewGame(SQLiteDatabase db, ContentValues config) {
 
@@ -198,6 +203,22 @@ public class HistoryContentProvider extends ContentProvider {
 		
 		return gamesDeleted;
 	}
+
+	/**
+	 * Remove all games with only starting influence registered
+	 */
+	public int cleanup(SQLiteDatabase db) {
+		return 0; // Implement this if needed
+//		Cursor c = db.query(Database.TABLE_GAME_STATE, 
+//				new String[] {Database.COLUMN_GAME_ID , "COUNT(*)"}, 
+//				null, 
+//				null, 
+//				Database.COLUMN_GAME_ID, 
+//				"COUNT(*) <= 2", 
+//				Database.COLUMN_GAME_ID);
+	}
+	
+	/**
 	
 	
 
@@ -333,6 +354,10 @@ public class HistoryContentProvider extends ContentProvider {
 		
 		case GAMES_DELETE_TYPE:
 			rowsDeleted = deleteGameType(db, selectionArgs[0]);
+			break;
+		
+		case GAMES_CLEANUP:
+			rowsDeleted = cleanup(db);
 			break;
 			
 		case GAMES_CHANGES:

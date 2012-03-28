@@ -59,7 +59,6 @@ public class TwoPlayerFragment extends HistoryFragment {
 		
 		mInfluenceTop = mParent.getDefaultStartingInfluencePlayer1();
 		mInfluenceBottom = mParent.getDefaultStartingInfluencePlayer2();
-		GameTracker.startGame(mInfluenceBottom, mInfluenceTop);
 	}
 
 	@Override

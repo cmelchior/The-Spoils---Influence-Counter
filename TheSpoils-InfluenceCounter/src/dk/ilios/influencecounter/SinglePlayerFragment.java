@@ -46,7 +46,6 @@ public class SinglePlayerFragment extends HistoryFragment {
 		styles.add(new StyleTemplate(R.drawable.gearsmith_top, R.drawable.gearsmith_bottom));
 
 		mInfluence = mParent.getDefaultStartingInfluencePlayer1();
-		GameTracker.startGame(mInfluence, 0);
 	}
 
 	@Override

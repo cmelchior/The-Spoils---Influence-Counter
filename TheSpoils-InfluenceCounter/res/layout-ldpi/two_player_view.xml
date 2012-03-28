@@ -7,24 +7,24 @@
     android:orientation="vertical" >
 
     <!-- Disabled text view -->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
         android:gravity="center"
-        android:textStyle="bold"
+        android:padding="10dp"
         android:text="@string/two_player_view_disabled"
         android:textColor="#ffffff"
-        />
-    
-    
+        android:textStyle="bold" />
+
     <!-- Top player container, kept here to avoid breaking event handler code -->
+
     <RelativeLayout
         android:id="@+id/top_player_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:visibility="gone" >
 
         <!-- Background layouts for catching clicks -->
 
@@ -63,12 +63,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="12dp"
-            ilios:borderColor="#000000"
-            ilios:borderSize="@dimen/two_player_font_border"
             android:gravity="center"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
-            ilios:rotation="180"
             android:shadowColor="#ffffbe"
             android:shadowDx="0"
             android:shadowDy="0"
@@ -76,7 +73,10 @@
             android:text="25"
             android:textColor="#ffffff"
             android:textSize="@dimen/two_player_font_size_mdpi"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            ilios:borderColor="#000000"
+            ilios:borderSize="@dimen/two_player_font_border"
+            ilios:rotation="180" />
 
         <RelativeLayout
             android:id="@+id/top_player_control_bar"
@@ -93,8 +93,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:background="@null"
-                ilios:rotation="180"
-                android:src="@drawable/refresh_button" />
+                android:src="@drawable/refresh_button"
+                ilios:rotation="180" />
 
             <dk.ilios.influencecounter.views.RotatableImageButton
                 android:id="@+id/top_player_style_button"
@@ -102,18 +102,19 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:background="@null"
-                ilios:rotation="180"
-                android:src="@drawable/style_button" />
+                android:src="@drawable/style_button"
+                ilios:rotation="180" />
         </RelativeLayout>
     </RelativeLayout>
 
     <!-- Bottom player container, kept here to avoid breaking event handler code -->
+
     <RelativeLayout
         android:id="@+id/bottom_player_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:visibility="gone" >
 
         <!-- Background layouts for catching clicks -->
 
@@ -151,8 +152,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            ilios:borderColor="#000000"
-            ilios:borderSize="@dimen/two_player_font_border"
             android:gravity="center"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
@@ -163,7 +162,9 @@
             android:text="25"
             android:textColor="#ffffff"
             android:textSize="@dimen/two_player_font_size_mdpi"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            ilios:borderColor="#000000"
+            ilios:borderSize="@dimen/two_player_font_border" />
 
         <RelativeLayout
             android:id="@+id/bottom_player_control_bar"
@@ -193,7 +194,103 @@
                 android:background="@null"
                 android:src="@drawable/style_button"
                 android:text="Style" />
+
+            <dk.ilios.influencecounter.views.RotatableImageButton
+                android:id="@+id/history_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="55dp"
+                android:background="@null"
+                android:src="@drawable/history_button"
+                android:text="History" />
         </RelativeLayout>
     </RelativeLayout>
+
+    <!-- History view - just here to avoid null pointers -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="25dp"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:id="@+id/history_twoplayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="65dip"
+            android:layout_marginLeft="15dip"
+            android:layout_marginRight="15dip"
+            android:layout_marginTop="26dip"
+            android:background="@android:color/white"
+            android:visibility="invisible" >
+
+            <RelativeLayout
+                android:id="@+id/history_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" >
+
+                <TextView
+                    android:id="@+id/page_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:paddingRight="10dp"
+                    android:paddingTop="35dp"
+                    android:text="1/1" />
+
+                <TextView
+                    android:id="@+id/empty_history_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="20dp"
+                    android:gravity="center"
+                    android:text="@string/empty_history_message"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/delete_game_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@null"
+                    android:paddingBottom="15dp"
+                    android:text="@string/delete_game"
+                    android:textColor="@color/history_button_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/delete_history_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@null"
+                    android:paddingBottom="15dp"
+                    android:text="@string/delete_history"
+                    android:textColor="@color/history_button_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/history_pager_twoplayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/delete_game_button" >
+                </android.support.v4.view.ViewPager>
+            </RelativeLayout>
+        </RelativeLayout>
+    </FrameLayout>
 
 </LinearLayout>

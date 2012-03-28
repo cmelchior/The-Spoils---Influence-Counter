@@ -28,7 +28,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import dk.ilios.influencecounter.history.HistoryContentProvider;
 import dk.ilios.influencecounter.utils.Formatter;
@@ -77,7 +76,7 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mGameId = getArguments().getInt("gameId", -1);
-		mGameName = getArguments().getString("gameName", "");
+		mGameName = getArguments().getString("gameName");
 		mPlayers = getArguments().getInt("players", 0);
 		
 		if (mPlayers == 2) {
@@ -269,9 +268,14 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 				c.close();
 			}
 		} else {
-			((ArrayAdapter<TwoPlayerRow>) mAdapter).clear();
-			((ArrayAdapter<TwoPlayerRow>) mAdapter).addAll(createTwoPlayerRows());
-			
+			@SuppressWarnings("unchecked") ArrayAdapter<TwoPlayerRow> adapter = (ArrayAdapter<TwoPlayerRow>) mAdapter;
+			adapter.setNotifyOnChange(false);
+			adapter.clear();
+			ArrayList<TwoPlayerRow> rows = createTwoPlayerRows();
+			for (TwoPlayerRow row : rows) {
+				adapter.add(row);
+			}
+			adapter.notifyDataSetChanged();
 		}
 	}
 	

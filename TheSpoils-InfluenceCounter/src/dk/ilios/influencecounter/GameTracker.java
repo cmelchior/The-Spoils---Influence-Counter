@@ -9,8 +9,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.Gravity;
@@ -20,6 +18,8 @@ import dk.ilios.influencecounter.utils.Logger;
 
 public class GameTracker {
 
+	private static int NO_GAME_ID = -1;
+	
 	private static InfluenceChange[] playerInfluence = new InfluenceChange[Constants.MAX_PLAYERS];
 	private static Thread[] timerThreads = new Thread[Constants.MAX_PLAYERS];
 		
@@ -27,8 +27,8 @@ public class GameTracker {
 	
 	private static boolean isInitialized = false;
 	private static long mTimeoutInMilliSeconds = 2*1000; // Default is 2 seconds
-	private static long  mCurrentSinglePlayerGameId = -1;	// -1 = no current game
-	private static long mCurrentTwoPlayerGameId = -1;
+	private static long  mCurrentSinglePlayerGameId = NO_GAME_ID;
+	private static long mCurrentTwoPlayerGameId = NO_GAME_ID;
 	private static boolean mNoLogWarningShowedSinglePlayer = false;
 	private static boolean mNoLogWarningShowedTwoPlayer = false;
 	
@@ -52,6 +52,10 @@ public class GameTracker {
 	public static synchronized void startGame(int player1StartingInfluence, int player2StartingInfluence) {
 		new NewGame().execute(new NewGameConfiguration(player1StartingInfluence, player2StartingInfluence));
 	}
+	
+	/*
+	
+	
 	
 	
 	/**
@@ -99,13 +103,13 @@ public class GameTracker {
 			resetTimer(playerId);
 		}
 		
-		long gameId = -1;
+		long gameId = NO_GAME_ID;
 		switch(gameType) {
 		case SINGLE_PLAYER: gameId = mCurrentSinglePlayerGameId; break;
 		case TWO_PLAYER: gameId = mCurrentTwoPlayerGameId; break;
 		}
 		
-		if (gameId > -1) {
+		if (gameId != NO_GAME_ID) {
 			playerInfluence[playerId] = new GameTracker.InfluenceChange(playerId, influence, System.currentTimeMillis(), gameId);
 			
 			if (mTimeoutInMilliSeconds == 0) {
@@ -143,19 +147,18 @@ public class GameTracker {
 		switch(gameType) {
 		case SINGLE_PLAYER: return mCurrentSinglePlayerGameId;
 		case TWO_PLAYER: return mCurrentTwoPlayerGameId;
-		default: return -1;
+		default: return NO_GAME_ID;
 		}
 	}
 
 	public static void deleteGame(int gameId) {
 		if (mCurrentSinglePlayerGameId == gameId) {
-			mCurrentSinglePlayerGameId = -1;
+			mCurrentSinglePlayerGameId = NO_GAME_ID;
 		} else if (mCurrentTwoPlayerGameId == gameId) {
-			mCurrentTwoPlayerGameId = -1;
+			mCurrentTwoPlayerGameId = NO_GAME_ID;
 		}
 		
 		new DeleteGame().execute(gameId);
-		
 	}
 	
 	public static void updateGameName(int gameId, String gameName) {
@@ -164,13 +167,16 @@ public class GameTracker {
 	
 	public static void clearHistory(int players) {
 		if (players == 1) {
-			mCurrentSinglePlayerGameId = -1;
+			mCurrentSinglePlayerGameId = NO_GAME_ID;
 		} else if (players == 2) {
-			mCurrentTwoPlayerGameId = -1;
+			mCurrentTwoPlayerGameId = NO_GAME_ID;
 		}
 		
-		
 		new ClearHistory().execute(players);
+	}
+
+	public static void cleanupDatabase() {
+		new CleanupDatabase().execute();
 	}
 	
 	/**************************************************************************
@@ -296,25 +302,8 @@ public class GameTracker {
 			Logger.i("InfluenceCounter", "ASync - CleanupDatabase");
 			if (!isInitialized) return null;
 
-			SQLiteDatabase db = new Database(mContext).getWritableDatabase();
-
-			Cursor c = db.query(Database.TABLE_GAME_STATE, 
-					new String[] {Database.COLUMN_GAME_ID , "COUNT(*)"}, 
-					null, 
-					null, 
-					Database.COLUMN_GAME_ID, 
-					"COUNT(*) <= 2", 
-					Database.COLUMN_GAME_ID);
-			
-			if (c.getCount() > 0) {
-				while(c.moveToNext()) {
-					db.delete(Database.TABLE_GAMES, "game_id=" + c.getInt(c.getColumnIndexOrThrow("COUNT(*)")), null);
-				}
-			}
-			
-			c.close();
-			db.close();
-
+			ContentResolver cr = mContext.getContentResolver();
+			cr.delete(HistoryContentProvider.GAMES_CLEANUP_URI, null, null);
 			return null;
 		}
 	}

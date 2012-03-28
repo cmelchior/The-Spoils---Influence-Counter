@@ -27,6 +27,56 @@
             android:layout_weight="0.5" />
     </LinearLayout>
 
+    <!-- Use layout to position because of measure bug in OutlineTextView -->
+   <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/control_bar"
+        android:layout_below="@id/top_bar">
+        
+        <ImageView
+            android:id="@+id/up_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:paddingTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="Increase influence"
+            android:src="@drawable/single_player_up_arrow"
+            android:visibility="gone" />
+
+        <dk.ilios.influencecounter.views.OutlinedTextView
+            android:id="@+id/counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingBottom="60dp"
+            ilios:borderColor="#000000"
+            ilios:borderSize="2.5dp"
+            android:gravity="center"
+            android:shadowColor="#ffffbe"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="30"
+            android:text="25"
+            android:textColor="#00FFFFFF"
+            android:textSize="150dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/down_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="Decrease influence"
+            android:src="@drawable/single_player_down_arrow"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <!-- History view -->
+	<include layout="@layout/history" />
+
     <FrameLayout
         android:id="@+id/top_bar"
         android:layout_width="wrap_content"
@@ -42,7 +92,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/warlords_bottom" >
-
+	
         <dk.ilios.influencecounter.views.RotatableImageButton
             android:id="@+id/refresh_button"
             android:layout_width="wrap_content"
@@ -62,56 +112,17 @@
             android:background="@null"
             android:src="@drawable/style_button"
             android:text="Style" />
-    </RelativeLayout>
 
-    <!-- Use layout to position because of measure bug in OutlineTextView -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/control_bar"
-        android:layout_below="@id/top_bar">
-	
-        <ImageView
-            android:id="@+id/up_arrow"
-            android:contentDescription="Increase influence" 
+        <dk.ilios.influencecounter.views.RotatableImageButton
+            android:id="@+id/history_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:paddingTop="10dp"
-            android:src="@drawable/single_player_up_arrow"
-            android:visibility="gone"
-            />
-        
-        <dk.ilios.influencecounter.views.OutlinedTextView
-            android:id="@+id/counter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:gravity="center"
-            android:shadowColor="#ffffbe"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="30"
-            ilios:borderSize="2.5dp"
-            ilios:borderColor="#000000"
-            android:text="25"
-            android:textColor="#ffffff"
-            android:textSize="180dp"
-            android:textStyle="bold" />
-		
-		<ImageView
-		    android:id="@+id/down_arrow"
-            android:contentDescription="Decrease influence" 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/single_player_down_arrow"
-            android:visibility="gone"
-            />
-        
-        
+            android:layout_marginRight="55dp"
+            android:background="@null"
+            android:src="@drawable/history_button"
+            android:text="History" />
     </RelativeLayout>
 
 </RelativeLayout>

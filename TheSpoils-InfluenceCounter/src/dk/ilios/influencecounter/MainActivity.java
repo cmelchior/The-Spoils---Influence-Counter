@@ -7,7 +7,6 @@ package dk.ilios.influencecounter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -40,10 +39,7 @@ public class MainActivity extends FragmentActivity {
     private boolean mBorder;
 
     // History
-    private SQLiteDatabase mDb;		// Reference to the database connection for this activity
     private View mHistoryContainer; // Reference to a visible history container (if any)
-    private int mHistoryContainerBottom; // Screen y-coordinate for history view
-	private int mHistoryContainerTop; // Screen y-coordinate for history view
 	
     // Colors
     private int mTextColor;
@@ -70,16 +66,6 @@ public class MainActivity extends FragmentActivity {
         mPager.setAdapter(mAdapter);
     }
 
-    @Override
-    protected void onStart() {
-    	super.onStart();
-    }
-    
-    @Override 
-    protected void onStop() {
-    	super.onStop();
-    }
-    
     private void initializePreferences() {
     	mDefaultStartingInfluencePlayer1 = Integer.parseInt(prefs.getString("default_starting_influence", "0"));
     	mDefaultStartingInfluencePlayer2 = Integer.parseInt(prefs.getString("default_starting_influence_player2", "0"));
@@ -157,19 +143,8 @@ public class MainActivity extends FragmentActivity {
 
 		if (mHistoryContainer != null) {
 			mPager.setPagingEnabled(false);
-			// Get size of bottom/top drawable so we know when not to dispatch
-	        // events to the history view.
-	        // All bottom drawables have the same size, so just use a random one.
-	        int toolbarHeight = getResources().getDrawable(R.drawable.arcanist_bottom).getIntrinsicHeight(); 
-			int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
-        
-			mHistoryContainerBottom = screenHeight - toolbarHeight;
-			mHistoryContainerTop = mHistoryContainerBottom - mHistoryContainer.getHeight();
-
 		} else {
 			mPager.setPagingEnabled(true);
-			mHistoryContainerBottom = 0;
-			mHistoryContainerTop = 0;
 		}
 	}
 	

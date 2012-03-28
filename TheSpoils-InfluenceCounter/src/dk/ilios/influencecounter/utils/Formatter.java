@@ -57,7 +57,7 @@ public class Formatter {
 			}
 			
 			// Format string if possible
-			if (formatterString != null && !formatterString.isEmpty()) {
+			if (formatterString != null && !formatterString.equals("")) {
 				res = String.format(formatterString, res);
 			}
 			

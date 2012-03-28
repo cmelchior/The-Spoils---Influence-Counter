@@ -10,12 +10,12 @@
 	<string name="game_name">Game %1$s</string>
 	<string name="game_name_dialog_title">Game name</string>
 	<string name="game_name_dialog_msg">Set game name.</string>
-	<string name="dialog_ok">Ok</string>
+	<string name="dialog_ok">OK</string>
 	<string name="dialog_cancel">Cancel</string>
 	<string name="empty_history_message">The history log is empty. Press refresh to start logging a new game.</string>
     <string name="total_gained">Total gained</string>
 	<string name="total_lost">Total lost</string>
-	<string name="no_log">You have deleted the current game from history. Press Refresh if you want enable logging again.</string>
+	<string name="no_log">The games history isn\'t saved. Press Refresh to start logging.</string>
 	
     <string name="column_label_time">Time</string>
     <string name="column_label_influence">Influence</string>

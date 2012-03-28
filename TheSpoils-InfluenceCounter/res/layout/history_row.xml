@@ -14,6 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:singleLine="true"
         android:textColor="@color/history_row_font_color"
         android:textStyle="bold"
         android:text="Tekst 1" />
@@ -23,6 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:singleLine="true"
         android:gravity="center"
         android:textColor="@color/history_row_font_color"
         android:textStyle="bold"
@@ -33,6 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:singleLine="true"
         android:gravity="center"
         android:textColor="@color/history_row_font_color"
         android:textStyle="bold"

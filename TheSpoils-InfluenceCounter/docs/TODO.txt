@@ -37,10 +37,12 @@ TODO:
 	+ Handle no games in Database (no games but change happen?)
 	+ Improve history swipe animation smootheness (Seems ok after moving everything Async)
 	+ Show loading icon for list views when swiping (history)
-	- In-animation -> Hide content when doing animation
-	- Clean up games with no data
+	+ In-animation -> Hide content when doing animation
+	+ Clean up games with no data (changed so no game logging is started unneeded)
 	- Support mdpi/ldpi/tablet
-
+	- Test stability (especially fragments getting destroyed / paused)
+	- Sometimes show 0 when starting app?
+	
 DONE:
 + Border toggle
 + Border color
