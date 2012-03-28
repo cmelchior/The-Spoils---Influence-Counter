@@ -1,15 +1,16 @@
-package dk.ilios.influencecounter;
+package dk.ilios.influencecounter.pages;
 /**
  * Encapsulation of the history view for single and two player counter views.
  * 
  * @author Christian Melchior <christian@ilios.dk>
  */
+import android.app.Activity;
+import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
@@ -23,12 +24,15 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import dk.ilios.influencecounter.GameHistoryFragment;
+import dk.ilios.influencecounter.GameTracker;
+import dk.ilios.influencecounter.MainActivity;
+import dk.ilios.influencecounter.PlayType;
+import dk.ilios.influencecounter.R;
 import dk.ilios.influencecounter.history.GamesListAdapter;
 import dk.ilios.influencecounter.history.GamesListCursorLoader;
 
-public abstract class HistoryFragment extends Fragment implements LoaderCallbacks<Cursor> {
-
-	protected int LOADER_ID = 0x00;
+public abstract class HistoryFragment extends PageGenerator implements LoaderCallbacks<Cursor> {
 
 	private MainActivity mParent;
 	private View mHistoryContainer;
@@ -43,16 +47,25 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 	private Button mDeleteAllButton;
 	private TextView mEmptyHistoryMsg;
 	private Cursor mCurrentCursor;
+
+	public HistoryFragment(Activity activity) {
+		super(activity);
+	}
+
+	@Override
+	public void onCreate(Context context) {
+		mParent = (MainActivity) getActivity();
+		mAdapter = new GamesListAdapter(mParent.getSupportFragmentManager());
+		mParent.getSupportLoaderManager().initLoader(getLoaderId(), null, this);
+	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mParent = (MainActivity) getActivity();
-		mAdapter = new GamesListAdapter(getFragmentManager());
-		getLoaderManager().initLoader(LOADER_ID, null, this);
+	public View onCreateView() {
+		return null;
 	}
 	
 	public abstract PlayType getPlayType();
+	public abstract int getLoaderId();
 	
 	protected void initHistory(View v) {
 		mHistoryContainer = (getPlayType() == PlayType.SINGLE_PLAYER) ? v.findViewById(R.id.history) : v.findViewById(R.id.history_twoplayer);
@@ -111,9 +124,6 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 		});
 	}
 	
-	/**
-	 * 
-	 */
 	protected void toggleHistory() {
 		if (mIsAnimationInProgress) return;
 		
@@ -203,10 +213,6 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 		anim1.start();			
 	}
 	
-	
-	
-
-	
 	private class setAdapterTask extends AsyncTask<Void,Void,Void>{
 	      protected Void doInBackground(Void... params) {
 	            return null;
@@ -268,7 +274,7 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 	ContentObserver observer = new ContentObserver(new Handler()) {
 		@Override
 		public void onChange(boolean selfChange) {
-			getLoaderManager().restartLoader(LOADER_ID, null, HistoryFragment.this);
+			mParent.getSupportLoaderManager().restartLoader(getLoaderId(), null, HistoryFragment.this);
 		}
 	};
 	
@@ -279,7 +285,7 @@ public abstract class HistoryFragment extends Fragment implements LoaderCallback
 			TextView button = (TextView) v;
 			switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				button.setShadowLayer(3, -5, 0, getResources().getColor(R.color.button_shadow_color));
+				button.setShadowLayer(3, -5, 0, mParent.getResources().getColor(R.color.button_shadow_color));
 				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:

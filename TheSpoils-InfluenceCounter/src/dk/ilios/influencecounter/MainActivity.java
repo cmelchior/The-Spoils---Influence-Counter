@@ -10,13 +10,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import dk.ilios.influencecounter.pages.PageGenerator;
+import dk.ilios.influencecounter.pages.SinglePlayerFragment;
+import dk.ilios.influencecounter.pages.TwoPlayerFragment;
 import dk.ilios.influencecounter.views.DisableableViewPager;
 
 public class MainActivity extends FragmentActivity {
@@ -61,7 +63,7 @@ public class MainActivity extends FragmentActivity {
         initializePreferences();
         initializeWakelock();
     
-        mAdapter = new PagerViewsAdapter(getSupportFragmentManager());
+        mAdapter = new PagerViewsAdapter(this);
         mPager = (DisableableViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
     }
@@ -221,28 +223,61 @@ public class MainActivity extends FragmentActivity {
 /*******************************************************************************
  * PAGE ADAPTER                                                                *
  ******************************************************************************/	
-	public static class PagerViewsAdapter extends FragmentPagerAdapter {
-        public PagerViewsAdapter(FragmentManager fm) {
-            super(fm);
-        }
+	public static class PagerViewsAdapter extends PagerAdapter {
 
-        @Override
-        public int getCount() {
-            return 2; // 2 pages - Single and two-player view
-        }
+		private MainActivity mContext;
+		
+		public PagerViewsAdapter(MainActivity context) {
+			mContext = context;
+		}
+		
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			
+			PageGenerator generator = getItem(position);
+			generator.onCreate(mContext);
+			View v = generator.onCreateView();
+			container.addView(v, position);
+	
+			return v;
+		}
 
-        @Override
-        public Fragment getItem(int position) {
+		private PageGenerator getItem(int position) {
+			if (position == 0) {
+				return new SinglePlayerFragment(mContext);
 
-        	
-        	if (position == 0) {
-        		return new SinglePlayerFragment();
-        		
-        	} else if (position == 1) {
-        		return new TwoPlayerFragment();
-        	} 
-        	
-        	return null;
-        }
-    }
+			} else if (position == 1) {
+				return new TwoPlayerFragment(mContext);
+			} 
+
+			return null;
+		}
+		
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView((View) object);
+		}
+
+		@Override
+		public int getCount() {
+			return 2; // Singleplayer and two player views
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object key) {
+			return view == key;
+		}
+	}
+
+//	public static class PagerViewsAdapter extends FragmentPagerAdapter {
+//        public PagerViewsAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return 2; // 2 pages - Single and two-player view
+//        }
+//
+//    }
 }

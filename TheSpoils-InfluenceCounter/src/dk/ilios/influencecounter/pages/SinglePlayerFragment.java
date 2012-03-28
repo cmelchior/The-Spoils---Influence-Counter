@@ -1,4 +1,4 @@
-package dk.ilios.influencecounter;
+package dk.ilios.influencecounter.pages;
 /**
  * Activity that controls a single player Influence Counter
  * 
@@ -6,19 +6,21 @@ package dk.ilios.influencecounter;
  */
 import java.util.ArrayList;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.app.Activity;
+import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
+import dk.ilios.influencecounter.GameTracker;
+import dk.ilios.influencecounter.MainActivity;
+import dk.ilios.influencecounter.PlayType;
+import dk.ilios.influencecounter.R;
+import dk.ilios.influencecounter.StyleTemplate;
 import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class SinglePlayerFragment extends HistoryFragment {
 
-	protected int LOADER_ID = 0x01;
-	
 	private MainActivity mParent;
 	
 	private int mInfluence = 25;
@@ -31,10 +33,15 @@ public class SinglePlayerFragment extends HistoryFragment {
 
 	private int currentStyle;
 	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
-	
+
+	public SinglePlayerFragment(Activity activity) {
+		super(activity);
+	}
+
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public void onCreate(Context context) {
+		super.onCreate(context);
+		
 		mParent  = (MainActivity) getActivity();
 		
 		currentStyle = mParent.getSinglePlayerTheme() - 1;
@@ -47,10 +54,10 @@ public class SinglePlayerFragment extends HistoryFragment {
 
 		mInfluence = mParent.getDefaultStartingInfluencePlayer1();
 	}
-
+	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		final View v = inflater.inflate(R.layout.single_player_view, container, false);
+	public View onCreateView() {
+		final View v = mParent.getLayoutInflater().inflate(R.layout.single_player_view, null);
 		
 		// Set reference to views
 		initHistory(v);
@@ -171,8 +178,8 @@ public class SinglePlayerFragment extends HistoryFragment {
 	private void toggleStyle() {
 		currentStyle = (currentStyle + 1) % styles.size();
 		mParent.setSinglePlayerTheme(currentStyle);
-		mTopbar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).top));
-		mBottombar.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyle).bottom));
+		mTopbar.setBackgroundDrawable(mParent.getResources().getDrawable(styles.get(currentStyle).top));
+		mBottombar.setBackgroundDrawable(mParent.getResources().getDrawable(styles.get(currentStyle).bottom));
 	}
 
 	/**
@@ -191,15 +198,13 @@ public class SinglePlayerFragment extends HistoryFragment {
 		super.onPause();
 	}
 	
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-    	//Bug fix: http://code.google.com/p/android/issues/detail?id=19917
-    	outState.putString("bugFix", "bugFix");
-    	super.onSaveInstanceState(outState);
-    }
-
 	@Override
 	public PlayType getPlayType() {
 		return PlayType.SINGLE_PLAYER;
+	}
+
+	@Override
+	public int getLoaderId() {
+		return 0x01;
 	}
 }

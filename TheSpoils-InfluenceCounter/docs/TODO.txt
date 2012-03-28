@@ -39,9 +39,11 @@ TODO:
 	+ Show loading icon for list views when swiping (history)
 	+ In-animation -> Hide content when doing animation
 	+ Clean up games with no data (changed so no game logging is started unneeded)
-	- Support mdpi/ldpi/tablet
-	- Test stability (especially fragments getting destroyed / paused)
+	+ Support mdpi/ldpi/tablet
+	+ Test stability (especially fragments getting destroyed / paused)
 	- Sometimes show 0 when starting app?
+	- Rewrite initial viewpager so it doesn't use fragments (bleh)
+	- Check for memory leaks
 	
 DONE:
 + Border toggle

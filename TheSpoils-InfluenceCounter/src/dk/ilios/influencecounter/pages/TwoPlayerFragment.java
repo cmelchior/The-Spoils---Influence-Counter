@@ -1,4 +1,4 @@
-package dk.ilios.influencecounter;
+package dk.ilios.influencecounter.pages;
 /**
  * Activity that controls Influence counters for both players
  * 
@@ -6,18 +6,20 @@ package dk.ilios.influencecounter;
  */
 import java.util.ArrayList;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import dk.ilios.influencecounter.GameTracker;
+import dk.ilios.influencecounter.MainActivity;
+import dk.ilios.influencecounter.PlayType;
+import dk.ilios.influencecounter.R;
+import dk.ilios.influencecounter.StyleTemplate;
 import dk.ilios.influencecounter.views.OutlinedTextView;
 
 public class TwoPlayerFragment extends HistoryFragment {
 
-	protected int LOADER_ID = 0x02;
-	
 	private MainActivity mParent;
 	
 	private int mInfluenceTop = 0;
@@ -37,10 +39,14 @@ public class TwoPlayerFragment extends HistoryFragment {
 	private ArrayList<StyleTemplate> styles = new ArrayList<StyleTemplate>();
 	private ArrayList<StyleTemplate> stylesReversed = new ArrayList<StyleTemplate>();
 	
+	public TwoPlayerFragment(Activity activity) {
+		super(activity);
+	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public void onCreate(Context context) {
+		super.onCreate(context);
+		
 		mParent  = (MainActivity) getActivity();
 		currentStyleTop = mParent.getTwoPlayerTopTheme() - 1;
 		currentStyleBottom = mParent.getTwoPlayerBottomTheme() - 1;
@@ -62,8 +68,8 @@ public class TwoPlayerFragment extends HistoryFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.two_player_view, container, false);
+	public View onCreateView() {
+		View v = mParent.getLayoutInflater().inflate(R.layout.two_player_view, null);
 		initHistory(v);
 		
 		// Set reference to views
@@ -209,11 +215,11 @@ public class TwoPlayerFragment extends HistoryFragment {
 		currentStyleTop = (currentStyleTop + 1) % stylesReversed.size();
 		mParent.setTwoPlayerTopTheme(currentStyleTop);
 		
-		Drawable d = getResources().getDrawable(stylesReversed.get(currentStyleTop).top);
+		Drawable d = mParent.getResources().getDrawable(stylesReversed.get(currentStyleTop).top);
 		d.setLevel(10000);
 		mTopbarTop.setBackgroundDrawable(d);
 		
-		d = getResources().getDrawable(stylesReversed.get(currentStyleTop).bottom);
+		d = mParent.getResources().getDrawable(stylesReversed.get(currentStyleTop).bottom);
 		d.setLevel(10000);
 		mBottombarTop.setBackgroundDrawable(d);
 	}
@@ -222,8 +228,8 @@ public class TwoPlayerFragment extends HistoryFragment {
 		currentStyleBottom = (currentStyleBottom + 1) % styles.size();
 		mParent.setTwoPlayerBottomTheme(currentStyleBottom);
 
-		mTopbarBottom.setBackgroundDrawable(getResources().getDrawable(stylesReversed.get(currentStyleBottom).top));
-		mBottombarBottom.setBackgroundDrawable(getResources().getDrawable(styles.get(currentStyleBottom).bottom));
+		mTopbarBottom.setBackgroundDrawable(mParent.getResources().getDrawable(stylesReversed.get(currentStyleBottom).top));
+		mBottombarBottom.setBackgroundDrawable(mParent.getResources().getDrawable(styles.get(currentStyleBottom).bottom));
 	}
 	
 	@Override
@@ -231,15 +237,13 @@ public class TwoPlayerFragment extends HistoryFragment {
 		super.onPause();
 	}
 	
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-    	//Bug fix: http://code.google.com/p/android/issues/detail?id=19917
-    	outState.putString("bugFix", "bugFix");
-    	super.onSaveInstanceState(outState);
-    }
-
 	@Override
 	public PlayType getPlayType() {
 		return PlayType.TWO_PLAYER;
+	}
+
+	@Override
+	public int getLoaderId() {
+		return 0x02;
 	}
 }
