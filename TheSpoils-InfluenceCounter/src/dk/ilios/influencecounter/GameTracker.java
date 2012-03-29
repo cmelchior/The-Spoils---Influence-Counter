@@ -18,7 +18,7 @@ import dk.ilios.influencecounter.utils.Logger;
 
 public class GameTracker {
 
-	private static int NO_GAME_ID = -1;
+	public static final int NO_GAME_ID = -1;
 	
 	private static InfluenceChange[] playerInfluence = new InfluenceChange[Constants.MAX_PLAYERS];
 	private static Thread[] timerThreads = new Thread[Constants.MAX_PLAYERS];
@@ -31,6 +31,7 @@ public class GameTracker {
 	private static long mCurrentTwoPlayerGameId = NO_GAME_ID;
 	private static boolean mNoLogWarningShowedSinglePlayer = false;
 	private static boolean mNoLogWarningShowedTwoPlayer = false;
+	private static boolean mStartingGame = false;
 	
 	public static void initialize(Context context, long timeoutInMilliSeconds) {
 		isInitialized = true;
@@ -49,14 +50,12 @@ public class GameTracker {
 	/**
 	 * Starts logging a new game
 	 */
-	public static synchronized void startGame(int player1StartingInfluence, int player2StartingInfluence) {
-		new NewGame().execute(new NewGameConfiguration(player1StartingInfluence, player2StartingInfluence));
+	public static synchronized void startGame(int player1StartingInfluence, int player2StartingInfluence, long timestamp) {
+		if (!mStartingGame) {
+			mStartingGame = true;
+			new NewGame().execute(new NewGameConfiguration(player1StartingInfluence, player2StartingInfluence, timestamp));
+		}
 	}
-	
-	/*
-	
-	
-	
 	
 	/**
 	 * Either starts a timer or resets if already running
@@ -87,6 +86,15 @@ public class GameTracker {
 
 		if (playerInfluence[playerId] != null) {
 			InfluenceChange changeToSave = playerInfluence[playerId];
+			
+			// Replace gameId if it wasn't known at the time
+			if (changeToSave.gameId == NO_GAME_ID) {
+				switch(changeToSave.playerId) {
+				case 0: changeToSave.gameId = mCurrentSinglePlayerGameId; break;
+				case 1: changeToSave.gameId = mCurrentTwoPlayerGameId; break;
+				}
+			}
+
 			playerInfluence[playerId] = null;
 			new SaveInfluenceChange().execute(changeToSave);
 		}
@@ -109,34 +117,34 @@ public class GameTracker {
 		case TWO_PLAYER: gameId = mCurrentTwoPlayerGameId; break;
 		}
 		
-		if (gameId != NO_GAME_ID) {
+//		if (gameId != NO_GAME_ID) {
 			playerInfluence[playerId] = new GameTracker.InfluenceChange(playerId, influence, System.currentTimeMillis(), gameId);
 			
 			if (mTimeoutInMilliSeconds == 0) {
 				saveInfluenceState(playerId);
 			}
-
-		} else {
-			
-			switch (gameType) {
-			case SINGLE_PLAYER: 
-				if (!mNoLogWarningShowedSinglePlayer) {
-					showToast();
-					mNoLogWarningShowedSinglePlayer = true;
-				}
-				break;
-
-			case TWO_PLAYER:
-				if (!mNoLogWarningShowedTwoPlayer) {
-					showToast();
-					mNoLogWarningShowedTwoPlayer = true;
-				}
-				break;
-			}
-		}
-		
+//
+//		} else {
+//			
+//			switch (gameType) {
+//			case SINGLE_PLAYER: 
+//				if (!mNoLogWarningShowedSinglePlayer) {
+//					showToast();
+//					mNoLogWarningShowedSinglePlayer = true;
+//				}
+//				break;
+//
+//			case TWO_PLAYER:
+//				if (!mNoLogWarningShowedTwoPlayer) {
+//					showToast();
+//					mNoLogWarningShowedTwoPlayer = true;
+//				}
+//				break;
+//			}
+//		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void showToast() {
 		Toast t = Toast.makeText(mContext, mContext.getString(R.string.no_log), Toast.LENGTH_LONG);
 		t.setGravity(Gravity.TOP, 0, (int) mContext.getResources().getDimension(R.dimen.toast_offset));
@@ -194,6 +202,7 @@ public class GameTracker {
 			
 		    // Determine number of players
 		    ContentValues values = new ContentValues();
+		    values.put("timestamp", config.timestamp);
 		    values.put("player1", config.player1StartingInfluence);
 		    if (config.player2StartingInfluence > 0) {
 		    	values.put("player2", config.player2StartingInfluence);
@@ -210,6 +219,11 @@ public class GameTracker {
 		    }
 		    
 		    return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			mStartingGame = false;
 		}
 	}
 
@@ -315,10 +329,18 @@ public class GameTracker {
 	public static class NewGameConfiguration {
 		public int player1StartingInfluence;
 		public int player2StartingInfluence;
+		public long timestamp;
 		
 		public NewGameConfiguration(int player1StartingInfluence, int player2StartingInfluence) {
 			this.player1StartingInfluence = player1StartingInfluence;
 			this.player2StartingInfluence = player2StartingInfluence;
+			this.timestamp = -1;
+		}
+
+		public NewGameConfiguration(int player1StartingInfluence, int player2StartingInfluence, long timestamp) {
+			this.player1StartingInfluence = player1StartingInfluence;
+			this.player2StartingInfluence = player2StartingInfluence;
+			this.timestamp = timestamp;
 		}
 	}
 	

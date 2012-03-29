@@ -88,6 +88,12 @@ public class TwoPlayerFragment extends HistoryFragment {
 		v.findViewById(R.id.top_player_increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (isHistoryVisible()) return;
+
+				if (GameTracker.getCurrentGameId(PlayType.TWO_PLAYER) == GameTracker.NO_GAME_ID) {
+					GameTracker.startGame(mInfluenceBottom, mInfluenceTop, getTimestampForAutomaticallyStartedGame());
+				}
+
 				mInfluenceTop++;
 				GameTracker.setInfluence(PlayType.TWO_PLAYER, 1, mInfluenceTop);
 				updateTopCounter();
@@ -97,6 +103,12 @@ public class TwoPlayerFragment extends HistoryFragment {
 		v.findViewById(R.id.bottom_player_increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (isHistoryVisible()) return;
+
+				if (GameTracker.getCurrentGameId(PlayType.TWO_PLAYER) == GameTracker.NO_GAME_ID) {
+					GameTracker.startGame(mInfluenceBottom, mInfluenceTop, getTimestampForAutomaticallyStartedGame());
+				}
+
 				mInfluenceBottom++;
 				GameTracker.setInfluence(PlayType.TWO_PLAYER, 0, mInfluenceBottom);
 				updateBottomCounter();
@@ -106,6 +118,12 @@ public class TwoPlayerFragment extends HistoryFragment {
 		v.findViewById(R.id.top_player_decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (isHistoryVisible()) return;
+
+				if (GameTracker.getCurrentGameId(PlayType.TWO_PLAYER) == GameTracker.NO_GAME_ID) {
+					GameTracker.startGame(mInfluenceBottom, mInfluenceTop, getTimestampForAutomaticallyStartedGame());
+				}
+
 				mInfluenceTop--;
 				GameTracker.setInfluence(PlayType.TWO_PLAYER, 1, mInfluenceTop);
 				updateTopCounter();
@@ -115,6 +133,12 @@ public class TwoPlayerFragment extends HistoryFragment {
 		v.findViewById(R.id.bottom_player_decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (isHistoryVisible()) return;
+
+				if (GameTracker.getCurrentGameId(PlayType.TWO_PLAYER) == GameTracker.NO_GAME_ID) {
+					GameTracker.startGame(mInfluenceBottom, mInfluenceTop, getTimestampForAutomaticallyStartedGame());
+				}
+
 				mInfluenceBottom--;
 				GameTracker.setInfluence(PlayType.TWO_PLAYER, 0, mInfluenceBottom);
 				updateBottomCounter();
@@ -173,7 +197,7 @@ public class TwoPlayerFragment extends HistoryFragment {
 		mInfluenceTop = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer2();
 		mInfluenceBottom = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer1();
 		
-		GameTracker.startGame(mInfluenceBottom, mInfluenceTop);
+		GameTracker.startGame(mInfluenceBottom, mInfluenceTop, System.currentTimeMillis());
 		updateTopCounter();
 		updateBottomCounter();
 	}
@@ -181,7 +205,6 @@ public class TwoPlayerFragment extends HistoryFragment {
 	
 	@Override
 	public void onResume() {
-		super.onResume();
 		setColors();
 	}
 

@@ -41,9 +41,10 @@ TODO:
 	+ Clean up games with no data (changed so no game logging is started unneeded)
 	+ Support mdpi/ldpi/tablet
 	+ Test stability (especially fragments getting destroyed / paused)
-	- Sometimes show 0 when starting app?
-	- Rewrite initial viewpager so it doesn't use fragments (bleh)
-	- Check for memory leaks
+	+ Sometimes show 0 when starting app? (Seems to been fixed after rewrite)
+	+ Rewrite initial viewpager so it doesn't use fragments (bleh)
+	+ Check for memory leaks
+	+ Start new game automatically if refresh hasn't been started
 	
 DONE:
 + Border toggle

@@ -214,6 +214,18 @@ public abstract class HistoryFragment extends PageGenerator implements LoaderCal
 		anim1.start();			
 	}
 	
+	public long getTimestampForAutomaticallyStartedGame() {
+		// Start the game 1 sec. earlier to make sure that game start is 
+		// first in the list
+		// TODO: This is not guaranteed to work. For that we need some kind 
+		// of event queue.
+		return System.currentTimeMillis() - 1000; 
+	}
+	
+	public boolean isHistoryVisible() {
+		return mIsHistoryVisible;
+	}
+	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new GamesListCursorLoader(getActivity(), getPlayType());

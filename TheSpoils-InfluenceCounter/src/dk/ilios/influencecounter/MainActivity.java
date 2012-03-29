@@ -4,6 +4,8 @@ package dk.ilios.influencecounter;
  * 
  * @author Christian Melchior
  */
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -98,6 +100,8 @@ public class MainActivity extends FragmentActivity {
     	if (mKeepScreenAlive) {
     		mWakeLock.acquire();
     	}
+    	
+    	mAdapter.onResume();
     }
     
     @Override
@@ -226,6 +230,8 @@ public class MainActivity extends FragmentActivity {
 	public static class PagerViewsAdapter extends PagerAdapter {
 
 		private MainActivity mContext;
+		private ArrayList<PageGenerator> generators = new ArrayList<PageGenerator>();
+		
 		
 		public PagerViewsAdapter(MainActivity context) {
 			mContext = context;
@@ -235,6 +241,7 @@ public class MainActivity extends FragmentActivity {
 		public Object instantiateItem(ViewGroup container, int position) {
 			
 			PageGenerator generator = getItem(position);
+			generators.add(position, generator);
 			generator.onCreate(mContext);
 			View v = generator.onCreateView();
 			container.addView(v, position);
@@ -255,6 +262,7 @@ public class MainActivity extends FragmentActivity {
 		
 		@Override
 		public void destroyItem(ViewGroup container, int position, Object object) {
+			generators.remove(position);
 			container.removeView((View) object);
 		}
 
@@ -267,6 +275,15 @@ public class MainActivity extends FragmentActivity {
 		public boolean isViewFromObject(View view, Object key) {
 			return view == key;
 		}
+		
+		public void onResume() {
+			for (PageGenerator generator : generators) {
+				if (generator != null) {
+					generator.onResume();
+				}
+			}
+		}
+		
 	}
 
 //	public static class PagerViewsAdapter extends FragmentPagerAdapter {

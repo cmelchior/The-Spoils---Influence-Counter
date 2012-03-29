@@ -15,7 +15,7 @@ public abstract class PageGenerator {
 	public void onCreate(Context context) {}
 	public abstract View onCreateView();
 	
-	protected void onResume() {}
+	public void onResume() {}
 	protected void onPause() {}
 
 	protected Activity getActivity() {

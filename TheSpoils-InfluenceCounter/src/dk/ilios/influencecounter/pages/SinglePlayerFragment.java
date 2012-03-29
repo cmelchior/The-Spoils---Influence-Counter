@@ -75,6 +75,11 @@ public class SinglePlayerFragment extends HistoryFragment {
 		v.findViewById(R.id.increase_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (isHistoryVisible()) return;
+				
+				if (GameTracker.getCurrentGameId(PlayType.SINGLE_PLAYER) == GameTracker.NO_GAME_ID) {
+					GameTracker.startGame(mInfluence, 0, getTimestampForAutomaticallyStartedGame());
+				}
 				mInfluence++;
 				GameTracker.setInfluence(PlayType.SINGLE_PLAYER, 0, mInfluence);
 				updateCounter();
@@ -113,6 +118,11 @@ public class SinglePlayerFragment extends HistoryFragment {
 		v.findViewById(R.id.decrease_influence_button).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (isHistoryVisible()) return;
+
+				if (GameTracker.getCurrentGameId(PlayType.SINGLE_PLAYER) == GameTracker.NO_GAME_ID) {
+					GameTracker.startGame(mInfluence, 0, getTimestampForAutomaticallyStartedGame());
+				}
 				mInfluence--;
 				GameTracker.setInfluence(PlayType.SINGLE_PLAYER, 0, mInfluence);
 				updateCounter();
@@ -145,7 +155,7 @@ public class SinglePlayerFragment extends HistoryFragment {
 			@Override
 			public void onClick(View v) {
 				mInfluence = ((MainActivity) getActivity()).getDefaultStartingInfluencePlayer1();
-				GameTracker.startGame(mInfluence, 0);
+				GameTracker.startGame(mInfluence, 0, System.currentTimeMillis());
 				updateCounter();
 			}
 		});
@@ -164,7 +174,6 @@ public class SinglePlayerFragment extends HistoryFragment {
 	
 	@Override
 	public void onResume() {
-		super.onResume();
 		setColors();
 	}
 

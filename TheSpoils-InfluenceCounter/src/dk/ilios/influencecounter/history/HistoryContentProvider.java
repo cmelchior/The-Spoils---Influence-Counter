@@ -118,15 +118,12 @@ public class HistoryContentProvider extends ContentProvider {
 			updatedValues.put(Database.COLUMN_GAME_NAME, String.format(getContext().getString(R.string.game_name), gameId));
 			db.update(Database.TABLE_GAMES, updatedValues, Database.COLUMN__ID+"="+gameId, null);
 
-			// Add starting values for players		
-			long timestamp = System.currentTimeMillis();
-			
 			// Player 1 values
 			ContentValues player1Values = new ContentValues();
 			player1Values.put(Database.COLUMN_GAME_ID, gameId);
 			player1Values.put(Database.COLUMN_PLAYER_ID, 0);
 			player1Values.put(Database.COLUMN_INFLUENCE, config.getAsInteger("player1"));
-			player1Values.put(Database.COLUMN_TIMESTAMP, timestamp);
+			player1Values.put(Database.COLUMN_TIMESTAMP, config.getAsLong("timestamp"));
 			db.insert(Database.TABLE_GAME_STATE, null, player1Values);
 			
 			// Player 2 values
@@ -135,7 +132,7 @@ public class HistoryContentProvider extends ContentProvider {
 				player2Values.put(Database.COLUMN_GAME_ID, gameId);
 				player2Values.put(Database.COLUMN_PLAYER_ID, 0);
 				player2Values.put(Database.COLUMN_INFLUENCE, config.getAsInteger("player2"));
-				player2Values.put(Database.COLUMN_TIMESTAMP, timestamp);
+				player2Values.put(Database.COLUMN_TIMESTAMP, config.getAsLong("timestamp"));
 				db.insert(Database.TABLE_GAME_STATE, null, player2Values);
 			}
 
