@@ -130,7 +130,7 @@ public class HistoryContentProvider extends ContentProvider {
 			if (players == 2) {
 				ContentValues player2Values = new ContentValues();
 				player2Values.put(Database.COLUMN_GAME_ID, gameId);
-				player2Values.put(Database.COLUMN_PLAYER_ID, 0);
+				player2Values.put(Database.COLUMN_PLAYER_ID, 1);
 				player2Values.put(Database.COLUMN_INFLUENCE, config.getAsInteger("player2"));
 				player2Values.put(Database.COLUMN_TIMESTAMP, config.getAsLong("timestamp"));
 				db.insert(Database.TABLE_GAME_STATE, null, player2Values);

@@ -93,11 +93,6 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 	public void onDestroy() {
 		Logger.i("InfluenceCounter", "HistoryFragment destroyed: " + mGameId);
 		super.onDestroy();
-//		getLoaderManager().destroyLoader(LOADER_ID);
-//		if (mCurrentCursor != null && !mCurrentCursor.isClosed()) {
-//			mCurrentCursor.close();
-//			mCurrentCursor.unregisterContentObserver(observer);
-//		}
 	}
 	
 	@Override
@@ -146,8 +141,7 @@ public class GameHistoryFragment extends Fragment implements LoaderCallbacks<Cur
 			        	GameTracker.updateGameName(mGameId, mGameName);
 			        }
 			    }).setNegativeButton(getText(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int whichButton) {
-			            // Do nothing.
+			        public void onClick(DialogInterface dialog, int whichButton) {			            // Do nothing.
 			        }
 			    }).show();				
 			}
