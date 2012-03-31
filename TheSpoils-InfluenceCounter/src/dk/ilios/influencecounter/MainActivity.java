@@ -60,7 +60,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);	// Initialize if not done already
     	prefs = PreferenceManager.getDefaultSharedPreferences(this);
         initializePreferences();
         initializeWakelock();

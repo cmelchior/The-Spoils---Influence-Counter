@@ -10,7 +10,7 @@ public class InfluenceCounterApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);	// Initialize if not done already
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, true);	// Initialize if not done already
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	int influenceChangeGroupingTimer = (int) Float.parseFloat(prefs.getString("history_grouping_timer", "2")) * 1000;
 		
