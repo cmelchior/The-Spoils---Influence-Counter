@@ -243,6 +243,7 @@ public class MainActivity extends FragmentActivity {
 			generators.add(position, generator);
 			generator.onCreate(mContext);
 			View v = generator.onCreateView();
+			generator.onResume();
 			container.addView(v, position);
 	
 			return v;
